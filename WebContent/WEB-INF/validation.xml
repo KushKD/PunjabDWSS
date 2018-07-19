@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE form-validation PUBLIC
+        "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.3.0//EN"
+        "http://jakarta.apache.org/commons/dtds/validator_1_3_0.dtd">
+<form-validation>
+
+
+	<!-- ========== Default Language Form Definitions ===================== -->
+
+
+
+	<formset>
+		<form name="loginForm">
+			<field property="userName" depends="required">
+				<arg key="loginForm.userName" />
+			</field>
+			<field property="password" depends="required">   
+				<arg key="loginForm.password" />
+			</field>
+		</form>
+		<form name="changePasswordForm">
+			<field property="oldPassword" depends="required">
+				<msg name="required" key="changePasswordForm.oldPassword" />
+			</field>
+			<field property="newPassword" depends="required,mask">
+				<msg name="required" key="changePasswordForm.newPassword" />
+				<msg name="mask" key="changePasswordForm.newPassword.maskmsg" />
+				<var>
+					<var-name>mask</var-name>
+					<var-value>^[a-zA-Z0-9]*$</var-value>
+				</var>
+			</field>
+			<field property="confirmPassword" depends="required,mask">
+				<msg name="required" key="changePasswordForm.confirmPassword" />
+				<msg name="mask" key="changePasswordForm.confirmPassword.maskmsg" />
+				<var>
+					<var-name>mask</var-name>
+					<var-value>^[a-zA-Z0-9]*$</var-value>
+				</var>
+			</field>
+		</form>
+
+
+		<!-- Procurement Module -->
+
+
+
+
+
+
+		<form name="createProcPlanForm">
+
+			<field property="locationId" depends="required">
+				<msg name="required" key="error.location.required" />
+			</field>
+			<field property="programId" depends="required">
+				<msg name="required" key="error.program.required" />
+			</field>
+			<field property="planFrom" depends="required">
+				<msg name="required" key="error.planFrom.required" />
+			</field>
+			<field property="planTo" depends="required">
+				<msg name="required" key="error.planTo.required" />
+			</field>
+			<field property="planType" depends="required">
+				<msg name="required" key="error.planType.required" />
+			</field>
+		</form>
+
+
+
+
+		<form name="procSubPlanForm">
+			<field property="planId" depends="required">
+				<msg name="required" key="error.planId.required" />
+			</field>
+		</form>
+
+		<form name="procPackageWorksForm">
+
+		</form>
+
+
+		<!-- Tender Module -->
+
+		<!-- Inventory Module -->
+
+		<form name="supplyOrderForm">
+			<field property="supplyOrderDate" depends="required">
+				<msg name="required" key="error.supplyOrderDate.required" />
+			</field>
+			<field property="supplyOrderNumber" depends="required">
+				<msg name="required" key="error.supplyOrderNumber.required" />
+			</field>
+		</form>
+	</formset>
+</form-validation>

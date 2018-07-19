@@ -1,0 +1,15 @@
+package com.prwss.mis.common.exception;
+
+
+public class MISExceptionCodes {
+
+
+	public static final String MIS001 ="MIS001"; // duplicate entry exception code
+	public static final String MIS002 ="MIS002"; // session time out exception code
+	public static final String MIS003 ="MIS003"; // child table not saved exception code
+	public static final String MIS004 ="MIS004"; // Business Rule exception code
+	public static final String MIS005 ="MIS005";// HR Leave Exception
+	public static final String MIS006 ="MIS006";// HR NO Action
+	public static final String MIS007 ="MIS007";// HR Salary Date Conflict
+	public static final String MIS010 ="MIS010";//Can't Modify Voucher
+}

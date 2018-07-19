@@ -1,0 +1,533 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1" autoFlush="true"%>
+<%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
+<%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://struts.application-servers.com/layout"
+	prefix="layout"%>
+<%@page import="com.prwss.mis.common.util.MisUtility"%>
+<%@page import="com.prwss.mis.common.util.MISConstants"%>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<head>
+<link href="css/form.css" rel="stylesheet" type="text/css">
+<link href="css/messages.css" rel="stylesheet" type="text/css">
+<link href="css/displaytag.css" rel="stylesheet" type="text/css" />
+
+
+
+<link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="css/dwss_datatable.css">
+
+
+<link href="css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+<link href='css/buttons.dataTables.min.css' rel="stylesheet"
+	type="text/css">
+<link href='css/buttons.jqueryui.min.css' rel="stylesheet"
+	type="text/css">
+<link rel="stylesheet" type="text/css" href="css/jquery.datepick.css">
+
+
+
+<script type="text/javascript" src="js/jquery-1.12.4.js"></script>
+<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="js/dataTables.bootstrap.min.js"></script>
+
+<script type="text/javascript" src="js/dataTables.select.min.js"></script>
+<script type="text/javascript" src="js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="js/buttons.jqueryui.min.js"></script>
+<script type="text/javascript" src="js/jquery.plugin.js"></script>
+<script type="text/javascript" src="js/jquery.datepick.js"></script> 
+<script type="text/javascript" src="js/waterquality.js"></script>
+
+
+<script type="text/javascript">
+	/* $(window).load(function(){
+	document.getElementById("datatable_sh").style.display ='none';
+	});
+	 */
+	hide_ctrl('modalPeriod', true);
+
+	//function de_find() {
+	//document.receiveSampleForm.action = "receiveSampleAction.do?method=populate&d__mode="
+	//			+ d__mode + "&menuId=ADM014";
+		//locationMaster.location1("locationMasterAction.do?method=populate&d__mode="+d__mode+"&menuId=ADM014");
+	//	document.schemeMasterForm.submit();
+
+	//}
+	//function de_modify() {
+	//	if (d__mode == 'ent_modify') {
+	//		var result = true;//valid.validate();
+
+	//		if (result) {
+	//			document.receiveSampleAction.action = "receiveSampleAction.do?method=update&d__mode="
+	//					+ d__mode + "&menuId=ADM014";
+	//			document.schemeMasterForm.submit();
+	//		}
+	//	}
+	//}
+
+	function de_add() {
+		var status = validateFields();
+		if (status) {
+			document.resultEntryForm.action = "resultEntryAction.do?method=save&d__mode="+ d__mode + "&menuId=WQ002";
+			document.resultEntryForm.submit();
+
+			/* locationMaster1.location("locationMasterAction.do?method=save&d__mode="+d__mode+"&menuId=ADM014");
+			document.getElementById("datatable_sh").disabled =false; */
+
+		}
+	}
+</script>
+
+
+
+</head>
+
+
+<html:html>
+
+<logic:messagesPresent>
+	<body bgcolor="#6699FF">
+		<%-- <div id="modalPeriod"
+			style="position: absolute; width: 600px; border: 3px solid black; background-color: #00A2E2; font-size: 150%; text-align: Left; display: none;">
+			<table width="600px">
+				<tr>
+					<td><font size="3" color="white"><b><html:errors
+									bundle="admin" /></b></font></td>
+				</tr>
+				<tr>
+					<td align="center"><input type="button" value="OK"
+						id="period_ok"
+						onClick="hide_ctrl('modalPeriod',true);return false;"></td>
+				</tr>
+			</table>
+		</div> --%>
+		<div class="panel panel-body panel-danger" id="modalPeriod" style="position: absolute; min-width:300px; ; z-index:121;   background-color: #646b71; font-size: 150%;  display: none;">
+			
+			<div class="row" >
+			<div class="col-lg-12">
+			<font size="4" color="#FFFFFF"><b><html:errors
+									bundle="Waterquality" /></b></font></div>   <br>
+									
+									<div class="col-lg-12 col-sm-12 col-xs-12 col-md-12 ">
+				<input type="button" class="navbar-footer btn btn-success col-lg-12" value="OK"
+						id="period_ok"
+						onClick="hide_ctrl('modalPeriod',true);return false;"></div>
+						
+						</div>
+		</div>
+		<script type="text/javascript">
+			var alertObj = document.getElementById("modalPeriod");
+			// center the alert box
+			if (document.all && !window.opera)
+				alertObj.style.top = document.documentElement.scrollTop + 50
+						+ "px";
+			alertObj.style.left = (document.documentElement.scrollWidth - alertObj.offsetWidth)
+					/ 4 + "px";
+			//alert(alertObj.style.left+":"+document.documentElement.scrollWidth+":"+ alertObj.offsetWidth);
+			hide_ctrl('modalPeriod', false);
+		</script>
+</logic:messagesPresent>
+<html:form action="resultEntryAction" method="post"
+	styleId="resultEntryForm">
+
+
+
+
+	<div class="panel panel-danger">
+		<div class="panel-body">
+			<h4 class="text-on-pannel text-primary col-lg-12-col-xs-12 col-sm-12 col-md-12 center-block text-center">Test Results</h4>
+			
+
+
+
+
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Sample Number</label>
+
+				<html:text property='sampleNum' styleId='sampleNum'
+					styleClass="form-control ci5" style="width:150px;"
+					onblur="ajaxFunction('resultEntryAction.do?sampleNum='+this.value+'&method=fetchSamplePartNo', 'partno')"
+					onkeypress="return isNumberKey(event)" ></html:text>
+			</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Sample PartNo.</label>
+				<html:select property="partno" styleId="partno"
+					style="width: 150px;" styleClass="form-control">
+					
+				</html:select>
+
+			</div>
+			
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Lab Name</label>
+
+				<html:select property="labname" styleId="labname"
+					style="width: 150px;" styleClass="form-control" value="" onblur="ajaxFunction('resultEntryAction.do?labname='+this.value+'&method=fetchEmployee', 'technician')">
+					<html:option value="">Select Lab</html:option>
+							<html:options collection="labNames"
+								labelProperty="label" property="value"></html:options>
+				</html:select>
+			</div>
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Test Done By</label>
+
+				<html:select property="technician" styleId="technician"
+					style="width: 150px;" styleClass="form-control">
+				
+				</html:select>
+				
+
+			</div>
+		<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+				<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>		
+		<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Completion Date</label>
+
+				<html:text property='comDate' styleId='comDate'
+					styleClass="form-control ci5" style="width:150px;"
+					></html:text>
+			</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+				
+				
+				<div class="panel panel-danger">
+    <div class="panel-body">
+				<h4
+				class="text-on-pannel text-primary col-lg-12-col-xs-12 col-sm-12 col-md-12 center-block text-center">
+				Heavy Metals</h4>
+			
+				
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Aluminium</label>
+				<html:text property='aluminium' styleId='aluminium'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Lead</label>
+
+				<html:text property='lead' styleId='lead'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Selenium</label>
+				<html:text property='selenium' styleId='selenium'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Chromium</label>
+
+				<html:text property='chromium' styleId='chromium'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+
+			</div>
+
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Mercury</label>
+				<html:text property='mercury' styleId='mercury'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Arcenic</label>
+
+				<html:text property='arcenic' styleId='arcenic'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+
+			</div>
+
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Cadmium</label>
+				<html:text property='cadmium' styleId='cadmium'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Nickel</label>
+
+				<html:text property='nickel' styleId='nickel'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+
+			</div>
+			
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Copper</label>
+				<html:text property='copper' styleId='copper'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Iron</label>
+
+				<html:text property='iron' styleId='iron'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+
+			</div>
+			
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+				</div>
+				</div>
+				
+				
+				<div class="panel panel-danger">
+    <div class="panel-body">
+				<h4
+				class="text-on-pannel text-primary col-lg-12-col-xs-12 col-sm-12 col-md-12 center-block text-center">
+				Radio Active </h4>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Uranium</label>
+				<html:text property='uranium' styleId='uranium'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+				
+				</div>
+				</div>
+				
+					<div class="panel panel-danger">
+    <div class="panel-body">
+				<h4
+				class="text-on-pannel text-primary col-lg-12-col-xs-12 col-sm-12 col-md-12 center-block text-center">
+				IC </h4>
+				
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Floride</label>
+				<html:text property='floride' styleId='floride'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign"> Chloride</label>
+
+				<html:text property='chloride' styleId='chloride'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+
+			</div>
+			
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Nitrate</label>
+				<html:text property='nitrate' styleId='nitrate'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign"> Sulphate</label>
+
+				<html:text property='sulphate' styleId='sulphate'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+
+			</div>
+			
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Calcium</label>
+				<html:text property='calcium' styleId='calcium'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign"> Magnesium</label>
+
+				<html:text property='magnesium' styleId='magnesium'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+
+			</div>
+			
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign">Sodium</label>
+				<html:text property='sodium' styleId='sodium'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+			</div>
+			
+			<div class=" form-inline col-lg-4 col-md-5 col-xs-12 col-sm-6">
+				<label class="text-right labledesign"> Pottasium</label>
+
+				<html:text property='pottasium' styleId='pottasium'
+					styleClass="form-control ci5" style="width:150px;" onkeypress="return isNumberKey(event)"></html:text>
+
+			</div>
+			
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+			<div class="col-lg-2 col-md-1 sm-hidden xs-hidden">&nbsp;
+				&nbsp;</div>
+				
+				</div>
+				</div>
+
+
+		</div>
+	</div>
+		<div class="panel panel-danger">
+     <div class="panel-body">
+    <div id="datatable_sh"  style="display:none" class="col-lg-12 col-sm-12 col-xs-12 col-md-12 panel-body" >
+				<table id="resultEntry" class="display table-responsive table-bordered table-striped table-hover nowrap" cellspacing="0" width="100%">
+
+		<thead>
+			<tr>
+				
+				<th>Sample Id</th>
+				<th>Lab Id</th>
+				<th>Technician Id</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	</div>
+	</div>
+	</div>
+
+<br>
+	
+
+
+	
+</html:form>
+
+</body>
+<script type='text/javascript'>
+	$('#startDate,#defaultInline').datepick();
+	$('#endDate,#defaultInline').datepick();
+
+	
+	function validateFields() {
+		
+		
+		var sampleNum = document.getElementById('sampleNum').value;
+		var labName = document.getElementById('labname').value;
+		var technician = document.getElementById('technician').value;
+		var partno = document.getElementById('partno').value;
+		var comDate = document.getElementById('comDate').value;
+		
+		
+		
+
+		if (sampleNum === "" || sampleNum == null) {
+			alert("Enter Sample Num")
+			return false;
+		} else if (labName == "" || labName == null) {
+			alert("Please Select lab Name");
+			return false;
+		}else if (technician == "" || technician == null) {
+			alert("Please Select Technician");
+			return false;
+		} else if (partno == "" || partno == null) {
+			alert("Please enter sample Part Num");
+			return false;
+		} else if (comDate == "" || comDate == null) {
+			alert("Please enter Completion  Date");
+			return false;
+		} else if (comDate != null) {
+
+			var userDate = converToDate(comDate);
+			var today = dateToday();
+
+			if (userDate > today) {
+				alert("Distribution Date cannot be Future  Date");
+				return false;
+			}
+
+		}
+		return true;
+	}
+	
+		document.getElementById("datatable_sh").style.display ='';
+
+	ResultEntryAction.ResultEntryAct(); 
+
+	$('#comDate,#defaultInline').datepick();
+	
+</script>
+</html:html>

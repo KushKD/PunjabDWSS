@@ -1,0 +1,1874 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PMMRPT001_1" language="groovy" pageWidth="880" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="870" leftMargin="5" rightMargin="5" topMargin="20" bottomMargin="5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="where" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to" class="java.lang.String">
+		<defaultValueExpression><![CDATA["24-10-2011"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2011-10-24"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2008-04-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2008-04-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="prog_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA["1=1"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select distinct *,case when con_award1 is not null then bid_doc_app end as con_award,case when con_award_vill1 is not null then bid_doc_app||'('||village_id||')' end as con_award_vill
+,case when bid_under_process1 is not null then bid_doc_app end as bid_under_process,case when bid_under_process_vill1 is not null then bid_doc_app||'('||village_id||')' end as bid_under_process_vill,case when bid_invited1 is not null then bid_doc_app end as bid_invited,case when bid_invited1 is not null then bid_doc_app||'('||village_id||')' end as bid_invited_vill,case when bid_yet_to_invited1 is not null then bid_doc_app end as bid_yet_to_invited,case when bid_yet_to_invited1 is not null then bid_doc_app||'('||village_id||')' end as bid_yet_to_invited_vill
+ from(select *,case when bid_doc_app1 is not null then dsr_app end as bid_doc_app ,case when bid_doc_app1 is  null then dsr_app end as bid_doc_yet_app
+--,case when bid_doc_app is null then dsr_app end as dsr_yet_tobe_app
+from(
+select *,case when tech_app_ee_date is not null or tech_app_se_letter_date is not null or tech_app_ce_letter_date is not null or tech_app_sent_to_se_vide_ee_date is not null or tech_app_sent_to_ce_vide_se_date is not null  then app else null end dsr_app
+,	case when tech_app_ee_date is null and tech_app_se_letter_date is null and tech_app_ce_letter_date is null and tech_app_sent_to_se_vide_ee_date is null and 	 		tech_app_sent_to_ce_vide_se_date is null  then app else null end dsr_yet_tobe_app
+ from (
+select district_id,district_name,circle_id,circle_name,zone_id,zone_name,scheme_id,scheme_name,village_id,vill_name||'('||village_id||')' as vill_name
+,case when habitation_type ='MH' then village_id else null end as vill_mh
+,case when habitation_type ='OH' then village_id else null end as vill_OH
+,case when admin_app_gop_letter_date is not null then scheme_name else null end app
+,case when bid_doc_app is null then scheme_id end as bid_doc_yet_app1,bid_doc_app as bid_doc_app1,
+con_award as con_award1,bid_under_process as bid_under_process1
+,case when bid_under_process is not null then village_id end as bid_under_process_vill1
+,case when con_award is not null then village_id end as con_award_vill1,bid_invited as bid_invited1
+,case when bid_invited is not null then  village_id end as bid_invited_vill1,bid_yet_to_invited as bid_yet_to_invited1,
+case when bid_yet_to_invited is not null then village_id end as bid_yet_to_invited_vill1,
+case when scheme_commissioned_date >='2015-04-01' then scheme_id end as scheme_commisioned_2015
+,case when scheme_commissioned_date is not null then village_id end as scheme_commisioned_vill
+,case when scheme_commissioned_date is not null then scheme_id end as scheme_commisioned_now
+,case when scheme_commissioned_date is not null and habitation_type ='MH' then village_id end as tot_mh
+,case when scheme_commissioned_date is not null and habitation_type ='OH' then village_id end as tot_oh
+,case when scheme_completed_date is not null then scheme_id end as scheme_completed
+,case when admin_app_gop_letter_date is null and admin_app_sent_govt_vide_ce_date is not null then scheme_name else null end lying_gop,
+	case when admin_app_gop_letter_date is null and admin_app_sent_govt_vide_ce_date is null and admin_app_sent_ce_vide_se_date is not null then scheme_name else null end lying_ce,
+	case when admin_app_gop_letter_date is null and admin_app_sent_govt_vide_ce_date is null and admin_app_sent_ce_vide_se_date is null and admin_app_sent_se_vide_ee_date is not null then scheme_name else null end lying_se,
+	case when admin_app_gop_letter_date is null and admin_app_sent_govt_vide_ce_date is null and admin_app_sent_ce_vide_se_date is null and admin_app_sent_se_vide_ee_date is null then scheme_name else null end lying_div
+,tech_app_ee_date , tech_app_se_letter_date , tech_app_ce_letter_date, tech_app_sent_to_se_vide_ee_date,tech_app_sent_to_ce_vide_se_date,admin_app_sent_govt_vide_ce_date,admin_app_sent_ce_vide_se_date,admin_app_sent_se_vide_ee_date
+from(
+select  bb.district_id,district_name,gg.circle_id,gg.circle_name,hh.zone_id,hh.zone_name,aa.scheme_id,aa.scheme_name||'('||aa.scheme_id||')' as scheme_name,aa.village_id,vill_name,aa.scheme_commissioned_date,scheme_completed_date,habitation_type,aa.admin_app_gop_letter_date,tech_app_ee_date ,tech_app_se_letter_date , tech_app_ce_letter_date,tech_app_sent_to_se_vide_ee_date, tech_app_sent_to_ce_vide_se_date ,bid_doc_app,con_award,bid_under_process, bid_invited,bid_yet_to_invited,admin_app_sent_govt_vide_ce_date,admin_app_sent_ce_vide_se_date,admin_app_sent_se_vide_ee_date,village_category from
+(select * FROM(select * from(select	sd.SCHEME_ID,ADMIN_APP_GOP_LETTER_DATE,sd.STATUS
+ ,scheme_name,prog_id,location_id ,village_id,vill_name,scheme_commissioned_date,sv.scheme_completed_date,village_category,sv.SCHEME_UPGRADED
+ ,rank () over(partition by sv.scheme_id order by scheme_commissioned_date desc,admin_app_gop_letter_date desc)
+from prwss_main.mst_scheme_details SD, prwss_main.mst_scheme_header SH,prwss_main.mst_scheme_village SV
+where 	sh.scheme_id=sd.scheme_id 	and   sd.scheme_id=sv.scheme_id
+and sh.SCHEME_UPGRADED=sd.SCHEME_UPGRADED 	and   sd.SCHEME_UPGRADED=sv.SCHEME_UPGRADED
+and sh.status<>'D' and sv.status<>'D' and sd.status<>'D'
+order by scheme_id,village_id)AA where rank=1 )BB where prog_id='PROG30' and village_category ='1A (WL)'
+)AA
+left outer join
+(select village_id,district_id,habitation_type from prwss_main.mst_village where status<>'D')BB
+on aa.village_id=bb.village_id
+left outer join
+(select * from(select scheme_id,admin_app_gop_letter_date,tech_app_ee_date ,tech_app_se_letter_date , tech_app_ce_letter_date,tech_app_sent_to_se_vide_ee_date, tech_app_sent_to_ce_vide_se_date,admin_app_sent_govt_vide_ce_date,admin_app_sent_ce_vide_se_date,admin_app_sent_se_vide_ee_date,
+rank () over (partition by scheme_id order by admin_app_gop_letter_date desc)
+from prwss_main.mst_scheme_details)aa where rank=1 )CC
+on aa.scheme_id=cc.scheme_id
+left outer join
+(select  scheme_code,sch_id,case when bid_sanc_no<>0 then sch_id else null end as bid_doc_app--,case when bid_sanc_no=0 then sch_id else null end as bid_doc_yet_app
+	from	(select scheme_code,sch_id,sum(case when trim(bid_sanction_number) is not null    then 1 else 0 end) as bid_sanc_no
+	from	(select distinct (scheme_name||' ('||scheme_code||')') sch_id,scheme_code,bid_sanction_number,open_date,publish_date
+	from prwss_main.t_tender_hdr th,prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_village sv,prwss_main.t_proc_sub_plan_scheme tp
+	 where th.scheme_code=sh.scheme_id  and th.scheme_code=sv.scheme_id and sh.scheme_id=tp.scheme_id
+	 and tender_type='WORKS' and th.status<>'D' and sh.status<>'D'and tp.status<>'D'and sv.status<>'D' and sv.scheme_commissioned_date is NOT null) xxx
+	group by scheme_code,sch_id
+	order by scheme_code)y)DD
+on aa.scheme_id=dd.scheme_code
+left outer join
+(select  distinct  scheme_code,con_award,bid_under_process, bid_invited,bid_yet_to_invited
+from (select * , rank() over (partition by scheme_code order by  con_award desc nulls last, bid_under_process desc nulls last, bid_invited desc nulls last, bid_yet_to_invited desc nulls last,signing_of_contract desc nulls last,open_date desc nulls last,publish_date desc nulls last ) as r1
+from (select  scheme_code,signing_of_contract,open_date,publish_date,package_id,tender_id,rank,
+	       (case when signing_of_contract is not null then sch_name else null end) as con_award,
+	       (case when signing_of_contract is null and open_date <=now() then sch_name else null end) as bid_under_process,
+	       (case when signing_of_contract is null and open_date > now() then sch_name else null end) as bid_invited,
+	       (case when signing_of_contract is null and open_date is null and publish_date is  null and bid_sanction_number is not null then sch_name else null end) as bid_yet_to_invited from
+	(select scheme_code,sch_name,rank() over (partition by scheme_code,package_id order by signing_of_contract desc nulls last,open_date desc nulls last,publish_date desc nulls last) rank,notice_to_proceed,signing_of_contract,open_date,publish_date,bid_sanction_number,a.tender_id,package_id
+		from (select  tender_id,scheme_code,(scheme_name||' ('||scheme_code||')') sch_name,open_date,publish_date,th.bid_sanction_number,package_id
+	from prwss_main.t_tender_hdr th,prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_village sv ,prwss_main.t_proc_sub_plan_scheme tp
+	where th.scheme_code=sh.scheme_id and th.scheme_code=sv.scheme_id and sv.scheme_id = sh.scheme_id and sh.scheme_id=tp.scheme_id
+	and sv.status<>'D'	and tender_type='WORKS'
+	and   th.status<>'D' and sh.status<>'D' and tp.status<>'D' and sv.scheme_commissioned_date is NOT null
+	and sv.status<>'D')a left join
+	(select * from prwss_main.t_tender_award where status<>'D')b
+	on a.tender_id=b.tender_id)zz where rank=1
+	)xx)mm where r1 = 1)EE
+on aa.scheme_id=ee.scheme_code
+left outer join
+(select district_id,district_name,circle_id from prwss_main.mst_district)FF
+on bb.district_id=ff.district_id
+left outer join
+(select circle_id,circle_name,zone_id from prwss_main.mst_circle)GG
+on gg.circle_id=ff.circle_id
+left outer join
+(select zone_id,zone_name from prwss_main.mst_zone )HH
+on gg.zone_id=hh.zone_id
+left outer join
+(select scheme_id,scheme_name from prwss_main.mst_scheme_header )JJ
+on aa.scheme_id=jj.scheme_id
+)XYZ1)xyz2)xyz3)XYZ
+where $P!{where}
+order by zone_name,circle_name,district_name--,vill_name]]>
+	</queryString>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="scheme_id" class="java.lang.String"/>
+	<field name="scheme_name" class="java.lang.String"/>
+	<field name="village_id" class="java.lang.String"/>
+	<field name="vill_name" class="java.lang.String"/>
+	<field name="vill_mh" class="java.lang.String"/>
+	<field name="vill_oh" class="java.lang.String"/>
+	<field name="app" class="java.lang.String"/>
+	<field name="bid_doc_yet_app1" class="java.lang.String"/>
+	<field name="bid_doc_app1" class="java.lang.String"/>
+	<field name="con_award1" class="java.lang.String"/>
+	<field name="bid_under_process1" class="java.lang.String"/>
+	<field name="bid_under_process_vill1" class="java.lang.String"/>
+	<field name="con_award_vill1" class="java.lang.String"/>
+	<field name="bid_invited1" class="java.lang.String"/>
+	<field name="bid_invited_vill1" class="java.lang.String"/>
+	<field name="bid_yet_to_invited1" class="java.lang.String"/>
+	<field name="bid_yet_to_invited_vill1" class="java.lang.String"/>
+	<field name="scheme_commisioned_2015" class="java.lang.String"/>
+	<field name="scheme_commisioned_vill" class="java.lang.String"/>
+	<field name="scheme_commisioned_now" class="java.lang.String"/>
+	<field name="tot_mh" class="java.lang.String"/>
+	<field name="tot_oh" class="java.lang.String"/>
+	<field name="scheme_completed" class="java.lang.String"/>
+	<field name="lying_gop" class="java.lang.String"/>
+	<field name="lying_ce" class="java.lang.String"/>
+	<field name="lying_se" class="java.lang.String"/>
+	<field name="lying_div" class="java.lang.String"/>
+	<field name="tech_app_ee_date" class="java.sql.Date"/>
+	<field name="tech_app_se_letter_date" class="java.sql.Date"/>
+	<field name="tech_app_ce_letter_date" class="java.sql.Date"/>
+	<field name="tech_app_sent_to_se_vide_ee_date" class="java.sql.Date"/>
+	<field name="tech_app_sent_to_ce_vide_se_date" class="java.sql.Date"/>
+	<field name="admin_app_sent_govt_vide_ce_date" class="java.sql.Date"/>
+	<field name="admin_app_sent_ce_vide_se_date" class="java.sql.Date"/>
+	<field name="admin_app_sent_se_vide_ee_date" class="java.sql.Date"/>
+	<field name="dsr_app" class="java.lang.String"/>
+	<field name="dsr_yet_tobe_app" class="java.lang.String"/>
+	<field name="bid_doc_app" class="java.lang.String"/>
+	<field name="bid_doc_yet_app" class="java.lang.String"/>
+	<field name="con_award" class="java.lang.String"/>
+	<field name="con_award_vill" class="java.lang.String"/>
+	<field name="bid_under_process" class="java.lang.String"/>
+	<field name="bid_under_process_vill" class="java.lang.String"/>
+	<field name="bid_invited" class="java.lang.String"/>
+	<field name="bid_invited_vill" class="java.lang.String"/>
+	<field name="bid_yet_to_invited" class="java.lang.String"/>
+	<field name="bid_yet_to_invited_vill" class="java.lang.String"/>
+	<variable name="scheme_id_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_id}]]></variableExpression>
+	</variable>
+	<variable name="scheme_id_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_id}]]></variableExpression>
+	</variable>
+	<variable name="scheme_id_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_id}]]></variableExpression>
+	</variable>
+	<variable name="village_id_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{village_id}]]></variableExpression>
+	</variable>
+	<variable name="village_id_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{village_id}]]></variableExpression>
+	</variable>
+	<variable name="village_id_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{village_id}]]></variableExpression>
+	</variable>
+	<variable name="app_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{app}]]></variableExpression>
+	</variable>
+	<variable name="app_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{app}]]></variableExpression>
+	</variable>
+	<variable name="app_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{app}]]></variableExpression>
+	</variable>
+	<variable name="lying_gop_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_gop}]]></variableExpression>
+	</variable>
+	<variable name="lying_gop_2" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_gop}]]></variableExpression>
+	</variable>
+	<variable name="lying_gop_3" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_gop}]]></variableExpression>
+	</variable>
+	<variable name="lying_gop_4" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_gop}]]></variableExpression>
+	</variable>
+	<variable name="lying_ce_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_ce}]]></variableExpression>
+	</variable>
+	<variable name="lying_ce_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_ce}]]></variableExpression>
+	</variable>
+	<variable name="lying_ce_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_ce}]]></variableExpression>
+	</variable>
+	<variable name="lying_se_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_se}]]></variableExpression>
+	</variable>
+	<variable name="lying_se_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_se}]]></variableExpression>
+	</variable>
+	<variable name="lying_se_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_se}]]></variableExpression>
+	</variable>
+	<variable name="lying_div_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_div}]]></variableExpression>
+	</variable>
+	<variable name="lying_div_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_div}]]></variableExpression>
+	</variable>
+	<variable name="lying_div_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_div}]]></variableExpression>
+	</variable>
+	<variable name="lying_div_4" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_div}]]></variableExpression>
+	</variable>
+	<variable name="lying_div_5" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{lying_div}]]></variableExpression>
+	</variable>
+	<variable name="dsr_app_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{dsr_app}]]></variableExpression>
+	</variable>
+	<variable name="dsr_app_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{dsr_app}]]></variableExpression>
+	</variable>
+	<variable name="dsr_app_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{dsr_app}]]></variableExpression>
+	</variable>
+	<variable name="dsr_yet_tobe_app_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{dsr_yet_tobe_app}]]></variableExpression>
+	</variable>
+	<variable name="dsr_yet_tobe_app_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{dsr_yet_tobe_app}]]></variableExpression>
+	</variable>
+	<variable name="dsr_yet_tobe_app_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{dsr_yet_tobe_app}]]></variableExpression>
+	</variable>
+	<variable name="bid_doc_app_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_doc_app}]]></variableExpression>
+	</variable>
+	<variable name="bid_doc_app_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_doc_app}]]></variableExpression>
+	</variable>
+	<variable name="bid_doc_app_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_doc_app}]]></variableExpression>
+	</variable>
+	<variable name="bid_doc_yet_app_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_doc_yet_app}]]></variableExpression>
+	</variable>
+	<variable name="bid_doc_yet_app_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_doc_yet_app}]]></variableExpression>
+	</variable>
+	<variable name="bid_doc_yet_app_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_doc_yet_app}]]></variableExpression>
+	</variable>
+	<variable name="con_award_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{con_award}]]></variableExpression>
+	</variable>
+	<variable name="con_award_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{con_award}]]></variableExpression>
+	</variable>
+	<variable name="con_award_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{con_award}]]></variableExpression>
+	</variable>
+	<variable name="bid_under_process_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_under_process}]]></variableExpression>
+	</variable>
+	<variable name="bid_under_process_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_under_process}]]></variableExpression>
+	</variable>
+	<variable name="bid_under_process_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_under_process}]]></variableExpression>
+	</variable>
+	<variable name="bid_under_process_4" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_under_process}]]></variableExpression>
+	</variable>
+	<variable name="bid_invited_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_invited}]]></variableExpression>
+	</variable>
+	<variable name="bid_invited_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_invited}]]></variableExpression>
+	</variable>
+	<variable name="bid_invited_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_invited}]]></variableExpression>
+	</variable>
+	<variable name="bid_yet_to_invited_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_yet_to_invited}]]></variableExpression>
+	</variable>
+	<variable name="bid_yet_to_invited_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_yet_to_invited}]]></variableExpression>
+	</variable>
+	<variable name="bid_yet_to_invited_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{bid_yet_to_invited}]]></variableExpression>
+	</variable>
+	<variable name="scheme_commisioned_now_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_commisioned_now}]]></variableExpression>
+	</variable>
+	<variable name="scheme_commisioned_now_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_commisioned_now}]]></variableExpression>
+	</variable>
+	<variable name="scheme_commisioned_now_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_commisioned_now}]]></variableExpression>
+	</variable>
+	<variable name="scheme_commisioned_now_4" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_commisioned_now}]]></variableExpression>
+	</variable>
+	<variable name="scheme_commisioned_vill_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_commisioned_vill}]]></variableExpression>
+	</variable>
+	<variable name="scheme_commisioned_vill_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_commisioned_vill}]]></variableExpression>
+	</variable>
+	<variable name="scheme_commisioned_vill_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_commisioned_vill}]]></variableExpression>
+	</variable>
+	<variable name="scheme_completed_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_completed}]]></variableExpression>
+	</variable>
+	<variable name="scheme_completed_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_completed}]]></variableExpression>
+	</variable>
+	<variable name="scheme_completed_3" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{scheme_completed}]]></variableExpression>
+	</variable>
+	<group name="zone_grp">
+		<groupExpression><![CDATA[$F{zone_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="0" y="0" width="870" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Zone:- " +$F{zone_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20"/>
+		</groupFooter>
+	</group>
+	<group name="circle_grp">
+		<groupExpression><![CDATA[$F{circle_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="870" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[" Circle:- "+$F{circle_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="81" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Total Circle:-  "+$F{circle_name}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="81" y="0" width="52" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_id_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="133" y="0" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{village_id_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="183" y="0" width="38" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{app_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="221" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_gop_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="256" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_ce_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="291" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_se_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="326" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_div_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="371" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{dsr_app_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="411" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{dsr_yet_tobe_app_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="451" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_doc_app_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="491" y="0" width="42" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_doc_yet_app_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="533" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{con_award_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="578" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_under_process_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="618" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_invited_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="658" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_yet_to_invited_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="698" y="0" width="56" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_commisioned_now_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="754" y="0" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_commisioned_vill_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="804" y="0" width="66" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_completed_2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="district_grp">
+		<groupExpression><![CDATA[$F{district_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="870" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[" District:- "+$F{district_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="81" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Total District:-  "+$F{district_name}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="81" y="0" width="52" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_id_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="133" y="0" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{village_id_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="183" y="0" width="38" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{app_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="221" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_gop_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="256" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_ce_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="291" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_se_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="326" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_div_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="371" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{dsr_app_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="411" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{dsr_yet_tobe_app_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="451" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_doc_app_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="491" y="0" width="42" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_doc_yet_app_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="533" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{con_award_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="578" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_under_process_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="618" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_invited_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="658" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_yet_to_invited_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="698" y="0" width="56" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_commisioned_now_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="754" y="0" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_commisioned_vill_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="804" y="0" width="66" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_completed_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<staticText>
+				<reportElement x="214" y="21" width="444" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="63" width="870" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[District wise detail of IBRD funded water supply schemes coververd under 1A (WL)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="684" y="21" width="186" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[M & E Report: A2.7 (1A (WL))]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="870" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="709" y="41" width="56" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[As on :]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement x="770" y="41" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="100" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="371" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="81" y="0" width="52" height="85" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Name of Schemes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="618" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Bids Invited]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="183" y="38" width="38" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="658" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Bids yet to be Invited]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="531" y="38" width="47" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Contracts awarded]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="221" y="60" width="35" height="25" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Govt]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="698" y="38" width="56" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Schemes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="29" y="0" width="52" height="85" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Name of District]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="578" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Bid under Process]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="451" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="491" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[ Yet to be App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="133" y="0" width="50" height="85" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Name of Villages]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="291" y="60" width="35" height="25" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[SE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="221" y="38" width="150" height="22" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Lying with]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="326" y="60" width="45" height="25" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Division]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="256" y="60" width="35" height="25" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[CE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="411" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[ Yet to be App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="371" y="0" width="80" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Status of technical Sanction of DSR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="698" y="0" width="106" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Commissioned]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="531" y="0" width="167" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Status of Approved Bid docfuments]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="451" y="0" width="80" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[No. of Schemes where bid documents]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="183" y="0" width="188" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Status of Administrative Approvalof Estimates]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="85" width="29" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="29" height="85" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr. No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="291" y="85" width="35" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="183" y="85" width="38" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="81" y="85" width="52" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="133" y="85" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="256" y="85" width="35" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="221" y="85" width="35" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="29" y="85" width="52" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="578" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[15]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="491" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[13]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="698" y="85" width="56" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="531" y="85" width="47" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[14]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="326" y="85" width="45" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="658" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[17]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="411" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="618" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[16]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="451" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[12]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="371" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="754" y="38" width="50" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Villages]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="754" y="85" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[19]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="804" y="0" width="66" height="85" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Scheme Completion Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="804" y="85" width="66" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[20]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="0" y="0" width="29" height="31" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="29" y="0" width="52" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{district_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="81" y="0" width="52" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{scheme_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="133" y="0" width="50" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{vill_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="183" y="0" width="38" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="221" y="0" width="35" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{lying_gop}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="256" y="0" width="35" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{lying_ce}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="291" y="0" width="35" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{lying_se}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="326" y="0" width="45" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{lying_div}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="371" y="0" width="40" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dsr_app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="411" y="0" width="40" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dsr_yet_tobe_app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="451" y="0" width="40" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{bid_doc_app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="491" y="0" width="42" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{bid_doc_yet_app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="533" y="0" width="45" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{con_award}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="578" y="0" width="40" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{bid_under_process}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="618" y="0" width="40" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{bid_invited}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="658" y="0" width="40" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{bid_yet_to_invited}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="698" y="0" width="56" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{scheme_commisioned_now}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="754" y="0" width="50" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{scheme_commisioned_vill}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="804" y="0" width="66" height="31" forecolor="#000000" backcolor="#FFFFCC"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{scheme_completed}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="633" y="0" width="206" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="81" y="0" width="40" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="291" y="0" width="191" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[M & E Report: A2.7 (1A (WL))]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20">
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="81" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="81" y="0" width="52" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_id_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="133" y="0" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{village_id_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="183" y="0" width="38" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{app_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="221" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_gop_4}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="256" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_ce_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="291" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_se_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="326" y="0" width="44" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{lying_div_5}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="370" y="0" width="42" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{dsr_app_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="412" y="0" width="39" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{dsr_yet_tobe_app_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="451" y="0" width="37" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_doc_app_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="488" y="0" width="44" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_doc_yet_app_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="532" y="0" width="46" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{con_award_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="578" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_under_process_4}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="618" y="0" width="39" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_invited_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="657" y="0" width="41" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{bid_yet_to_invited_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="698" y="0" width="56" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_commisioned_now_4}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="754" y="0" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_commisioned_vill_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="804" y="0" width="66" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_completed_3}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

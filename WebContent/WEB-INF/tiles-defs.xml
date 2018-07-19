@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.3//EN"
+       "http://struts.apache.org/dtds/tiles-config_1_3.dtd">
+
+<tiles-definitions>
+
+	<definition name="otherdefault.view" path="/baseLayout2.jsp">
+		<put name="header" value="/header.jsp" />
+		<put name="body" value="/login.jsp" />
+	</definition>
+
+	<definition name="default.view" path="/baseLayout.jsp">
+		<put name="title" value="Base" />
+		<put name="header" value="/header.jsp" />
+		<put name="menu" value="/menu.jsp" />
+		<put name="body" value="/login.jsp" />
+		<put name="toolbar" value="/toolbar.jsp" />
+		<put name="footer" value="/footer.jsp" />
+		<put name="helptoolbar" value="/helptoolbar.jsp" />
+		<put name="right" value="/right.jsp" />
+		<put name="left" value="/left.jsp" />
+	</definition>
+	
+	
+	<definition name="defaultx.view" path="/baseLayoutx.jsp">
+		<put name="title" value="Base" />
+		<put name="header" value="/header.jsp" />
+		<put name="menu" value="/menu.jsp" />
+		<put name="body" value="/login.jsp" />
+		<put name="toolbar" value="/toolbar.jsp" />
+		<put name="footer" value="/footer.jsp" />
+		<put name="helptoolbar" value="/helptoolbar.jsp" />
+		<put name="right" value="/right.jsp" />
+		<put name="left" value="/left.jsp" />
+	</definition>
+	
+	
+	<definition name="home.view" extends="default.view">
+		<put name="title" value="Home" />
+		<put name="body" value="/default.jsp" />
+	</definition>
+
+	<definition name="login.fail.view" extends="default.view">
+		<put name="title" value="Home" />
+	</definition>
+
+	<definition name="session.expire.view">
+		<put name="title" value="Session Expired" />
+		<put name="body" value="/sessionOut.jsp" />
+	</definition>
+
+	<definition name="language.view" extends="default.view">
+		<put name="title" value="Home" />
+	</definition>
+	<!-- Start finance -->
+		<definition name="finance.head.view" extends="default.view">
+		<put name="title" value="Finance Head View" />
+		<put name="body" value="finance/financialHeads.jsp" />
+	</definition>
+
+
+	<definition name="finance.head.structure.view" extends="default.view">
+		<put name="title" value="Finance Head Structure" />
+		<put name="body" value="finance/headStructure.jsp" />
+	</definition>
+	
+	<definition name="update.division.budget.view" extends="default.view">
+		<put name="title" value="Update Division Budget" />
+		<put name="body" value="finance/updateBudget.jsp" />
+	</definition>
+	
+	<definition name="update.division.budget.state" extends="default.view">
+		<put name="title" value="Update Division Budget" />
+		<put name="body" value="finance/updateStateDivisionBudget.jsp" />
+	</definition>
+	
+
+	<definition name="finance.component.view" extends="default.view">
+		<put name="title" value="Components" />
+		<put name="body" value="finance/component.jsp" />
+	</definition>
+
+	<definition name="finance.division.budget.view" extends="default.view">
+		<put name="title" value="Budget Division" />
+		<put name="body" value="finance/divisionBudget.jsp" />
+	</definition>
+
+	<definition name="view.finance.division.budget.view"
+		extends="default.view">
+		<put name="title" value="Budget Grid" />
+		<put name="body" value="finance/budgetGrid.jsp" />
+	</definition>
+
+	<definition name="division.budget.view" extends="default.view">
+		<put name="title" value="Division Budget View" />
+		<put name="body" value="finance/divisionBudgetView.jsp" />
+	</definition>
+
+	<definition name="state.budget.view" extends="default.view">
+		<put name="title" value="State Budget View" />
+		<put name="body" value="finance/stateBudgetView.jsp" />
+	</definition>
+
+
+	<definition name="nodal.division.budget.view" extends="default.view">
+		<put name="title" value="Nodal Division Budget View" />
+		<put name="body" value="finance/nodalDivisionView.jsp" />
+	</definition>
+
+	<definition name="find.source.master.view" extends="default.view">
+		<put name="title" value="Fund Source Master" />
+		<put name="body" value="finance/fundSourceMaster.jsp" />
+	</definition>
+
+	<definition name="gpwsc.register.view" extends="default.view">
+		<put name="title" value="GPWSC Register" />
+		<put name="body" value="finance/GPWS_Register.jsp" />
+	</definition>
+
+	<definition name="ddo.master.view" extends="default.view">
+		<put name="title" value="DDO Master" />
+		<put name="body" value="finance/ddoMaster.jsp" />
+	</definition>
+
+
+	<definition name="fund.request.view" extends="default.view">
+		<put name="title" value="Fund Request" />
+		<put name="body" value="finance/fundRequest.jsp" />
+	</definition>
+
+	<definition name="fund.allocation.view" extends="default.view">
+		<put name="title" value="Allocation Form" />
+		<put name="body" value="finance/allocation.jsp" />
+	</definition>
+	<!-- -->
+
+	<!-- Start RTI -->
+
+	<definition name="rtiSubmit.view" extends="default.view">
+		<put name="title" value="Submit RTI" />
+		<put name="body" value="rti/submitRti.jsp" />
+	</definition>
+
+	<definition name="rtiUpdate.view" extends="default.view">
+		<put name="title" value="Update RTI" />
+		<put name="body" value="rti/updateRti.jsp" />
+	</definition>
+
+	<definition name="rtiUpdateDetails.view" extends="default.view">
+		<put name="title" value="Update RTI Details" />
+		<put name="body" value="rti/updateRtiDetails.jsp" />
+	</definition>
+
+	<definition name="assignrtiSubmit.view" extends="default.view">
+		<put name="title" value="Assign RTI" />
+		<put name="body" value="rti/assignRti.jsp" />
+	</definition>
+
+	<!-- End RTI -->
+
+	<!-- Start Construction Quality -->
+
+
+	<definition name="freeze.sample.report.view" extends="default.view">
+		<put name="title" value="Freeze Sample View Report" />
+		<put name="body" value="quality/freezeUnfreezeSample.jsp" />
+	</definition>
+
+	<definition name="monthly.progress.enter" extends="default.view">
+		<put name="title" value="Monthly Progress" />
+		<put name="body" value="constructionQuality/monthlyProgress.jsp" />
+	</definition>
+
+	<definition name="yearlyPlanInspection.view" extends="default.view">
+		<put name="title" value="Yearly Plan for Inspection" />
+		<put name="body" value="constructionQuality/yearPlanInspection.jsp" />
+	</definition>
+
+	<definition name="update.yearlyPlan.view" extends="default.view">
+		<put name="title" value="Update Yearly Plan" />
+		<put name="body" value="constructionQuality/updateYearlyPlan.jsp" />
+	</definition>
+
+	<definition name="create.team.view" extends="default.view">
+		<put name="title" value="Create Team" />
+		<put name="body" value="constructionQuality/createTeam.jsp" />
+	</definition>
+
+	<definition name="monthly.plan.view" extends="default.view">
+		<put name="title" value="Monthly Plan" />
+		<put name="body" value="constructionQuality/monthlyInspectionPlan.jsp" />
+	</definition>
+
+	<definition name="monthly.update.plan.view" extends="default.view">
+		<put name="title" value="Modify Monthly Plan" />
+		<put name="body" value="constructionQuality/updateMonthlyPlan.jsp" />
+	</definition>
+
+	<definition name="monthly.plan.views" extends="default.view">
+		<put name="title" value="Monthly Plan View" />
+		<put name="body" value="constructionQuality/monthlyPlanView.jsp" />
+	</definition>
+
+	<definition name="save.monthly.report" extends="default.view">
+		<put name="title" value="Saving Monthly Report" />
+		<put name="body" value="constructionQuality/saveMonthlyReport.jsp" />
+	</definition>
+	<definition name="send.monthly.report" extends="default.view">
+		<put name="title" value="Send Monthly Report" />
+		<put name="body" value="constructionQuality/sendingMonthlyReport.jsp" />
+	</definition>
+
+	<definition name="monthly.report.view" extends="default.view">
+		<put name="title" value="Monthly Report View" />
+		<put name="body" value="constructionQuality/monthlyReportView.jsp" />
+	</definition>
+
+	<definition name="approve.monthly.report" extends="default.view">
+		<put name="title" value="Approved Monthly Report" />
+		<put name="body" value="constructionQuality/approveMonthlyReport.jsp" />
+	</definition>
+
+	<definition name="share.observation" extends="default.view">
+		<put name="title" value="Sharing Observation" />
+		<put name="body" value="constructionQuality/sharingObservation.jsp" />
+	</definition>
+
+
+	<!-- End Construction Quality -->
+
+	<!-- start sanitation -->
+	<definition name="hall.ofFame.view" extends="default.view">
+		<put name="title" value="Hall of Fame" />
+		<put name="body" value="sanitation/hallofFame.jsp" />
+	</definition>
+	<definition name="approve.payment.view" extends="default.view">
+		<put name="title" value="Approve Payment" />
+		<put name="body" value="sanitation/approvePayment.jsp" />
+	</definition>
+	<definition name="verify.payment.view" extends="default.view">
+		<put name="title" value="Verify Payment" />
+		<put name="body" value="sanitation/verifyPayment.jsp" />
+	</definition>
+
+	<definition name="waterParameterReportAction.view" extends="default.view">
+		<put name="title" value="Water Parameters Report" />
+		<put name="body" value="quality/WaterParameterReport.jsp" />
+	</definition>
+
+
+	<definition name="progressof.Work.view" extends="default.view">
+		<put name="title" value="Progress of Work" />
+		<put name="body" value="sanitation/progressof_Work.jsp" />
+	</definition>
+	<definition name="grampanchayat.Master.view" extends="default.view">
+		<put name="title" value="Gram Panchayat Master" />
+		<put name="body" value="sanitation/grampanchayat_master.jsp" />
+	</definition>
+	<definition name="payment.request" extends="default.view">
+		<put name="title" value="Request For Payment" />
+		<put name="body" value="sanitation/paymentRequest.jsp" />
+	</definition>
+
+	<definition name="beneficiary.approval.view" extends="default.view">
+		<put name="title" value="Benifeciery Approval" />
+		<put name="body" value="sanitation/beneficiaryApproval.jsp" />
+	</definition>
+
+
+	<definition name="revalidate.beneficiary.view" extends="default.view">
+		<put name="title" value="Benifeciery Re-Validation" />
+		<put name="body" value="sanitation/re-validationBeneficiary.jsp" />
+	</definition>
+	<definition name="revalidate.beneficiary.forward.view"
+		extends="default.view">
+		<put name="title" value="Benifeciery Re-Validation" />
+		<put name="body" value="sanitation/forwardReValidation.jsp" />
+	</definition>
+
+	<definition name="validate.beneficiary.view" extends="default.view">
+		<put name="title" value="Benifeciery Validation" />
+		<put name="body" value="sanitation/validateBeneficiary.jsp" />
+	</definition>
+
+
+	<definition name="odf.declaration.view" extends="default.view">
+		<put name="title" value="ODF Declaration" />
+		<put name="body" value="sanitation/odfDeclaration.jsp" />
+	</definition>
+	<definition name="latrine.usage.view" extends="default.view">
+		<put name="title" value="Latrine Usage" />
+		<put name="body" value="sanitation/latrineUsage.jsp" />
+	</definition>
+
+
+	<definition name="validate.request.view" extends="default.view">
+		<put name="title" value="Validate Request" />
+		<put name="body" value="sanitation/validateRequest.jsp" />
+	</definition>
+
+	<definition name="baseline.survey.view" extends="default.view">
+		<put name="title" value="BaseLine Survey" />
+		<put name="body" value="sanitation/baseLineSurvey.jsp" />
+	</definition>
+	<definition name="survey.master.view" extends="default.view">
+		<put name="title" value="Survey Master" />
+		<put name="body" value="sanitation/survey_master.jsp" />
+	</definition>
+	<definition name="motivator.view" extends="default.view">
+		<put name="title" value="Motivator Entry" />
+		<put name="body" value="sanitation/motivatorEntry.jsp" />
+	</definition>
+	<definition name="benifecieryEntry.view" extends="default.view">
+		<put name="title" value="BenifecieryEntry" />
+		<put name="body" value="sanitation/BeneficiaryEntry.jsp" />
+	</definition>
+
+	<definition name="benifecieryEntryView.view" extends="default.view">
+		<put name="title" value="ViewBenifecieryEntry" />
+		<put name="body" value="sanitation/BeneficiaryRegisterView.jsp" />
+	</definition>
+
+	<definition name="gramPanchayatRegister.view" extends="default.view">
+		<put name="title" value="Gram Panchayat Register" />
+		<put name="body" value="sanitation/gram_panchayat_register.jsp" />
+	</definition>
+
+	<definition name="viewRegistrations.view" extends="default.view">
+		<put name="title" value="View Registration" />
+		<put name="body" value="sanitation/view_registrations.jsp" />
+	</definition>
+
+
+	<!-- end sanitation -->
+	
+	<!-- Start SDU -->
+	<definition name="divisionWiseSummary.view" extends="default.view">
+		<put name="title" value="Division Wise Summary" />
+		<put name="body" value="sdu/divisionWiseSummry.jsp" />
+	</definition>
+	
+	<definition name="stageComponentMapping.view" extends="default.view">
+		<put name="title" value="Stage-Component Mapping" />
+		<put name="body" value="sdu/stageComponentMpg.jsp" />
+	</definition>
+	
+	<definition name="dvisionActivityMapping.view" extends="default.view">
+		<put name="title" value="Division Activity Mapping" />
+		<put name="body" value="sdu/divisionActivityMapping.jsp" />
+	</definition>
+	
+	<definition name="villageDivisionMapping.view" extends="default.view">
+		<put name="title" value="Village Division Mapping" />
+		<put name="body" value="sdu/villageDivisionMapping.jsp" />
+	</definition>
+	
+	<definition name="villageActivityMapping.view" extends="default.view">
+		<put name="title" value="Village Activity Mapping" />
+		<put name="body" value="sdu/villageActivityMpg.jsp" />
+	</definition>
+	
+	<definition name="divisionWisePlan.view" extends="default.view">
+		<put name="title" value="Division Wise Plan View" />
+		<put name="body" value="sdu/divisionWisePlanView.jsp" />
+	</definition>
+	
+	<definition name="consolidatedPlanActivityWise.view" extends="default.view">
+		<put name="title" value="Consolidated Plan Activity Wise" />
+		<put name="body" value="sdu/consolidatedPlanActivityWise.jsp" />
+	</definition>
+	
+	<definition name="consolidatedPlanDivisionWise.view" extends="default.view">
+		<put name="title" value="Consolidated Plan Division Wise" />
+		<put name="body" value="sdu/consolidatedPlanDivisionWise.jsp" />
+	</definition>
+	
+	<definition name="tracking.view" extends="defaultx.view">
+		<put name="title" value="Tracking" />
+		<put name="body" value="sdu/tracking.jsp" />
+	</definition>
+	
+	<definition name="trainingDetailsEntry.view" extends="default.view">
+		<put name="title" value="Training Details Entry" />
+		<put name="body" value="sdu/trainingDetailsEntry.jsp" />
+	</definition>
+	
+	<!-- end SDU -->
+	
+	<!-- start water quality -->
+
+
+	<definition name="test.result.report.view" extends="default.view">
+		<put name="title" value="Test Result Reports" />
+		<put name="body" value="quality/testResultReport.jsp" />
+	</definition>
+
+
+	<definition name="testResultEntryAR.view" extends="default.view">
+		<put name="title" value="TestResultRA" />
+		<put name="body" value="quality/testResultRA.jsp" />
+	</definition>
+
+	<definition name="receiveSample.view" extends="default.view">
+		<put name="title" value="Sample Collection" />
+		<put name="body" value="quality/receiveSample.jsp" />
+	</definition>
+	<definition name="parameterMaster.view" extends="default.view">
+		<put name="title" value="Parameter Master" />
+		<put name="body" value="quality/parameterMaster.jsp" />
+	</definition>
+
+
+	<definition name="labMaster.view" extends="default.view">
+		<put name="title" value="Lab Master" />
+		<put name="body" value="quality/labMaster.jsp" />
+	</definition>
+
+	<definition name="collectionCenter.view" extends="default.view">
+		<put name="title" value="Collection Center" />
+		<put name="body" value="quality/collectionCenter.jsp" />
+	</definition>
+
+	<definition name="sampleDistribution.view" extends="default.view">
+		<put name="title" value="Sample Distibution" />
+		<put name="body" value="quality/sampleDistribution.jsp" />
+	</definition>
+	<definition name="resultEntry.view" extends="default.view">
+		<put name="title" value="Test Result" />
+		<put name="body" value="quality/resultEntry.jsp" />
+	</definition>
+
+	<definition name="resultDisplay.view" extends="default.view">
+		<put name="title" value="Test Result Display" />
+		<put name="body" value="quality/resultDisplay.jsp" />
+	</definition>
+
+	<!-- end water quality -->
+
+
+
+	<definition name="estimatesAwardContracts.view" extends="default.view">
+		<put name="title" value="Water Quality Reports" />
+		<put name="body" value="pmm/reports/EstimatesAwardContracts.jsp" />
+	</definition>
+
+
+
+	<definition name="locationMaster.view" extends="default.view">
+		<put name="title" value="Location Master" />
+		<put name="body" value="admin/locationMaster.jsp" />
+	</definition>
+	<definition name="locationTypeMaster.view" extends="default.view">
+		<put name="title" value="Location Type Master" />
+		<put name="body" value="admin/locationType.jsp" />
+	</definition>
+
+
+
+
+
+
+
+	<definition name="labTesting.view" extends="default.view">
+		<put name="title" value="Laboratory  Testing Details" />
+		<put name="body" value="pmm/labTesting.jsp" />
+	</definition>
+
+
+
+
+
+	<definition name="estimatesAwardContracts.view" extends="default.view">
+		<put name="title" value="PMS Reports" />
+		<put name="body" value="pmm/reports/EstimatesAwardContracts.jsp" />
+	</definition>
+
+	<definition name="estimatesAwardContractsReport.view"
+		extends="default.view">
+		<put name="title" value="PMM Reports" />
+		<put name="body" value="pmm/reports/EstimatesAwardContractsReport.jsp" />
+	</definition>
+
+
+	<!-- KD WOK pmm/schemeUpload.jsp -->
+	
+	
+	
+	
+	<!-- Start Environment -->
+	<definition name="environmentDataCollection.view" extends="default.view">
+		<put name="title" value="Data Collection" />
+		<put name="body" value="environment/environmentDataCollection.jsp" />
+	</definition>
+	
+	<definition name="environmentDataCollectionBaseLineEnvironment.view" extends="default.view">
+		<put name="title" value="Baseline Environment" />
+		<put name="body" value="environment/environmentDataCollectionPartTwo.jsp" />
+	</definition>
+	
+	<definition name="environmentDataCollectionSocial.view" extends="default.view">
+		<put name="title" value="Socail Environment" />
+		<put name="body" value="environment/environmentDataCollectionSocial.jsp" />
+	</definition>
+	
+	<definition name="environmentDataCollectionHealth.view" extends="default.view">
+		<put name="title" value=" Public Health Issues" />
+		<put name="body" value="environment/environmentDataCollectionHealth.jsp" />
+	</definition>
+	
+	
+	
+	<definition name="environmentDataCollectionSewerage.view" extends="default.view">
+		<put name="title" value="Data Collection Sewerage Scheme " />
+		<put name="body" value="environment/environmentDataCollectionSewerage.jsp" />
+	</definition>
+	
+	<definition name="environmentDataCollectionWaterSupply.view" extends="default.view">
+		<put name="title" value="Data Collection Water Supply Scheme" />
+		<put name="body" value="environment/environmentDataCollectionWater.jsp" />
+	</definition>
+	
+	<!-- End Environment -->
+
+</tiles-definitions>

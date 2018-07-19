@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="commissioning_IDA_RPT" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="20" bottomMargin="5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box padding="4">
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="where" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="querystring" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[" "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from
+(select mz.zone_id,mz.zone_name,mc.circle_id,mc.circle_name,md.district_id,md.district_name,mb.block_name,sv.village_id,case when sh.prog_id='PROG15' then 'WB/'||mp.program_name else 'Other than IDA' end program_name,(mv.village_name || '(' ||sv.village_id || ')') as vill_name,
+sv.scheme_commissioned_date
+from (
+		select scheme_id,village_id,scheme_commissioned_date from
+		(select *,rank() over (partition by village_id order by scheme_commissioned_date desc,scheme_id desc) as row_id
+		from prwss_main.mst_scheme_village
+		where status<>'D'
+		and scheme_commissioned_date is not null
+		and village_id in (select village_id from prwss_main.vw_prwss_project_habitation)
+		and scheme_commissioned_date >='2008-04-01'
+		order by village_id) con
+		where row_id=1
+	)sv ,prwss_main.mst_scheme_details sd,
+prwss_main.mst_scheme_header sh,prwss_main.mst_program mp,prwss_main.tbl_proposed_program_2008 nc_pc,
+prwss_main.mst_village mv,prwss_main.mst_block mb,prwss_main.mst_district md,prwss_main.mst_circle mc,prwss_main.mst_zone mz
+where  sh.prog_id=mp.program_id
+and sh.scheme_id=sv.scheme_id
+and sh.scheme_id=sd.scheme_id
+and sv.village_id=mv.village_id
+and mv.village_id=nc_pc.village_id
+and mv.block_id=mb.block_id
+and mb.district_id=md.district_id
+and md.circle_id=mc.circle_id
+and mc.zone_id=mz.zone_id
+and sh.prog_id in ('PROG15','PROG06','PROG20','PROG11')
+and habitation_type='MH'
+and sh.status<>'D' and sd.status<>'D' and mv.status<>'D' and mp.status<>'D'
+order by district_name asc ,program_name desc, block_name,vill_name asc) main
+where $P!{where}]]>
+	</queryString>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="block_name" class="java.lang.String"/>
+	<field name="village_id" class="java.lang.String"/>
+	<field name="program_name" class="java.lang.String"/>
+	<field name="vill_name" class="java.lang.String"/>
+	<field name="scheme_commissioned_date" class="java.sql.Date"/>
+	<variable name="block_name_1" class="java.lang.Integer" resetType="Group" resetGroup="district_group" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{block_name}]]></variableExpression>
+	</variable>
+	<variable name="vill_name_1" class="java.lang.Integer" resetType="Group" resetGroup="district_group" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{vill_name}]]></variableExpression>
+	</variable>
+	<variable name="vill_name_2" class="java.lang.Integer" resetType="Group" resetGroup="district_group" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{vill_name}]]></variableExpression>
+	</variable>
+	<variable name="village_id_1" class="java.lang.Integer" resetType="Group" resetGroup="district_group" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{village_id}]]></variableExpression>
+	</variable>
+	<group name="district_group">
+		<groupExpression><![CDATA[$F{district_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement style="table_TH" x="121" y="0" width="596" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["District: "+$F{district_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="39">
+				<textField>
+					<reportElement style="table_TH" x="121" y="19" width="226" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{block_name_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="table_TH" x="582" y="19" width="135" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField>
+					<reportElement style="table_TH" x="121" y="0" width="596" height="19" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["District  "+$F{district_name}+" Total"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="table_TH" mode="Opaque" x="347" y="19" width="235" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{village_id_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="program_name">
+		<groupExpression><![CDATA[$F{program_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement style="table_TH" mode="Opaque" x="121" y="0" width="596" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Covered under Program: "+$F{program_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="91" splitType="Stretch">
+			<staticText>
+				<reportElement x="121" y="58" width="569" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Project- Name of Commissioned Habitations (MH)  (District-Wise & Block-Wise)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="832" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement x="754" y="58" width="77" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="653" y="31" width="178" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Report- D-3.1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="224" y="21" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="690" y="58" width="63" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[As on :]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="58" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="194" y="0" width="153" height="42" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Block]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="347" y="0" width="235" height="42" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Commissioned Main Habitation ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="582" y="0" width="135" height="42" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  Month/ year of Commissioning]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="121" y="0" width="73" height="42" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr. No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="121" y="42" width="73" height="16" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="347" y="42" width="235" height="16" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="194" y="42" width="153" height="16" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="582" y="42" width="135" height="16" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="194" y="0" width="153" height="20" isPrintWhenDetailOverflows="true" backcolor="#FFFFCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{block_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="347" y="0" width="235" height="20" isPrintWhenDetailOverflows="true" backcolor="#FFFFCC"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{vill_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="MMM/yyyy" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="582" y="0" width="135" height="20" isPrintWhenDetailOverflows="true" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{scheme_commissioned_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" mode="Opaque" x="121" y="0" width="73" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement x="202" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="122" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="617" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="372" y="0" width="124" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Report D-3.1]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

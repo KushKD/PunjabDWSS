@@ -1,0 +1,62 @@
+@CHARSET "ISO-8859-1";
+/* Extra Small */
+@media ( max-width :767px) {
+	
+	.labledesign {
+		width: 100px;
+		font-size: 12px;
+	}
+	.inputdesign {
+		width: 150px;
+	}
+	
+	.panel{
+	margin-top: 10px;
+	}
+	
+}
+
+/* Small */
+@media ( min-width :768px) and (max-width:991px) {
+	.labledesign {
+		width: 100px;
+		font-size: 12px;
+	}
+	.inputdesign {
+		width: 150px;
+	}
+	
+	.panel{
+	margin-top: 10px;
+	}
+}
+
+/* Medium */
+@media ( min-width :992px) and (max-width:1199px) {
+	.labledesign {
+		width: 100px;
+		font-size: 12px;
+	}
+	.inputdesign {
+		width: 150px;
+	}
+	
+	.panel{
+	margin-top: 10px;
+	}
+}
+
+/* Large */
+@media ( min-width :1200px) {
+	.labledesign {
+		width: 100px;
+		font-size: 12px;
+	}
+	.inputdesign {
+		width: 150px;
+	}
+	
+	.panel{
+	margin-top: 10px;
+	}
+}

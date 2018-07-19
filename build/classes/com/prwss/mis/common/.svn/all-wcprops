@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/PRWSS/!svn/ver/1915/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/common
+END
+MISJdcDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/PRWSS/!svn/ver/1374/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/common/MISJdcDaoImpl.java
+END
+MISSessionBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/PRWSS/!svn/ver/928/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/common/MISSessionBean.java
+END
+DatagridForm.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/PRWSS/!svn/ver/73/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/common/DatagridForm.java
+END
+MISAuditBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/PRWSS/!svn/ver/496/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/common/MISAuditBean.java
+END
+DatagridAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/PRWSS/!svn/ver/431/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/common/DatagridAction.java
+END

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE struts-config PUBLIC
+       "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+       "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+		
+	<global-forwards>
+		<forward name="login" path="login.jsp"></forward>
+	</global-forwards>
+<action-mappings>
+<action path="/languageSelection"
+			type="org.springframework.web.struts.DelegatingActionProxy"    
+			validate="true" scope="session" input="/login.jsp"
+			parameter="method"
+			>
+			
+			<forward name="success" path="/login.jsp" />
+			<forward name="fail" path="/login.jsp" />
+</action>
+</action-mappings>
+<message-resources parameter="MessageResources"></message-resources>
+</struts-config>

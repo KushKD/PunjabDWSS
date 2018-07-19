@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/PRWSS/!svn/ver/1526/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao
+END
+LoginUserLocationDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/PRWSS/!svn/ver/1279/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao/LoginUserLocationDao.java
+END
+LoginUserPermissionDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/PRWSS/!svn/ver/1008/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao/LoginUserPermissionDao.java
+END
+LoginUserLocationBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/PRWSS/!svn/ver/1380/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao/LoginUserLocationBean.java
+END
+LoginUserLocationDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/PRWSS/!svn/ver/1926/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao/LoginUserLocationDaoImpl.java
+END
+LoginUserPermissionBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/PRWSS/!svn/ver/1930/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao/LoginUserPermissionBean.java
+END
+LoginUserPermissionDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/PRWSS/!svn/ver/1008/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao/LoginUserPermissionDaoImpl.java
+END
+LoginUserDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/PRWSS/!svn/ver/1279/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao/LoginUserDao.java
+END
+LoginUserBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/PRWSS/!svn/ver/1008/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao/LoginUserBean.java
+END
+LoginUserDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/PRWSS/!svn/ver/1926/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/dao/LoginUserDaoImpl.java
+END

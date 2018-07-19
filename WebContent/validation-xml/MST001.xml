@@ -1,0 +1,16 @@
+<MIS>
+	<SCREEN id="MST001" nele="3">
+		<SCREEN-ELEMENT id="componentId" neve="1">
+			<SCREEN-EVENT handler="onkeypress"
+				execute="return validateKey(event,this,'a@50');" />
+		</SCREEN-ELEMENT>
+		<SCREEN-ELEMENT id="componentName" neve="1">
+			<SCREEN-EVENT handler="onkeypress"
+				execute="return validateKey(event,this,'a@50');" />
+		</SCREEN-ELEMENT>
+		<SCREEN-ELEMENT id="componentDescription" neve="1">
+			<SCREEN-EVENT handler="onkeypress"
+				execute="return validateKey(event,this,'a@50');" />
+		</SCREEN-ELEMENT>
+	</SCREEN>
+</MIS>

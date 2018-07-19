@@ -1,0 +1,1535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"
+	xmlns:tx="http://www.springframework.org/schema/tx">
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="appConfig"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location">
+			<value>classpath:jdbc.properties</value>
+		</property>
+	</bean>
+	<bean id="propertyPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="properties">
+			<ref bean="appConfig" />
+		</property>
+	</bean>
+
+	<bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.postgres.mis.driver.classname}" />
+		<property name="url" value="${jdbc.postgres.mis.url}" />
+		<property name="username" value="${jdbc.postgres.mis.username}" />
+		<property name="password" value="${jdbc.postgres.mis.password}" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="300" />
+		<property name="logAbandoned" value="false" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="-1" />
+		<property name="maxIdle" value="8" />
+		<property name="validationQuery" value="select 1" />
+	</bean>
+
+	<bean name="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
+		autowire="byName">
+		<property name="annotatedClasses">
+			<list>
+				<value>com.prwss.mis.login.dao.LoginUserBean</value>
+				<value>com.prwss.mis.login.dao.LoginUserPermissionBean</value>
+				<value>com.prwss.mis.login.dao.LoginUserLocationBean</value>
+				<value>com.prwss.mis.masters.component.dao.ComponentBean</value>
+				<value>com.prwss.mis.masters.subcomponent.dao.SubComponentBean
+				</value>
+				<value>com.prwss.mis.masters.activity.dao.ActivityBean</value>
+				<value>com.prwss.mis.masters.zone.dao.ZoneBean</value>
+				<value>com.prwss.mis.masters.circle.dao.CircleBean</value>
+				<value>com.prwss.mis.masters.district.dao.DistrictBean</value>
+				<value>com.prwss.mis.masters.block.dao.BlockBean</value>
+				<value>com.prwss.mis.masters.village.dao.VillageBean</value>
+				<value>com.prwss.mis.masters.location.dao.LocationBean</value>
+				<value>com.prwss.mis.masters.vendor.dao.VendorBean</value>
+				<value>com.prwss.mis.masters.vendor.dao.BlackListVendorBean</value>
+				<value>com.prwss.mis.masters.item.dao.ItemBean</value>
+				<value>com.prwss.mis.masters.item.dao.ItemGroupBean</value>
+				<value>com.prwss.mis.masters.complaint.dao.ComplaintBean</value>
+				<value>com.prwss.mis.masters.employee.dao.EmployeeBean</value>
+				<value>com.prwss.mis.masters.employee.dao.EmployeeQualificationBean
+				</value>
+				<value>com.prwss.mis.masters.employee.dao.EmployeeDesignationBean
+				</value>
+				<value>com.prwss.mis.masters.employee.dao.EmploymentHistoryBean
+				</value>
+				<value>com.prwss.mis.masters.iecmaterial.dao.IECMaterialBean</value>
+				<value>com.prwss.mis.masters.iecactivity.dao.IECActivityBean</value>
+				<value>com.prwss.mis.masters.store.dao.StoreBean</value>
+				<value>com.prwss.mis.master.training.dao.TrainingBean</value>
+				<value>com.prwss.mis.masters.unitofmeasurement.dao.UnitOfMeasurementBean
+				</value>
+				<value>com.prwss.mis.ccdu.issue.dao.CCDUIssueBean</value>
+				<value>com.prwss.mis.service.ticket.dao.ComplaintHistoryBean</value>
+				<value>com.prwss.mis.service.ticket.dao.ComplaintBookBean</value>
+				<value>com.prwss.mis.tender.dao.TenderHeaderBean</value>
+				<value>com.prwss.mis.tender.dao.TenderDetailBean</value>
+				<value>com.prwss.mis.tender.award.dao.TenderAwardBean</value>
+				<value>com.prwss.mis.tender.award.dao.TenderObjectionBean</value>
+				<value>com.prwss.mis.tender.award.dao.TenderSecurityDepositBean
+				</value>
+				<value>com.prwss.mis.tender.contract.dao.ContractHeaderBean</value>
+				<value>com.prwss.mis.tender.contract.dao.ContractDetailBean</value>
+				<value>com.prwss.mis.tender.contract.dao.ContractManagementInfoBean
+				</value>
+				<value>com.prwss.mis.ccdu.cb.dao.TrainingProgressBean</value>
+				<value>com.prwss.mis.ccdu.cb.dao.TrainingMaterialUtilizationBean
+				</value>
+				<value>com.prwss.mis.reports.performa.PerformaFiveYearPlanBean
+				</value>
+				<value>com.prwss.mis.ccdu.plan.dao.CCDUPlanMasterBean</value>
+				<value>com.prwss.mis.ccdu.plan.dao.CCDUPlanHeaderBean</value>
+				<value>com.prwss.mis.ccdu.plan.dao.CCDUPlanDetailBean</value>
+				<value>com.prwss.mis.ccdu.iecactivity.dao.IECActivityProgressBean
+				</value>
+				<value>com.prwss.mis.ccdu.iecactivity.dao.IECActivityMaterialUtilizationBean
+				</value>
+				<value>com.prwss.mis.tender.biddersdetail.dao.BidderHeaderBean
+				</value>
+				<value>com.prwss.mis.tender.biddersdetail.dao.BidderDetailBean
+				</value>
+				<value>com.prwss.mis.common.notification.dao.MailNotificationBean
+				</value>
+				<value>com.prwss.mis.reports.performa.dao.SchemeBean1
+				</value>
+
+				<value>com.prwss.mis.common.notification.dao.MailNotificationArchiveBean
+				</value>
+				<value>com.prwss.mis.ccdu.cb.dao.TrainingOfficerBean</value>
+				<value>com.prwss.mis.admin.dao.RoleBean</value>
+				<value>com.prwss.mis.admin.dao.MenuBean</value>
+				<value>com.prwss.mis.admin.MessageBrodcastBean</value>
+				<value>com.prwss.mis.common.notification.dao.NotificationBean
+				</value>
+				<value>com.prwss.mis.common.notification.dao.ActiveNotificationBean
+				</value>
+				<value>com.prwss.mis.pmm.village.connection.dao.VillageConnectionBean
+				</value>
+				<value>com.prwss.mis.pmm.village.population.dao.VillagePopulationBean
+				</value>
+				<value>com.prwss.mis.pmm.village.tariff.dao.VillageTariffBean
+				</value>
+				<value>com.prwss.mis.pmm.village.sewerage.dao.VillageSewerageBean
+				</value>
+				<value>com.prwss.mis.pmm.village.household.dao.VillageHouseHoldBean
+				</value>
+				<value>com.prwss.mis.reports.performa.dao.SchemeSourcePerformaBean
+				</value>
+
+				<value>com.prwss.mis.masters.scheme.SchemeMasterBean</value>
+				<value>com.prwss.mis.masters.scheme.dao.SchemeHeaderBean</value>
+				<value>com.prwss.mis.masters.scheme.dao.SchemeVillageBean</value>
+				<value>com.prwss.mis.masters.scheme.dao.SchemeBean</value>
+				<value>com.prwss.mis.pmm.village.phase.dao.VillagePhaseStatusBean
+				</value>
+				<value>com.prwss.mis.masters.committee.dao.CommitteeBankBean</value>
+				<value>com.prwss.mis.masters.committee.dao.CommitteeBean</value>
+				<value>com.prwss.mis.masters.committee.dao.CommitteeMemberBean
+				</value>
+				<value>com.prwss.mis.pmm.DSRBuilding.dao.DSRBuildingBean</value>
+				<value>com.prwss.mis.pmm.DSRPonds.dao.DSRPondsBean</value>
+				<value>com.prwss.mis.masters.program.dao.ProgramBean</value>
+				<value>com.prwss.mis.pmm.dsrcanal.DSRCanalBean</value>
+				<value>com.prwss.mis.pmm.dsrcanal.dao.DSRCanalInletBean</value>
+				<value>com.prwss.mis.pmm.dsrcanal.dao.DSRCanalDistributionBean
+				</value>
+				<value>com.prwss.mis.pmm.dsrsewerage.DSRSewerageBean</value>
+				<value>com.prwss.mis.pmm.dsrsewerage.dao.DSRSewerageSewerBean
+				</value>
+				<value>com.prwss.mis.pmm.dsrtubewell.DSRTubeWellBean</value>
+				<value>com.prwss.mis.pmm.dsrtubewell.dao.DSRTubeWellDistributionBean
+				</value>
+				<value>com.prwss.mis.pmm.environment.EnvironmentBean</value>
+				<value>com.prwss.mis.pmm.watersupply.WaterSupplyBean</value>
+				<value>com.prwss.mis.pmm.instplants.InstPlantsBean</value>
+				<value>com.prwss.mis.pmm.labtesting.LabTestingBean</value>
+				<value>com.prwss.mis.pmm.sustassessment.SustAssessmentBean</value>
+				<value>com.prwss.mis.procurement.plan.CreateProcPlanBean</value>
+				<value>com.prwss.mis.finance.accountschart.AccountsChartBean</value>
+				<value>com.prwss.mis.finance.adjustmentvoucher.AdjustmentVoucherBean
+				</value>
+				<value>com.prwss.mis.finance.budgetdetail.BudgetDetailBean</value>
+				<value>com.prwss.mis.finance.loc.LOCHeaderBean</value>
+				<value>com.prwss.mis.finance.loc.dao.LOCDetailBean</value>
+				<value>com.prwss.mis.finance.budget.BudgetBean</value>
+				<value>com.prwss.mis.finance.voucher.VoucherHeaderBean</value>
+				<value>com.prwss.mis.finance.voucher.VoucherDetailBean</value>
+				<value>com.prwss.mis.inventory.goodsissue.GoodsIssueHeaderBean
+				</value>
+				<value>com.prwss.mis.inventory.goodsissue.GoodsIssueDetailsBean
+				</value>
+				<value>com.prwss.mis.inventory.goodsissue.StoreItemAvailabilityIssueBean
+				</value>
+				<value>com.prwss.mis.inventory.goodsreceipt.dao.GoodsReceiptHeaderBean
+				</value>
+				<value>com.prwss.mis.inventory.goodsreceipt.dao.GoodsReceiptDetailsBean
+				</value>
+				<value>com.prwss.mis.inventory.supplyorder.SupplyOrderHeaderBean
+				</value>
+				<value>com.prwss.mis.inventory.supplyorder.SupplyOrderDetailsBean
+				</value>
+				<value>com.prwss.mis.procurement.subplan.ProcSubPlanHeaderBean
+				</value>
+				<value>com.prwss.mis.procurement.subplan.ProcSubPlanPrw2HeaderBean
+				</value>
+				<value>com.prwss.mis.procurement.subplan.dao.SubPlanSchemeBean
+				</value>
+				<!-- <value>com.prwss.mis.procurement.subplan.dao.SubPlanSchemeBeanPrw2 
+					</value> -->
+				<value>com.prwss.mis.procurement.workspackage.PackageWorksBean
+				</value>
+				<value>com.prwss.mis.procurement.goodspackage.PackageGoodsBean
+				</value>
+				<value>com.prwss.mis.procurement.packageheader.dao.PackageHeaderBean
+				</value>
+				<value>com.prwss.mis.procurement.packagecomponents.dao.PackageComponentsBean
+				</value>
+				<value>com.prwss.mis.procurement.servicespackage.PackageServicesBean
+				</value>
+				<value>com.prwss.mis.procurement.nonconsultancypackage.PackageNonConsultancyBean
+				</value>
+				<value>com.prwss.mis.procurement.physicalprogresspackage.dao.PhysicalProgressComponentsBean
+				</value>
+				<value>com.prwss.mis.procurement.check.TenderCheckBean</value>
+				<value>com.prwss.mis.finance.releaseloc.struts.LocNotReleasedBean
+				</value>
+				<value>com.prwss.mis.procurement.check.ContractCheckBean</value>
+				<value>com.prwss.mis.hr.targetplan.EmployeeTargetHeaderBean</value>
+				<value>com.prwss.mis.hr.targetplan.EmployeeTargetDetailsBean</value>
+				<value>com.prwss.mis.hr.trainingscheduleplan.dao.TrainingScheduleDetailBean
+				</value>
+				<value>com.prwss.mis.hr.trainingscheduleplan.TrainingScheduleHeaderBean
+				</value>
+				<value>com.prwss.mis.hr.trainingmanagent.HRTrainingManagementBean
+				</value>
+				<value>com.prwss.mis.daktask.inwarddak.dao.InwardDakBean</value>
+				<value>com.prwss.mis.sd.document.dao.DocumentNumberBean</value>
+				<value>com.prwss.mis.daktask.outwarddak.dao.OutwardDakBean</value>
+				<value>com.prwss.mis.masters.constituency.dao.ConstituencyBean
+				</value>
+				<value>com.prwss.mis.hr.attendance.HRAttendanceBean</value>
+				<value>com.prwss.mis.hr.leave.LeaveManagementBean</value>
+				<value>com.prwss.mis.hr.leave.balance.dao.LeaveBalanceBean</value>
+				<value>com.prwss.mis.pmm.village.ncpcstatus.dao.VillageNCPCStatusBean
+				</value>
+				<value>com.prwss.mis.hr.salarystructure.HRSalaryStructureBean
+				</value>
+				<value>com.prwss.mis.hr.payroll.HRPayrollBean</value>
+				<value>com.prwss.mis.masters.employee.dao.EmployeePromotionHistoryBean
+				</value>
+				<value>com.prwss.mis.masters.bank.dao.BankMasterBean</value>
+				<value>com.prwss.mis.finance.billapproval.dao.BillApprovalBean
+				</value>
+				<value>com.prwss.mis.masters.scheme.dao.TestSchemeViewBean</value>
+				<value>com.prwss.mis.daktask.documenttype.dao.DocumentTypeBean
+				</value>
+				<value>com.prwss.mis.tender.dao.TenderUploadBean</value>
+
+				<value>com.prwss.mis.pmm.schemeupload.dao.SchemeUploadBean</value>
+				<value>com.prwss.mis.tender.dao.EOIUploadBean</value>
+				<value>com.prwss.mis.tender.dao.QuoatationUploadBean</value>
+				<value>com.prwss.mis.tender.dao.AdvUploadBean</value>
+				<value>com.prwss.mis.tender.dao.CorrigendumUploadBean</value>
+				<value>com.prwss.mis.masters.village.dao.VillageViewBean</value>
+				<value>com.prwss.mis.masters.village.dao.PrwssVillageViewBean
+				</value>
+				<value>com.prwss.mis.masters.village.dao.PrwssVillageViewBeanWithMhOh
+				</value>
+				<value>com.prwss.mis.procurement.physicalprogresspackage.dao.PrwssSigningContractViewBean
+				</value>
+
+				<value>com.prwss.mis.masters.village.dao.PrwssVillageAllHabitationBean
+				</value>
+				<value>com.prwss.mis.finance.loc.dao.LOCActivityBean</value>
+				<value>com.prwss.mis.masters.village.dao.VillageSchemeViewBean
+				</value>
+				<value>com.prwss.mis.masters.village.VillageProgramImplementedBean
+				</value>
+				<value>com.prwss.mis.masters.village.dao.VillageStatusNCPCView2008Bean
+				</value>
+				<value>com.prwss.mis.finance.gpwscregister.dao.GpwscRegisterBean
+				</value>
+				<value>com.prwss.mis.pmm.alert.dao.AlertChecklistBean</value>
+				<value>com.prwss.mis.masters.scheme.dao.CurrentFcVillageStatusBean
+				</value>
+				<value>com.prwss.mis.masters.employee.dao.EmployeeContactExtendedBean
+				</value>
+				<value>com.prwss.mis.tender.responsive.ResponsiveTenderBean</value>
+				<value>com.prwss.mis.tender.responsive.NonResponsiveTenderBean
+				</value>
+				<value>com.prwss.mis.admin.divisional.dao.DivisionalBean</value>
+				<value>com.prwss.mis.admin.divisional.dao.SubDivisionalBean</value>
+				<value>com.prwss.mis.masters.village.ProposedProgramBean</value>
+				<value>com.prwss.mis.masters.village.dao.SchemeCommissionedViewBean
+				</value>
+				<value>com.prwss.mis.reports.performa.dao.PerformaMasterBean</value>
+				<value>com.prwss.mis.reports.performa.dao.VillagePerformaBean
+				</value>
+				<value>com.prwss.mis.masters.scheme.struts.ExtensionSchemeBean
+				</value>
+				<value>com.prwss.mis.masters.scheme.struts.SchemeVillagesBean
+				</value>
+				<value>com.prwss.mis.admin.dao.LocationMasterBean</value>
+				<value>com.prwss.mis.admin.dao.LocationTypeBean</value>
+				<value> com.prwss.mis.admin.dao.LocationDetailsBean</value>
+				<value> com.prwss.min.dao.ReceiveSampleBean</value>
+				<value> com.prwss.min.dao.LabMasterBean</value>
+				<value> com.prwss.min.dao.SampleDistributionBean</value>
+				<value> com.prwss.min.dao.ResultEntryBean</value>
+				<value> com.prwss.min.dao.VillageDetailsBean</value>
+				<value> com.prwss.min.dao.SchemeMapping</value>
+				<value> com.prwss.min.dao.ResultEntryDetailBean</value>
+				<value> com.prwss.min.dao.LabEmployee</value>
+				<value> com.prwss.min.dao.WorkFlowMasterBean</value>
+				
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+
+				<!-- KD WORK -->
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
+			</props>
+		</property>
+	</bean>
+
+	<bean name="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+<!-- Water quality start -->
+
+<bean name="displayTestResultDao" class="com.prwss.min.dao.DisplayTestResultDaoImpl"
+		autowire="byName" />
+
+<bean name="displayEntryBo" class="com.prwss.min.quality.DisplayEntryBoImpl"
+		autowire="byName" />
+
+<bean name="/labMasterAction" class="com.prwss.min.quality.struts.LabMasterAction"
+		autowire="byName" />
+		<bean name="labMasterBo" class="com.prwss.min.quality.LabMasterBoImpl"
+		autowire="byName" />
+		<bean name="labMasterDao" class="com.prwss.min.dao.LabMasterDaoImpl"
+		autowire="byName" />
+
+	<bean name="/receiveSampleAction" class="com.prwss.min.quality.struts.ReceiveSampleAction"
+		autowire="byName" />
+		
+		<bean name="receiveSampleBo" class="com.prwss.min.quality.ReceiveSampleBoImpl"
+		autowire="byName" />
+	<bean name="receiveSampleDao" class="com.prwss.min.dao.ReceiveSampleDaoImpl"
+		autowire="byName" />
+		
+		
+   <bean name="/sampleDistributionAction" class="com.prwss.min.quality.struts.SampleDistributionAction"
+		autowire="byName" />
+		
+		<bean name="sampleDistributionBO" class="com.prwss.min.quality.SampleDistributionBoImpl"
+		autowire="byName" />
+	<bean name="sampleDistributionDao" class="com.prwss.min.dao.SampleDistributionDaoImpl"
+		autowire="byName" />
+		
+		 <bean name="/resultEntryAction" class="com.prwss.min.quality.struts.ResultEntryAction"
+		autowire="byName" />
+			<bean name="resultEntryBo" class="com.prwss.min.quality.ResultEntryBoImpl"
+		autowire="byName" />
+	<bean name="resultEntryDao" class="com.prwss.min.dao.ResultEntryDaoImpl"
+		autowire="byName" />
+		
+		 <bean name="/resultDisplayAction" class="com.prwss.min.quality.struts.ResultDisplayAction"
+		autowire="byName" />
+		
+		<!-- Water quality end -->
+		
+		
+	<bean name="/changePasswordAction"
+		class="com.prwss.mis.login.changepassword.struts.ChangePasswordAction"
+		autowire="byName" />
+
+	<bean name="gpwscRegisterBO"
+		class="com.prwss.mis.finance.gpwscregister.GpwscRegisterBOImpl"
+		autowire="byName" />
+
+	<bean name="gpwscRegisterDao"
+		class="com.prwss.mis.finance.gpwscregister.dao.GpwscRegisterDaoImpl"
+		autowire="byName" />
+
+	<bean name="/gpwscRegisterAction"
+		class="com.prwss.mis.finance.gpwscregister.struts.GpwscRegisterAction"
+		autowire="byName" />
+
+	<bean name="villageStatusNCPC2008ViewDao"
+		class="com.prwss.mis.masters.village.dao.VillageStatusNCPC2008ViewDaoImpl"
+		autowire="byName" />
+
+	<bean name="villageProgramImplementedBO"
+		class="com.prwss.mis.masters.village.dao.VillageProgramImplementedBOImpl"
+		autowire="byName" />
+
+	<bean name="/villageProgramImplementedAction"
+		class="com.prwss.mis.masters.village.struts.VillageProgramImplAction"
+		autowire="byName" />
+
+	<bean name="villageProgramImplementedDao"
+		class="com.prwss.mis.masters.village.dao.VillageProgramImplementedDaoImpl"
+		autowire="byName" />
+
+	<bean name="locActivityDao" class="com.prwss.mis.finance.loc.dao.LOCActivityDaoImpl"
+		autowire="byName" />
+
+	<bean name="schemeCommissionedViewDao"
+		class="com.prwss.mis.masters.village.dao.SchemeCommissionedViewDaoImpl"
+		autowire="byName" />
+
+	<bean name="villageSchemeViewDao"
+		class="com.prwss.mis.masters.village.dao.VillageSchemeViewDaoImpl"
+		autowire="byName" />
+
+	<bean name="testSchemeViewDao"
+		class="com.prwss.mis.masters.scheme.dao.TestSchemeViewDaoImpl"
+		autowire="byName" />
+
+	<bean name="loginUserDao" class="com.prwss.mis.login.dao.LoginUserDaoImpl"
+		autowire="byName" />
+
+	<bean name="loginUserPermissionDao" class="com.prwss.mis.login.dao.LoginUserPermissionDaoImpl"
+		autowire="byName" />
+
+	<bean name="loginUserLocationDao" class="com.prwss.mis.login.dao.LoginUserLocationDaoImpl"
+		autowire="byName" />
+
+	<bean name="loginBO" class="com.prwss.mis.login.LoginBOImpl"
+		autowire="byName" />
+
+	<bean name="/loginAction" class="com.prwss.mis.login.LoginAction"
+		autowire="byName" />
+
+	<bean name="/tenderUploadAction" class="com.prwss.mis.tender.struts.TenderUploadAction"
+		autowire="byName" />
+
+	<bean name="/eoiUploadAction" class="com.prwss.mis.tender.struts.EOIUploadAction"
+		autowire="byName" />
+
+	<bean name="/quoatationUploadAction" class="com.prwss.mis.tender.struts.QuoatationUploadAction"
+		autowire="byName" />
+
+	<bean name="/advUploadAction" class="com.prwss.mis.tender.struts.AdvUploadAction"
+		autowire="byName" />
+
+	<bean name="/corrigendumUploadAction" class="com.prwss.mis.tender.struts.CorrigendumUploadAction"
+		autowire="byName" />
+
+	<bean name="/homeAction" class="com.prwss.mis.common.struts.HomeAction"
+		autowire="byName" />
+
+	<bean name="componentDao" class="com.prwss.mis.masters.component.dao.ComponentDaoImpl"
+		autowire="byName" />
+
+	<bean name="componentBO" class="com.prwss.mis.masters.component.ComponentBOImpl"
+		autowire="byName" />
+
+	<!--<bean name="roleDao" class="com.prwss.mis.master.role.dao.RoleMasterDaoImpl" 
+		autowire="byName" /> -->
+	<bean name="roleMasterBO" class="com.prwss.mis.master.role.bo.RoleMasterBOImpl"
+		autowire="byName" />
+
+	<bean name="/roleMasterAction" class="com.prwss.mis.admin.struts.RoleMasterAction"
+		autowire="byName" />
+
+	<bean name="constituencyBO"
+		class="com.prwss.mis.masters.constituency.dao.ConstituencyBOImpl"
+		autowire="byName" />
+
+	<bean name="/constituencyAction" class="com.prwss.mis.admin.struts.ConstituencyAction"
+		autowire="byName" />
+
+	<bean name="blockBO" class="com.prwss.mis.masters.block.dao.BlockBOImpl"
+		autowire="byName" />
+
+	<bean name="/blockMasterAction" class="com.prwss.mis.admin.struts.BlockMasterAction"
+		autowire="byName" />
+
+	<bean name="/divisionalAction" class="com.prwss.mis.admin.struts.DivisionalAction"
+		autowire="byName" />
+
+	<bean name="divisionalBO" class="com.prwss.mis.admin.divisional.dao.DivisionalBOImpl"
+		autowire="byName" />
+
+	<bean name="divisionalDao" class="com.prwss.mis.admin.divisional.dao.DivisionalDaoImpl"
+		autowire="byName" />
+
+
+	<bean name="/subdivisionalAction" class="com.prwss.mis.admin.struts.SubDivisionalAction"
+		autowire="byName" />
+
+	<bean name="subDivisionalBO"
+		class="com.prwss.mis.admin.divisional.dao.SubDivisionalBOImpl"
+		autowire="byName" />
+
+	<bean name="subDivisionalDao"
+		class="com.prwss.mis.admin.divisional.dao.SubDivisionalDaoImpl"
+		autowire="byName" />
+
+
+
+
+	<bean name="/componentAction"
+		class="com.prwss.mis.masters.component.struts.ComponentAction"
+		autowire="byName" />
+
+	<bean name="subComponentDao"
+		class="com.prwss.mis.masters.subcomponent.dao.SubComponentDaoImpl"
+		autowire="byName" />
+
+	<bean name="subComponentBO" class="com.prwss.mis.masters.subcomponent.SubComponentBOImpl"
+		autowire="byName" />
+
+	<bean name="/subComponentAction"
+		class="com.prwss.mis.masters.subcomponent.struts.SubComponentAction"
+		autowire="byName" />
+
+	<bean name="/activityAction" class="com.prwss.mis.masters.activity.struts.ActivityAction"
+		autowire="byName" />
+
+	<bean name="/schemeVillageCommissioningAction"
+		class="com.prwss.mis.masters.scheme.struts.SchemeVillageCommisionAction"
+		autowire="byName" />
+
+	<bean name="/schemeAction" class="com.prwss.mis.masters.scheme.struts.SchemeAction"
+		autowire="byName" />
+	<bean name="schemeBO" class="com.prwss.mis.masters.scheme.SchemeBOImpl"
+		autowire="byName" />
+
+	<!-- KD -->
+	<bean name="/schemeUploadAction"
+		class="com.prwss.mis.pmm.schemeupload.struts.SchemeUploadAction"
+		autowire="byName" />
+	<bean name="schemeUploadBO" class="com.prwss.mis.pmm.schemeupload.dao.SchemeUploadBOImpl"
+		autowire="byName" />
+	<bean name="schemeUpdateDao"
+		class="com.prwss.mis.pmm.schemeupload.dao.SchemeUploadDaoImpl"
+		autowire="byName" />
+
+	<bean name="performaMasterDao"
+		class="com.prwss.mis.reports.performa.dao.PerformaMasterDaoImpl"
+		autowire="byName" />
+	<bean name="performaMasterBo"
+		class="com.prwss.mis.reports.performa.dao.PerformaMasterBOImpl"
+		autowire="byName" />
+	<!-- KD Work -->
+
+	<bean name="activityBO" class="com.prwss.mis.masters.activity.ActivityBOImpl"
+		autowire="byName" />
+
+	<bean name="activityDao" class="com.prwss.mis.masters.activity.dao.ActivityDaoImpl"
+		autowire="byName" />
+
+	<bean name="zoneDao" class="com.prwss.mis.masters.zone.dao.ZoneDaoImpl"
+		autowire="byName" />
+
+	<bean name="zoneBO" class="com.prwss.mis.masters.zone.ZoneBOImpl"
+		autowire="byName" />
+
+	<bean name="/messageBrodcastAction" class="com.prwss.mis.admin.struts.MessageBrodcastAction"
+		autowire="byName" />
+	<bean name="messageBrodcastBO" class="com.prwss.mis.admin.MessageBrodcastBOImpl"
+		autowire="byName" />
+	<bean name="messageBrodcastDao" class="com.prwss.mis.admin.dao.MessageBrodcastDaoImpl"
+		autowire="byName" />
+
+	<bean name="/agendaReportsAction" class="com.prwss.mis.miscreports.struts.AgendaReportsAction"
+		autowire="byName" />
+
+	<bean name="/adhocReportsAction" class="com.prwss.mis.miscreports.struts.AdhocReportsAction"
+		autowire="byName" />
+
+	<bean name="/dashboardReportsAction"
+		class="com.prwss.mis.miscreports.struts.DashboardReportsAction"
+		autowire="byName" />
+
+	<bean name="/zoneAction" class="com.prwss.mis.masters.zone.struts.ZoneAction"
+		autowire="byName" />
+
+	<bean name="/circleAction" class="com.prwss.mis.masters.circle.struts.CircleAction"
+		autowire="byName" />
+
+	<bean name="circleBO" class="com.prwss.mis.masters.circle.CircleBOImpl"
+		autowire="byName" />
+
+	<bean name="circleDao" class="com.prwss.mis.masters.circle.dao.CircleDaoImpl"
+		autowire="byName" />
+
+	<bean name="/districtAction" class="com.prwss.mis.masters.district.struts.DistrictAction"
+		autowire="byName" />
+
+	<bean name="/datTaskReportAction"
+		class="com.prwss.mis.daktask.reports.struts.DakTaskReportAction"
+		autowire="byName" />
+
+	<bean name="districtBO" class="com.prwss.mis.masters.district.DistrictBOImpl"
+		autowire="byName" />
+
+	<bean name="districtDao" class="com.prwss.mis.masters.district.dao.DistrictDaoImpl"
+		autowire="byName" />
+
+	<bean name="locationDao" class="com.prwss.mis.masters.location.dao.LocationDaoImpl"
+		autowire="byName" />
+
+	<bean name="constituencyDao"
+		class="com.prwss.mis.masters.constituency.dao.ConstituencyDaoImpl"
+		autowire="byName" />
+
+	<bean name="blockDao" class="com.prwss.mis.masters.block.dao.BlockDaoImpl"
+		autowire="byName" />
+
+	<bean name="villageDao" class="com.prwss.mis.masters.village.dao.VillageDaoImpl"
+		autowire="byName" />
+
+	<bean name="villageBO" class="com.prwss.mis.masters.village.VillageBOImpl"
+		autowire="byName" />
+
+	<bean name="/villageAction" class="com.prwss.mis.masters.village.struts.VillageAction"
+		autowire="byName" />
+
+	<bean name="vendorDao" class="com.prwss.mis.masters.vendor.dao.VendorDaoImpl"
+		autowire="byName" />
+	<bean name="blackListVendorDao"
+		class="com.prwss.mis.masters.vendor.dao.BlackListVendorDaoImpl"
+		autowire="byName" />
+	<bean name="vendorBO" class="com.prwss.mis.masters.vendor.VendorBOImpl"
+		autowire="byName" />
+
+	<bean name="/vendorAction" class="com.prwss.mis.masters.vendor.struts.VendorAction"
+		autowire="byName" />
+	<bean name="/blackListVendorAction"
+		class="com.prwss.mis.masters.vendor.struts.BlackListVendorAction"
+		autowire="byName" />
+
+	<bean name="itemDao" class="com.prwss.mis.masters.item.dao.ItemDaoImpl"
+		autowire="byName" />
+	<bean name="itemGroupDao" class="com.prwss.mis.masters.item.dao.ItemGroupDaoImpl"
+		autowire="byName" />
+	<bean name="itemBO" class="com.prwss.mis.masters.item.ItemBOImpl"
+		autowire="byName" />
+	<bean name="unitOfMeasurementDao"
+		class="com.prwss.mis.masters.unitofmeasurement.dao.UnitOfMeasurementDaoImpl"
+		autowire="byName" />
+	<bean name="itemGroupBO" class="com.prwss.mis.masters.itemgroup.ItemGroupBOImpl"
+		autowire="byName" />
+	<bean name="unitOfMeasurementBO"
+		class="com.prwss.mis.masters.unitofmeasurement.UnitOfMeasurmentBOImpl"
+		autowire="byName" />
+
+	<bean name="/itemAction" class="com.prwss.mis.masters.item.struts.ItemAction"
+		autowire="byName" />
+	<bean name="/itemGroupAction"
+		class="com.prwss.mis.masters.itemgroup.struts.ItemGroupAction"
+		autowire="byName" />
+	<bean name="/unitOfMeasurementAction"
+		class="com.prwss.mis.masters.unitofmeasurement.struts.UnitOfMeasurentAction"
+		autowire="byName" />
+	<bean name="/storeMasterAction" class="com.prwss.mis.masters.store.struts.StoreMasterAction"
+		autowire="byName" />
+
+	<bean name="/programAction" class="com.prwss.mis.masters.program.struts.ProgramAction"
+		autowire="byName" />
+
+	<bean name="programBO" class="com.prwss.mis.masters.program.ProgramBOImpl"
+		autowire="byName" />
+
+	<bean name="programDao" class="com.prwss.mis.masters.program.dao.ProgramDaoImpl"
+		autowire="byName" />
+
+	<bean name="complaintDao" class="com.prwss.mis.masters.complaint.dao.ComplaintDaoImpl"
+		autowire="byName" />
+
+	<bean name="complaintBO" class="com.prwss.mis.masters.complaint.ComplaintBOImpl"
+		autowire="byName" />
+
+	<bean name="/complaintAction"
+		class="com.prwss.mis.masters.complaint.struts.ComplaintAction"
+		autowire="byName" />
+	<bean name="/extentionSchemeMasterAction"
+		class="com.prwss.mis.masters.scheme.struts.ExtentionSchemeMasterAction"
+		autowire="byName" />
+	<bean name="extentionSchemeMasterBO"
+		class="com.prwss.mis.masters.scheme.ExtentionSchemeMasterBOImpl"
+		autowire="byName" />
+
+	<bean name="employeeDao" class="com.prwss.mis.masters.employee.dao.EmployeeDaoImpl"
+		autowire="byName" />
+	<bean name="employeeDesignationDao"
+		class="com.prwss.mis.masters.employee.dao.EmployeeDesignationDaoImpl"
+		autowire="byName" />
+
+	<bean name="employeeBO" class="com.prwss.mis.masters.employee.EmployeeBOImpl"
+		autowire="byName" />
+
+	<bean name="employmentHistoryDao"
+		class="com.prwss.mis.masters.employee.dao.EmploymentHistoryDaoImpl"
+		autowire="byName" />
+	<bean name="employeeContactExtendedDao"
+		class="com.prwss.mis.masters.employee.dao.EmployeeContactExtendedDaoImpl"
+		autowire="byName" />
+
+
+
+	<bean name="/bankMasterAction" class="com.prwss.mis.masters.bank.struts.BankMasterAction"
+		autowire="byName" />
+	<bean name="bankMasterBO" class="com.prwss.mis.masters.bank.BankMasterBOImpl"
+		autowire="byName" />
+	<bean name="bankMasterDao" class="com.prwss.mis.masters.bank.dao.BankMasterDaoImpl"
+		autowire="byName" />
+
+	<bean name="/employeeAction" class="com.prwss.mis.masters.employee.struts.EmployeeAction"
+		autowire="byName" />
+	<bean name="/employeeTransuctionalAction"
+		class="com.prwss.mis.masters.employee.struts.EmployeeTransuctionalAction"
+		autowire="byName" />
+
+
+	<bean name="employeeQualificationDao"
+		class="com.prwss.mis.masters.employee.dao.EmployeeQualificationDaoImpl"
+		autowire="byName" />
+	<bean name="employeePromotionHistoryDao"
+		class="com.prwss.mis.masters.employee.dao.EmployeePromotionHistoryDaoImpl"
+		autowire="byName" />
+	<bean name="complaintBookDao" class="com.prwss.mis.service.ticket.dao.ComplaintBookDaoImpl"
+		autowire="byName" />
+
+	<bean name="complaintBookBO" class="com.prwss.mis.service.ticket.ComplaintBookBOImpl"
+		autowire="byName" />
+
+	<bean name="/newTicketAction" class="com.prwss.mis.service.ticket.struts.NewTicketAction"
+		autowire="byName" />
+
+	<bean name="/myTicketAction" class="com.prwss.mis.service.ticket.struts.MyTicketAction"
+		autowire="byName" />
+
+	<bean name="/ticketSearchAction"
+		class="com.prwss.mis.service.ticket.struts.TicketSearchAction"
+		autowire="byName" />
+
+	<bean name="/ticketResolutionAction"
+		class="com.prwss.mis.service.ticket.struts.TicketResolutionAction"
+		autowire="byName" />
+
+	<bean name="tenderDao" class="com.prwss.mis.tender.dao.TenderDaoImpl"
+		autowire="byName" />
+	<bean name="tenderDetailDao" class="com.prwss.mis.tender.dao.TenderDetailDaoImpl"
+		autowire="byName" />
+	<bean name="tenderAwardDao" class="com.prwss.mis.tender.award.dao.TenderAwardDaoImpl"
+		autowire="byName" />
+	<bean name="tenderObjectionDao" class="com.prwss.mis.tender.award.dao.TenderObjectionDaoImpl"
+		autowire="byName" />
+	<bean name="tenderSecurityDepositDao"
+		class="com.prwss.mis.tender.award.dao.TenderSecurityDepositDaoImpl"
+		autowire="byName" />
+
+	<bean name="tenderBO" class="com.prwss.mis.tender.TenderBOImpl"
+		autowire="byName" />
+
+	<bean name="/tenderManagementAction" class="com.prwss.mis.tender.struts.TenderManagementAction"
+		autowire="byName" />
+
+	<bean name="/tenderAwardAction" class="com.prwss.mis.tender.struts.TenderAwardAction"
+		autowire="byName" />
+
+	<bean name="contractDao" class="com.prwss.mis.tender.contract.dao.ContractDaoImpl"
+		autowire="byName" />
+	<bean name="contractManagementInfoDao"
+		class="com.prwss.mis.tender.contract.dao.ContractManagementInfoDaoImpl"
+		autowire="byName" />
+	<bean name="contractDetailDao"
+		class="com.prwss.mis.tender.contract.dao.ContractDetailDaoImpl"
+		autowire="byName" />
+	<bean name="contractBO" class="com.prwss.mis.tender.ContractBOImpl"
+		autowire="byName" />
+
+	<bean name="/contractManagementAction" class="com.prwss.mis.tender.struts.ContractManagementAction"
+		autowire="byName" />
+
+	<bean name="bidderHeaderDao"
+		class="com.prwss.mis.tender.biddersdetail.dao.BidderHeaderDaoImpl"
+		autowire="byName" />
+	<bean name="bidderDetailDao"
+		class="com.prwss.mis.tender.biddersdetail.dao.BidderDetailDaoImpl"
+		autowire="byName" />
+
+	<bean name="bidderBO" class="com.prwss.mis.tender.BidderBOImpl"
+		autowire="byName" />
+
+	<bean name="/biddersDetailAction" class="com.prwss.mis.tender.struts.BiddersDetailAction"
+		autowire="byName" />
+
+	<bean name="trainingProgressDao" class="com.prwss.mis.ccdu.cb.dao.TrainingProgressDaoImpl"
+		autowire="byName" />
+	<bean name="trainingMaterialUtilizationDao"
+		class="com.prwss.mis.ccdu.cb.dao.TrainingMaterialUtilizationDaoImpl"
+		autowire="byName" />
+
+	<bean name="trainingProgressBO" class="com.prwss.mis.ccdu.cb.TrainingProgressBOImpl"
+		autowire="byName" />
+
+	<bean name="/cbTrainingProgressAction" class="com.prwss.mis.ccdu.cb.struts.CBTrainingProgressAction"
+		autowire="byName" />
+
+	<bean name="ccduPlanMasterDao" class="com.prwss.mis.ccdu.plan.dao.CCDUPlanMasterDaoImpl"
+		autowire="byName" />
+	<bean name="ccduPlanHeaderDao" class="com.prwss.mis.ccdu.plan.dao.CCDUPlanHeaderDaoImpl"
+		autowire="byName" />
+	<bean name="ccduPlanDetailDao" class="com.prwss.mis.ccdu.plan.dao.CCDUPlanDetailDaoImpl"
+		autowire="byName" />
+	<bean name="/ccduReportsAction" class="com.prwss.mis.ccdu.reports.struts.CcduReportsAction"
+		autowire="byName" />
+	<bean name="ccduPlanBO" class="com.prwss.mis.ccdu.plan.CCDUPlanBOImpl"
+		autowire="byName" />
+
+	<bean name="/createCCDUPlanAction" class="com.prwss.mis.ccdu.plan.struts.CreateCCDUPlanAction"
+		autowire="byName" />
+
+	<bean name="/ccduPlanDetailsAction" class="com.prwss.mis.ccdu.plan.struts.CCDUPlanDetailsAction"
+		autowire="byName" />
+
+	<bean name="iecActivityProgressDao"
+		class="com.prwss.mis.ccdu.iecactivity.dao.IECActivityProgressDaoImpl"
+		autowire="byName" />
+	<bean name="iecActivityMaterialUtilizationDao"
+		class="com.prwss.mis.ccdu.iecactivity.dao.IECActivityMaterialUtilizationDaoImpl"
+		autowire="byName" />
+
+	<bean name="iecActivityProgressBO"
+		class="com.prwss.mis.ccdu.iecactivity.IECActivityProgressBOImpl"
+		autowire="byName" />
+
+	<bean name="/iecActivityProgressAction"
+		class="com.prwss.mis.ccdu.iecactivity.struts.IecActivityProgressAction"
+		autowire="byName" />
+
+	<bean name="iecActivityDao"
+		class="com.prwss.mis.masters.iecactivity.dao.IECActivityDaoImpl"
+		autowire="byName" />
+
+	<bean name="iecActivityBO" class="com.prwss.mis.masters.iecactivity.IECActivityBOImpl"
+		autowire="byName" />
+
+	<bean name="/iecActivityAction"
+		class="com.prwss.mis.masters.iecactivity.struts.IecActivityAction"
+		autowire="byName" />
+
+	<bean name="trainingDao" class="com.prwss.mis.master.training.dao.TrainingDaoImpl"
+		autowire="byName" />
+	<bean name="trainingBO" class="com.prwss.mis.master.training.TrainingBOImpl"
+		autowire="byName" />
+
+	<bean name="trainingOfficerDao" class="com.prwss.mis.ccdu.cb.dao.TrainingOfficerDaoImpl"
+		autowire="byName" />
+
+	<bean name="/trainingMasterAction"
+		class="com.prwss.mis.master.training.struts.TrainingMasterAction"
+		autowire="byName" />
+
+	<bean name="/committedLiabilityReportAction"
+		class="com.prwss.mis.tender.struts.CommittedLiabilityReportAction"
+		autowire="byName" />
+
+	<bean name="/userMasterAction" class="com.prwss.mis.admin.struts.UserMasterAction"
+		autowire="byName" />
+
+	<!--<bean name="/storeMasterAction" class=com.prwss.mis.store.struts.StoreMasterAction 
+		autowire="byName" /> -->
+	<bean name="storeDao" class="com.prwss.mis.masters.store.dao.StoreDaoImpl"
+		autowire="byName" />
+
+	<bean name="storeBO" class="com.prwss.mis.masters.store.StoreBOImpl"
+		autowire="byName" />
+
+	<bean name="ccduIssueDao" class="com.prwss.mis.ccdu.issue.dao.CCDUIssueDaoImpl"
+		autowire="byName" />
+
+	<bean name="mailNotificationDao"
+		class="com.prwss.mis.common.notification.dao.MailNotificationDaoImpl"
+		autowire="byName" />
+
+	<bean name="mailNotificationBO"
+		class="com.prwss.mis.common.notification.MailNotificationBOImpl"
+		autowire="byName" />
+
+	<bean name="reportMailNotificationBO"
+		class="com.prwss.mis.common.notification.ReportMailNotificationBOImpl"
+		autowire="byName" />
+
+
+	<bean name="activeNotificationDao"
+		class="com.prwss.mis.common.notification.dao.ActiveNotificationDaoImpl"
+		autowire="byName" />
+
+	<!-- -Notifications for Tender and Contract- -->
+	<bean name="tenderNotificationBO"
+		class="com.prwss.mis.common.tenderCheck.TenderNotificationBOImpl"
+		autowire="byName" />
+	<bean name="tenderCheckDao" class="com.prwss.mis.common.tenderCheck.TenderCheckDaoImpl"
+		autowire="byName"></bean>
+
+	<bean name="contractNotificationBO"
+		class="com.prwss.mis.common.contractCheck.ContractNotificationBOImpl"
+		autowire="byName"></bean>
+	<bean name="contractNotificationDao"
+		class="com.prwss.mis.common.contractCheck.ContractNotificationDaoImpl"
+		autowire="byName" />
+
+	<!-- DSR -->
+
+	<bean name="dsrBuildingDao" class="com.prwss.mis.pmm.DSRBuilding.dao.DSRBuildingDaoImpl"
+		autowire="byName" />
+	<bean name="dsrBuildingBO" class="com.prwss.mis.pmm.DSRBuilding.DSRBuildingBOImpl"
+		autowire="byName" />
+	<bean name="/dsrBuildingAction"
+		class="com.prwss.mis.pmm.DSRBuilding.struts.DSRBuildingAction"
+		autowire="byName" />
+	<bean name="/dsrPondsAction" class="com.prwss.mis.pmm.DSRPonds.struts.DSRPondsAction"
+		autowire="byName" />
+	<bean name="dsrPondsDao" class="com.prwss.mis.pmm.DSRPonds.dao.DSRPondsDaoImpl"
+		autowire="byName" />
+	<bean name="dsrPondsBO" class="com.prwss.mis.pmm.DSRPonds.DSRPondsBOImpls"
+		autowire="byName" />
+	<bean name="/dsrCanalAction" class="com.prwss.mis.pmm.dsrcanal.struts.DSRCanalAction"
+		autowire="byName" />
+	<bean name="dsrCanalBO" class="com.prwss.mis.pmm.dsrcanal.DSRCanalBOImpl"
+		autowire="byName" />
+	<bean name="dsrCanalDao" class="com.prwss.mis.pmm.dsrcanal.dao.DSRCanalDaoImpl"
+		autowire="byName" />
+	<bean name="dsrCanalDistributionDao"
+		class="com.prwss.mis.pmm.dsrcanal.dao.DSRCanalDistributionDaoImpl"
+		autowire="byName" />
+	<bean name="dsrCanalInletDao" class="com.prwss.mis.pmm.dsrcanal.dao.DSRCanalInletDaoImpl"
+		autowire="byName" />
+	<bean name="/dsrSewerageAction"
+		class="com.prwss.mis.pmm.dsrsewerage.struts.DSRSewerageAction"
+		autowire="byName" />
+	<bean name="dsrSewerageBO" class="com.prwss.mis.pmm.dsrsewerage.DSRSewerageBOImpl"
+		autowire="byName" />
+	<bean name="dsrSewerageSewerDao"
+		class="com.prwss.mis.pmm.dsrsewerage.dao.DSRSewerageSewerDaoImpl"
+		autowire="byName" />
+	<bean name="dsrSewerageDao" class="com.prwss.mis.pmm.dsrsewerage.dao.DSRSewerageDaoImpl"
+		autowire="byName" />
+
+	<bean name="/dsrTubewellAction"
+		class="com.prwss.mis.pmm.dsrtubewell.struts.DSRTubeWellAction"
+		autowire="byName" />
+	<bean name="dsrTubeWellBO" class="com.prwss.mis.pmm.dsrtubewell.DSRTubeWellBOImpl"
+		autowire="byName" />
+	<bean name="dsrTubeWellDao" class="com.prwss.mis.pmm.dsrtubewell.dao.DSRTubeWellDaoImpl"
+		autowire="byName" />
+	<bean name="dsrTubeWellDistributionDao"
+		class="com.prwss.mis.pmm.dsrtubewell.dao.DSRTubeWellDistributionDaoImpl"
+		autowire="byName" />
+
+	<bean name="/environmentAction"
+		class="com.prwss.mis.pmm.environment.struts.EnvironmentAction"
+		autowire="byName" />
+	<bean name="environmentBO" class="com.prwss.mis.pmm.environment.EnvironmentBOImpl"
+		autowire="byName" />
+	<bean name="environmentDao" class="com.prwss.mis.pmm.environment.dao.EnvironmentDaoImpl"
+		autowire="byName" />
+
+	<bean name="/sustAssessmentAction"
+		class="com.prwss.mis.pmm.sustassessment.struts.SustAssessmentAction"
+		autowire="byName" />
+	<bean name="sustAssessmentBO" class="com.prwss.mis.pmm.sustassessment.SustAssessmentBOImpl"
+		autowire="byName" />
+	<bean name="sustAssessmentDao"
+		class="com.prwss.mis.pmm.sustassessment.dao.SustAssessmentDaoImpl"
+		autowire="byName" />
+
+	<bean name="/waterSupplyAction"
+		class="com.prwss.mis.pmm.watersupply.struts.WaterSupplyAction"
+		autowire="byName" />
+	<bean name="waterSupplyBO" class="com.prwss.mis.pmm.watersupply.WaterSupplyBOImpl"
+		autowire="byName" />
+	<bean name="waterSupplyDao" class="com.prwss.mis.pmm.watersupply.dao.WaterSupplyDaoImpl"
+		autowire="byName" />
+
+	<bean name="/labTestingAction" class="com.prwss.mis.pmm.labtesting.struts.LabTestingAction"
+		autowire="byName" />
+	<bean name="labTestingBO" class="com.prwss.mis.pmm.labtesting.LabTestingBOImpl"
+		autowire="byName" />
+	<bean name="labTestingDao" class="com.prwss.mis.pmm.labtesting.dao.LabTestingDaoImpl"
+		autowire="byName" />
+
+	<bean name="/instPlantsAction" class="com.prwss.mis.pmm.instplants.struts.InstPlantsAction"
+		autowire="byName" />
+	<bean name="instPlantsBO" class="com.prwss.mis.pmm.instplants.InstPlantsBOImpl"
+		autowire="byName" />
+	<bean name="instPlantsDao" class="com.prwss.mis.pmm.instplants.dao.InstPlantsDaoImpl"
+		autowire="byName" />
+
+	<!-- Village Details Grid Dao -->
+	<bean name="villageConnectionDao"
+		class="com.prwss.mis.pmm.village.connection.dao.VillageConnectionDaoImpl"
+		autowire="byName" />
+	<bean name="villageHouseHoldDao"
+		class="com.prwss.mis.pmm.village.household.dao.VillageHouseHoldDaoImpl"
+		autowire="byName" />
+	<bean name="villageTariffDao"
+		class="com.prwss.mis.pmm.village.tariff.dao.VillageTariffDaoImpl"
+		autowire="byName" />
+	<bean name="villagePopulationDao"
+		class="com.prwss.mis.pmm.village.population.dao.VillagePopulationDaoImpl"
+		autowire="byName" />
+	<bean name="villageSewerageDao"
+		class="com.prwss.mis.pmm.village.sewerage.dao.VillageSewerageDaoImpl"
+		autowire="byName" />
+	<bean name="villageNCPCStatusDao"
+		class="com.prwss.mis.pmm.village.ncpcstatus.dao.VillageNCPCStatusDaoImpl"
+		autowire="byName" />
+	<bean name="villageDetailsBO" class="com.prwss.mis.pmm.village.VillageDetailsBOImpl"
+		autowire="byName" />
+	<bean name="/villageDetailsAction" class="com.prwss.mis.pmm.village.struts.VillageDetailsAction"
+		autowire="byName" />
+	<bean name="/schemeMasterAction"
+		class="com.prwss.mis.masters.scheme.struts.SchemeHeaderVillageAction"
+		autowire="byName" />
+	<bean name="misJdcDaoImpl" class="com.prwss.mis.common.MISJdcDaoImpl"
+		autowire="byName" />
+	<bean name="misJasperUtil" class="com.prwss.mis.common.util.MISJasperUtil"
+		autowire="byName" />
+	<bean name="schemeMasterBO" class="com.prwss.mis.masters.scheme.SchemeMasterBOImpl"
+		autowire="byName" />
+	<bean name="schemeHeaderDao" class="com.prwss.mis.masters.scheme.dao.SchemeHeaderDaoImpl"
+		autowire="byName" />
+	<bean name="schemeVillageDao" class="com.prwss.mis.masters.scheme.dao.SchemeVillageDaoImpl"
+		autowire="byName" />
+	<bean name="currentFcVillageStatusDao"
+		class="com.prwss.mis.masters.scheme.dao.CurrentFcVillageStatusDaoImpl"
+		autowire="byName" />
+	<bean name="schemeDao" class="com.prwss.mis.masters.scheme.dao.SchemeDaoImpl"
+		autowire="byName" />
+	<bean name="villagePhaseStatusDao"
+		class="com.prwss.mis.pmm.village.phase.dao.VillagePhaseStatusDaoImpl"
+		autowire="byName" />
+	<bean name="villagePhaseStatusBO"
+		class="com.prwss.mis.pmm.village.phase.VillagePhaseStatusBOImpl"
+		autowire="byName" />
+	<bean name="/villagePhaseAction"
+		class="com.prwss.mis.pmm.village.phase.struts.VillagePhaseStatusAction"
+		autowire="byName" />
+	<bean name="/estimatesAwardContractsReportAction"
+		class="com.prwss.mis.pmm.report.struts.EstimatesAwardContractsReportAction"
+		autowire="byName" />
+
+	<bean name="villageViewDao" class="com.prwss.mis.masters.village.dao.VillageViewDaoImpl"
+		autowire="byName" />
+	<bean name="prwssVillageViewDao"
+		class="com.prwss.mis.masters.village.dao.PrwssVillageViewDaoImpl"
+		autowire="byName" />
+	<bean name="prwssVillageAllHabitationDao"
+		class="com.prwss.mis.masters.village.dao.PrwssVillageAllHabitationDaoImpl"
+		autowire="byName" />
+	<bean name="prwssVillageViewWithMhOhDao"
+		class="com.prwss.mis.masters.village.dao.PrwssVillageViewWithMhOhDaoImpl"
+		autowire="byName" />
+	<bean name="committeeBankDao"
+		class="com.prwss.mis.masters.committee.dao.CommitteeBankDaoImpl"
+		autowire="byName" />
+	<bean name="committeeMemberDao"
+		class="com.prwss.mis.masters.committee.dao.CommitteeMemberDaoImpl"
+		autowire="byName" />
+	<bean name="committeeDao" class="com.prwss.mis.masters.committee.dao.CommitteeDaoImpl"
+		autowire="byName" />
+	<bean name="committeeBO" class="com.prwss.mis.masters.committee.CommitteeBOImpl"
+		autowire="byName" />
+	<bean name="/committeeAction"
+		class="com.prwss.mis.masters.committee.struts.CommitteeAction"
+		autowire="byName" />
+
+
+	<!-- Operating Arrangement -->
+	<bean name="/operatingArrangementAction"
+		class="com.prwss.mis.pmm.operatingarrangement.OperatingArrangementAction"
+		autowire="byName" />
+
+
+	<!-- Finance -->
+	<bean name="voucherHeaderDao"
+		class="com.prwss.mis.finance.voucher.dao.VoucherHeaderDaoImpl"
+		autowire="byName" />
+	<bean name="voucherDetailDao"
+		class="com.prwss.mis.finance.voucher.dao.VoucherDetailDaoImpl"
+		autowire="byName" />
+	<bean name="/accountsChartAction"
+		class="com.prwss.mis.finance.accountschart.struts.AccountsChartAction"
+		autowire="byName" />
+	<bean name="accountsChartBO"
+		class="com.prwss.mis.finance.accountschart.AccountsChartBOImpl"
+		autowire="byName" />
+	<bean name="accountsChartDao"
+		class="com.prwss.mis.finance.accountschart.dao.AccountsChartDaoImpl"
+		autowire="byName" />
+	<bean name="/budgetApprovalAction"
+		class="com.prwss.mis.finance.budgetapproval.struts.BudgetApprovalAction"
+		autowire="byName" />
+	<bean name="budgetApprovalBO"
+		class="com.prwss.mis.finance.budgetapproval.BudgetApprovalBOImpl"
+		autowire="byName" />
+	<bean name="/adjustmentVoucherAction"
+		class="com.prwss.mis.finance.adjustmentvoucher.struts.AdjustmentVoucherAction"
+		autowire="byName" />
+	<bean name="adjustmentVoucherBO"
+		class="com.prwss.mis.finance.adjustmentvoucher.AdjustmentVoucherBOImpl"
+		autowire="byName" />
+	<bean name="adjustmentVoucherDao"
+		class="com.prwss.mis.finance.adjustmentvoucher.dao.AdjustmentVoucherDaoImpl"
+		autowire="byName" />
+	<bean name="/budgetRevisionAction"
+		class="com.prwss.mis.finance.budgetrevision.struts.BudgetRevisionAction"
+		autowire="byName" />
+	<bean name="budgetRevisionBO"
+		class="com.prwss.mis.finance.budgetrevision.BudgetRevisionBOImpl"
+		autowire="byName" />
+	<bean name="/budgetSubmissionAction"
+		class="com.prwss.mis.finance.budgetsubmission.struts.BudgetSubmissionAction"
+		autowire="byName" />
+	<bean name="budgetSubmissionBO"
+		class="com.prwss.mis.finance.budgetsubmission.BudgetSubmissionBOImpl"
+		autowire="byName" />
+	<bean name="/paymentVoucherAction"
+		class="com.prwss.mis.finance.paymentvoucher.struts.PaymentVoucherAction"
+		autowire="byName" />
+	<bean name="paymentVoucherBO"
+		class="com.prwss.mis.finance.paymentvoucher.PaymentVoucherBOImpl"
+		autowire="byName" />
+	<bean name="/receiptVoucherAction"
+		class="com.prwss.mis.finance.receiptvoucher.struts.ReceiptVoucherAction"
+		autowire="byName" />
+	<bean name="receiptVoucherBO"
+		class="com.prwss.mis.finance.receiptvoucher.ReceiptVoucherBOImpl"
+		autowire="byName" />
+	<bean name="/releaseLOCAction"
+		class="com.prwss.mis.finance.releaseloc.struts.ReleaseLOCAction"
+		autowire="byName" />
+	<bean name="releaseLOCBO" class="com.prwss.mis.finance.releaseloc.ReleaseLOCBOImpl"
+		autowire="byName" />
+
+	<!--Location master dependency -->
+	<bean name="/locationMasterAction" class="com.prwss.mis.admin.struts.LocationMasterAction"
+		autowire="byName" />
+	<bean name="locationMasterDao" class="com.prwss.mis.admin.dao.LocationMasterDaoImpl"
+		autowire="byName" />
+	<bean name="locationMasterBo" class="com.prwss.mis.admin.LocationMasterBoImpl"
+		autowire="byName" />
+
+	<bean name="/locationTypeAction" class="com.prwss.mis.admin.struts.LocationTypeAction"
+		autowire="byName" />
+	<bean name="locationTypeDao" class="com.prwss.mis.admin.dao.LocationTypeDaoImpl"
+		autowire="byName" />
+	<bean name="locationTypeBo" class="com.prwss.mis.admin.LocationTypeBoImpl"
+		autowire="byName" />
+
+	<bean name="locHeaderDao" class="com.prwss.mis.finance.loc.dao.LOCHeaderDaoImpl"
+		autowire="byName" />
+
+	<bean name="/requestLOCAction"
+		class="com.prwss.mis.finance.requestloc.struts.RequestLOCAction"
+		autowire="byName" />
+	<bean name="requestLOCBO" class="com.prwss.mis.finance.requestloc.RequestLOCBOImpl"
+		autowire="byName" />
+	<bean name="locDetailDao" class="com.prwss.mis.finance.loc.dao.LOCDetailDaoImpl"
+		autowire="byName" />
+	<bean name="/budgetAction" class="com.prwss.mis.finance.budget.struts.BudgetAction"
+		autowire="byName" />
+	<bean name="budgetBO" class="com.prwss.mis.finance.budget.BudgetBOImpl"
+		autowire="byName" />
+	<bean name="budgetDao" class="com.prwss.mis.finance.budget.dao.BudgetDaoImpl"
+		autowire="byName" />
+	<bean name="budgetDetailDao"
+		class="com.prwss.mis.finance.budgetdetail.dao.BudgetDetailDaoImpl"
+		autowire="byName" />
+	<bean name="/billApprovalAction"
+		class="com.prwss.mis.finance.billapproval.struts.BillApprovalAction"
+		autowire="byName" />
+	<bean name="billApprovalBO" class="com.prwss.mis.finance.billapproval.BillApprovalBOImpl"
+		autowire="byName" />
+	<bean name="billApprovalDao"
+		class="com.prwss.mis.finance.billapproval.dao.BillApprovalDaoImpl"
+		autowire="byName" />
+	<bean name="/financeReportsAction"
+		class="com.prwss.mis.finance.report.struts.FinanceReportsAction"
+		autowire="byName" />
+	<!-- Inventory -->
+	<bean name="/goodsIssueAction"
+		class="com.prwss.mis.inventory.goodsissue.struts.GoodsIssueAction"
+		autowire="byName" />
+	<bean name="goodsIssueBO" class="com.prwss.mis.inventory.goodsissue.GoodsIssueBOImpl"
+		autowire="byName" />
+	<bean name="goodsIssueDao"
+		class="com.prwss.mis.inventory.goodsissue.dao.GoodsIssueDaoImpl"
+		autowire="byName" />
+	<bean name="/goodsReceiptAction"
+		class="com.prwss.mis.inventory.goodsreceipt.struts.GoodsReceiptAction"
+		autowire="byName" />
+	<bean name="goodsReceiptBO"
+		class="com.prwss.mis.inventory.goodsreceipt.GoodsReceiptBOImpl"
+		autowire="byName" />
+	<bean name="goodsReceiptDao"
+		class="com.prwss.mis.inventory.goodsreceipt.dao.GoodsReceiptDaoImpl"
+		autowire="byName" />
+	<bean name="/supplyOrderAction"
+		class="com.prwss.mis.inventory.supplyorder.struts.SupplyOrderAction"
+		autowire="byName" />
+	<bean name="supplyOrderBO" class="com.prwss.mis.inventory.supplyorder.SupplyOrderBOImpl"
+		autowire="byName" />
+	<bean name="supplyOrderDao"
+		class="com.prwss.mis.inventory.supplyorder.dao.SupplyOrderDaoImpl"
+		autowire="byName" />
+	<bean name="/inventoryReportsAction"
+		class="com.prwss.mis.inventory.reports.struts.InventoryReportsAction"
+		autowire="byName" />
+
+
+	<!-- Procurement -->
+	<bean name="/createProcPlanAction"
+		class="com.prwss.mis.procurement.plan.struts.CreateProcPlanAction"
+		autowire="byName" />
+	<bean name="createProcPlanBO" class="com.prwss.mis.procurement.plan.CreateProcPlanBOImpl"
+		autowire="byName" />
+	<bean name="createProcPlanDao"
+		class="com.prwss.mis.procurement.plan.dao.CreateProcPlanDaoImpl"
+		autowire="byName" />
+	<bean name="/procSubPlanAction"
+		class="com.prwss.mis.procurement.subplan.struts.ProcSubPlanAction"
+		autowire="byName" />
+	<bean name="procSubPlanBO"
+		class="com.prwss.mis.procurement.subplan.dao.ProcSubPlanBOImpl"
+		autowire="byName" />
+	<bean name="procSubPlanDao"
+		class="com.prwss.mis.procurement.subplan.dao.ProcSubPlanDaoImpl"
+		autowire="byName" />
+	<bean name="procSubPlanSchemeDao"
+		class="com.prwss.mis.procurement.subplan.dao.ProcSubPlanSchemeDaoImpl"
+		autowire="byName" />
+
+	<bean name="/procPackageWorksAction"
+		class="com.prwss.mis.procurement.workspackage.struts.PackageWorksAction"
+		autowire="byName" />
+	<bean name="packageWorksBO"
+		class="com.prwss.mis.procurement.workspackage.PackageWorksBOImpl"
+		autowire="byName" />
+	<bean name="packageWorksDao"
+		class="com.prwss.mis.procurement.workspackage.dao.PackageWorksDaoImpl"
+		autowire="byName" />
+
+	<bean name="/procPackageGoodsAction"
+		class="com.prwss.mis.procurement.goodspackage.struts.PackageGoodsAction"
+		autowire="byName" />
+	<bean name="packageGoodsBO"
+		class="com.prwss.mis.procurement.goodspackage.PackageGoodsBOImpl"
+		autowire="byName" />
+	<bean name="packageGoodsDao"
+		class="com.prwss.mis.procurement.goodspackage.dao.PackageGoodsDaoImpl"
+		autowire="byName" />
+
+	<bean name="/procPackageServicesAction"
+		class="com.prwss.mis.procurement.servicespackage.struts.PackageServiceAction"
+		autowire="byName" />
+	<bean name="packageServiceBO"
+		class="com.prwss.mis.procurement.servicespackage.PackageServiceBOImpl"
+		autowire="byName" />
+	<bean name="packageServicesDao"
+		class="com.prwss.mis.procurement.servicespackage.dao.PackageServicesDaoImpl"
+		autowire="byName" />
+	<bean name="packageComponentsDao"
+		class="com.prwss.mis.procurement.packagecomponents.dao.PackageComponentsDaoImpl"
+		autowire="byName" />
+	<bean name="packageHeaderDao"
+		class="com.prwss.mis.procurement.packageheader.dao.PackageHeaderDaoImpl"
+		autowire="byName" />
+
+	<bean name="/procPackageNonConsultancyAction"
+		class="com.prwss.mis.procurement.nonconsultancypackage.struts.PackageNonConsultancyAction"
+		autowire="byName" />
+	<bean name="packageNonConsultancyBO"
+		class="com.prwss.mis.procurement.nonconsultancypackage.PackageNonConsultancyBOImpl"
+		autowire="byName" />
+	<bean name="packageNonConsultancyDao"
+		class="com.prwss.mis.procurement.nonconsultancypackage.dao.PackageNonConsultancyDaoImpl"
+		autowire="byName" />
+
+	<bean name="/procPackagePhysicalProgressAction"
+		class="com.prwss.mis.procurement.physicalprogresspackage.struts.PhysicalProgressPackageAction"
+		autowire="byName" />
+	<bean name="physicalProgressComponentsDao"
+		class="com.prwss.mis.procurement.physicalprogresspackage.dao.PhysicalProgressComponentsDaoImpl"
+		autowire="byName" />
+	<bean name="packageComponentsProgressBO"
+		class="com.prwss.mis.procurement.physicalprogresspackage.PackageComponentsProgressBOImpl"
+		autowire="byName" />
+
+	<bean name="/worldBankPriorReviewAction"
+		class="com.prwss.mis.procurement.wbpriorreview.struts.PriorReviewPackageAction"
+		autowire="byName" />
+	<bean name="priorReviewBO"
+		class="com.prwss.mis.procurement.wbpriorreview.PriorReviewBOImpl"
+		autowire="byName" />
+
+	<bean name="/tenderReportAction"
+		class="com.prwss.mis.tender.reports.struts.TenderReportsAction"
+		autowire="byName" />
+
+	<!-- HR -->
+
+	<bean name="/employeeTargetPlanAction"
+		class="com.prwss.mis.hr.targetplan.struts.EmployeeTargetPlanAction"
+		autowire="byName" />
+	<bean name="employeeTargetHeaderDao"
+		class="com.prwss.mis.hr.targetplan.dao.EmployeeTargetHeaderDaoImpl"
+		autowire="byName" />
+	<bean name="employeeTargetDetailDao"
+		class="com.prwss.mis.hr.targetplan.dao.EmployeeTargetDetailDaoImpl"
+		autowire="byName" />
+	<bean name="employeeTargetBO" class="com.prwss.mis.hr.targetplan.EmployeeTargetBOImpl"
+		autowire="byName" />
+	<bean name="/employeeAppraisalAction"
+		class="com.prwss.mis.hr.employeeappraisal.struts.EmployeeAppraisalAction"
+		autowire="byName" />
+	<bean name="/employeeEvaluationAction"
+		class="com.prwss.mis.hr.employeevaluation.struts.EmployeeEvaluationAction"
+		autowire="byName" />
+	<bean name="/trainingSchedulePlanAction"
+		class="com.prwss.mis.hr.trainingscheduleplan.struts.TrainingScheduleAction"
+		autowire="byName" />
+	<bean name="trainingSchedulePlanBO"
+		class="com.prwss.mis.hr.trainingscheduleplan.TrainingSchedulePlanBOImpl"
+		autowire="byName" />
+	<bean name="trainingScheduleDetailDao"
+		class="com.prwss.mis.hr.trainingscheduleplan.dao.TrainingScheduleDetailDaoImpl"
+		autowire="byName" />
+	<bean name="trainingScheduleHeaderDao"
+		class="com.prwss.mis.hr.trainingscheduleplan.dao.TrainingScheduleHeaderDaoImpl"
+		autowire="byName" />
+
+	<bean name="/attendanceAction" class="com.prwss.mis.hr.attendance.struts.AttendanceAction"
+		autowire="byName" />
+	<bean name="hrAttendanceBO" class="com.prwss.mis.hr.attendance.HRAttendanceBOImpl"
+		autowire="byName" />
+	<bean name="hrAttendanceDao" class="com.prwss.mis.hr.attendance.dao.HRAttendanceDaoImpl"
+		autowire="byName" />
+
+	<bean name="/leaveAction" class="com.prwss.mis.hr.leave.struts.LeaveAction"
+		autowire="byName" />
+	<bean name="leaveManagementBO" class="com.prwss.mis.hr.leave.LeaveManagementBOImpl"
+		autowire="byName" />
+	<bean name="leaveManagementDao" class="com.prwss.mis.hr.leave.dao.LeaveManagementDaoImpl"
+		autowire="byName" />
+	<bean name="leaveBalanceDao"
+		class="com.prwss.mis.hr.leave.balance.dao.LeaveBalanceDaoImpl"
+		autowire="byName" />
+	<bean name="/leaveApprovalAction" class="com.prwss.mis.hr.leave.struts.LeaveApprovalAction"
+		autowire="byName" />
+	<bean name="/hrSalaryStructureAction"
+		class="com.prwss.mis.hr.salarystructure.struts.HRSalaryStructureAction"
+		autowire="byName" />
+
+	<bean name="hrSalaryStructureBO"
+		class="com.prwss.mis.hr.salarystructure.HRSalaryStructureBOImpl"
+		autowire="byName" />
+	<bean name="hrSalaryStructureDao"
+		class="com.prwss.mis.hr.salarystructure.dao.HRSalaryStructureDaoImpl"
+		autowire="byName" />
+
+	<bean name="/procurementReportsAction"
+		class="com.prwss.mis.procurement.reports.struts.ProcurementReportsAction"
+		autowire="byName" />
+	<bean name="/hrReportsAction" class="com.prwss.mis.hr.reports.struts.HRReportsAction"
+		autowire="byName" />
+
+	<bean name="/hrPayrollAction" class="com.prwss.mis.hr.payroll.struts.HRPayrollAction"
+		autowire="byName" />
+	<bean name="hrPayrollDao" class="com.prwss.mis.hr.payroll.dao.HRPayrollDaoImpl"
+		autowire="byName" />
+	<bean name="hrPayrollBO" class="com.prwss.mis.hr.payroll.HRPayrollBOImpl"
+		autowire="byName" />
+
+	<bean name="/changeOfficerLocationAction"
+		class="com.prwss.mis.hr.changeOfficer.struts.ChangeOfficerLocationAction"
+		autowire="byName" />
+
+
+	<!-- Dak and Task Module -->
+	<bean name="/inwardDakAction"
+		class="com.prwss.mis.daktask.inwarddak.struts.InwardDakAction"
+		autowire="byName" />
+	<bean name="/outwardDakAction"
+		class="com.prwss.mis.daktask.outwarddak.struts.OutwardDakAction"
+		autowire="byName" />
+	<bean name="/taskAllocationAction"
+		class="com.prwss.mis.daktask.taskallocation.struts.TaskAllocationAction"
+		autowire="byName" />
+	<bean name="/taskUpdateAction"
+		class="com.prwss.mis.daktask.taskupdate.struts.TaskUpdateAction"
+		autowire="byName" />
+	<bean name="inwardDakDao" class="com.prwss.mis.daktask.inwarddak.dao.InwardDakDaoImpl"
+		autowire="byName" />
+	<bean name="inwardDakBO" class="com.prwss.mis.daktask.inwarddak.InwardDakBOImpl"
+		autowire="byName" />
+	<bean name="documentNumberDao" class="com.prwss.mis.sd.document.dao.DocumentNumberDaoImpl"
+		autowire="byName" />
+	<bean name="outwardDakDao"
+		class="com.prwss.mis.daktask.outwarddak.dao.OutwardDakDaoImpl"
+		autowire="byName" />
+	<bean name="outwardDakBO" class="com.prwss.mis.daktask.outwarddak.OutwardDakBOImpl"
+		autowire="byName" />
+	<bean name="taskAllocationBO"
+		class="com.prwss.mis.daktask.taskallocation.TaskAllocationBOImpl"
+		autowire="byName" />
+	<bean name="documentTypeDao"
+		class="com.prwss.mis.daktask.documenttype.dao.DocumentTypeDaoImpl"
+		autowire="byName">
+	</bean>
+
+	<bean name="/trainingManagementAction"
+		class="com.prwss.mis.hr.trainingmanagent.struts.HRTrainingManagementAction"
+		autowire="byName" />
+	<bean name="hrTrainingManagementDao"
+		class="com.prwss.mis.hr.trainingmanagent.dao.HRTrainingManagementDaoImpl"
+		autowire="byName" />
+	<bean name="hrTrainingManagementBO"
+		class="com.prwss.mis.hr.trainingmanagent.HRTrainingManagementBOImpl"
+		autowire="byName" />
+
+	<bean name="alertChecklistDao" class="com.prwss.mis.pmm.alert.dao.AlertChecklistDaoImpl"
+		autowire="byName" />
+	<bean name="/alertChecklistAction" class="com.prwss.mis.pmm.alert.struts.AlertChecklistAction"
+		autowire="byName" />
+	<bean name="/worksProgrammeReportsAction"
+		class="com.prwss.mis.miscreports.struts.WorksProgrammeReportsAction"
+		autowire="byName" />
+
+	<!-- KD WORK -->
+	<bean name="/pdoReportsAction" class="com.prwss.mis.pdo.struts.PdoReportsAction"
+		autowire="byName" />
+
+	<bean name="/performanceReviewReportsAction"
+		class="com.prwss.mis.pdo.struts.PerformanceReviewReportsAction"
+		autowire="byName" />
+
+	<bean name="/performaMasterAction" class="com.prwss.mis.reports.performa.PerformaMasterAction"
+		autowire="byName" />
+	<!-- KD WORK -->
+
+	<bean name="proposedProgramDao" class="com.prwss.mis.masters.village.ProposedProgramDaoImpl"
+		autowire="byName" />
+
+	<bean name="entitledLeaveBO" class="com.prwss.mis.hr.leave.balance.EntitledLeaveBOImpl"
+		autowire="byName" />
+	<bean name="/entitledLeaveAction" class="com.prwss.mis.admin.struts.EntitledLeaveAction"
+		autowire="byName" />
+	<!-- Scheduler -->
+
+	<bean name="mailNotificationJob" class="org.springframework.scheduling.quartz.JobDetailBean"
+		autowire="byName">
+		<property name="name" value="MailNotificationJob" />
+		<property name="volatility" value="false" />
+		<property name="durability" value="false" />
+		<property name="requestsRecovery" value="true" />
+		<property name="jobClass"
+			value="com.prwss.mis.common.notification.quartz.MISNotificationJob" />
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="timeout" value="5" />
+				<entry key="mailNotificationBO" value-ref="mailNotificationBO" />
+			</map>
+		</property>
+
+	</bean>
+
+	<!-- <bean name="reportNotificationJob" class="org.springframework.scheduling.quartz.JobDetailBean" 
+		autowire="byName"> <property name="name" value="ReportNotificationJob" /> 
+		<property name="volatility" value="false" /> <property name="durability" 
+		value="false" /> <property name="requestsRecovery" value="true" /> <property 
+		name="jobClass" value="com.prwss.mis.common.notification.quartz.ReportMailNotificationJob" 
+		/> <property name="jobDataAsMap"> <map> <entry key="timeout" value="5" /> 
+		<entry key="reportMailNotificationBO" value-ref="reportMailNotificationBO" 
+		/> </map> </property> </bean> -->
+	<!-- <bean name="tenderNotificationJob" class="org.springframework.scheduling.quartz.JobDetailBean" 
+		autowire="byName"> <property name="name" value="TenderNotificationJob" /> 
+		<property name="volatility" value="false" /> <property name="durability" 
+		value="false" /> <property name="requestsRecovery" value="true" /> <property 
+		name="jobClass" value="com.prwss.mis.common.tenderCheck.TenderNotificationJob" 
+		/> <property name="jobDataAsMap"> <map> <entry key="timeout" value="5" /> 
+		<entry key="tenderNotificationBO" value-ref="tenderNotificationBO" /> </map> 
+		</property> </bean> <bean name="contractNotificationJob" class="org.springframework.scheduling.quartz.JobDetailBean" 
+		autowire="byName"> <property name="name" value="ContractNotificationJob" 
+		/> <property name="volatility" value="false" /> <property name="durability" 
+		value="false" /> <property name="requestsRecovery" value="true" /> <property 
+		name="jobClass" value="com.prwss.mis.common.contractCheck.ContractNotificationJob" 
+		/> <property name="jobDataAsMap"> <map> <entry key="timeout" value="5" /> 
+		<entry key="contractNotificationBO" value-ref="contractNotificationBO" /> 
+		</map> </property> </bean> -->
+	<bean name="mailNotificationTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="name" value="mailNotificationTrigger" />
+		<property name="group" value="mailNotificationTriggerGroup" />
+		<property name="description"
+			value="This is	Triggered at every minute for the mail notification job" />
+		<!-- <property name="cronExpression" value="0 50 11 7 * ?" /> -->
+
+		<property name="cronExpression" value="0 0 12 27 * ?" />
+		<property name="jobDetail" ref="mailNotificationJob" />
+	</bean>
+	<!--<bean name="reportNotificationTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean"> 
+		<property name="name" value="reportNotificationTrigger" /> <property name="group" 
+		value="mailNotificationTriggerGroup" /> <property name="description" value="This 
+		is Triggered at every minute for the mail notification job" /> <property 
+		name="cronExpression" value="0 0 10 * * ?" /> <property name="jobDetail" 
+		ref="reportNotificationJob" /> </bean> -->
+	<!-- <bean name="tenderNotificationTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean"> 
+		<property name="name" value="tenderNotificationTrigger" /> <property name="group" 
+		value="mailNotificationTriggerGroup" /> <property name="description" value="This 
+		is Triggered at every minute for the mail notification job" /> <property 
+		name="cronExpression" value="0 0 12 ? * SUN" /> <property name="jobDetail" 
+		ref="tenderNotificationJob" /> </bean> <bean name="contractNotificationTrigger" 
+		class="org.springframework.scheduling.quartz.CronTriggerBean"> <property 
+		name="name" value="contractNotificationTrigger" /> <property name="group" 
+		value="mailNotificationTriggerGroup" /> <property name="description" value="This 
+		is Triggered at every minute for the mail notification job" /> <property 
+		name="cronExpression" value="0 0 12 ? * SUN" /> <property name="cronExpression" 
+		value="0 0/2 * * * ?" /> <property name="jobDetail" ref="contractNotificationJob" 
+		/> </bean> -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="mailNotificationTrigger" />
+				<!-- <ref bean="reportNotificationTrigger" /> <ref bean="tenderNotificationTrigger" 
+					/> <ref bean="contractNotificationTrigger" /> -->
+			</list>
+		</property>
+	</bean>
+	<bean name="roleDao" class="com.prwss.mis.admin.dao.RoleDaoImpl"
+		autowire="byName" />
+	<bean name="/rolePermissionAction" class="com.prwss.mis.admin.struts.RolePermissionAction"
+		autowire="byName" />
+	<bean name="menuDao" class="com.prwss.mis.admin.dao.MenuDaoImpl"
+		autowire="byName" />
+	<bean name="notificationDao"
+		class="com.prwss.mis.common.notification.dao.NotificationDaoImpl"
+		autowire="byName" />
+	<bean name="notificationJdcDao"
+		class="com.prwss.mis.common.notification.dao.NotificationJdcDaoImpl"
+		autowire="byName" />
+</beans>

@@ -1,0 +1,1001 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PMMRPT001_1" language="groovy" pageWidth="856" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="846" leftMargin="5" rightMargin="5" topMargin="20" bottomMargin="5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="where" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to" class="java.lang.String">
+		<defaultValueExpression><![CDATA["24-10-2011"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2011-10-24"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2008-04-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2008-04-01"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from
+(select mz.zone_id,zone_name,mc.circle_id,circle_name,md.district_id,district_name,
+	sum(cnt_scheme) cnt_scheme,sum(cnt_village) cnt_village,sum(app) app,sum(lying_gop) lying_gop,sum(lying_ce) lying_ce,
+	sum(lying_se) lying_se,sum(lying_div) lying_div,sum(dsr_app) as dsr_app,sum(dsr_yet_tobe_app) dsr_yet_tobe_app,
+	sum(scheme_commissioned) scheme_commissioned,sum(village_commissioned) village_commissioned,sum(scheme_completed) scheme_completed,sum(bid_doc_app) bid_doc_app,
+	sum(bid_doc_yet_app) bid_doc_yet_app,sum(con_award) con_award,sum(bids_under_process) bids_under_process,sum(bids_invited) bids_invited,
+	sum(bids_yet_tobe_invited) bids_yet_tobe_invited
+from
+--------------------------------------------------------2 set---------------------------------
+(select aa.location_id,count(distinct aa.scheme_id) as cnt_scheme,count(distinct vill_cnt) as cnt_village,count(distinct app) as app,count(distinct lying_gop) as lying_gop,
+	count(distinct lying_ce) as lying_ce,count(distinct lying_se) as lying_se,count(distinct lying_div) as lying_div,count(distinct dsr_app) as dsr_app,
+	count(distinct dsr_yet_tobe_app) as dsr_yet_tobe_app,count(distinct scheme_commissioned) as scheme_commissioned,count(village_commissioned) as village_commissioned,
+       count(distinct scheme_completed) as scheme_completed,
+       count(distinct bid_doc_app)as bid_doc_app,
+       count(distinct bid_doc_yet_app) as bid_doc_yet_app,
+       count(distinct con_award) as con_award,
+       count(distinct bid_nnder_process) as bids_under_process,
+       count(distinct bid_invited) as bids_invited,
+       count(distinct bid_yest_to_invited) as bids_yet_tobe_invited
+from
+(select distinct a.*,bid_doc_app,bid_doc_yet_app
+from
+(select distinct x.location_id,x.scheme_id,vill_cnt,app,lying_gop,lying_ce,lying_se,lying_div,dsr_app,dsr_yet_tobe_app,scheme_commissioned,village_commissioned,scheme_completed
+from
+(select  location_id,z.scheme_id,village_id,
+	case when admin_app_gop_letter_date is not null then z.scheme_id else null end app,
+	case when admin_app_gop_letter_date is null and admin_app_sent_govt_vide_ce_date is not null then z.scheme_id else null end lying_gop,
+	case when admin_app_gop_letter_date is null and admin_app_sent_govt_vide_ce_date is null and admin_app_sent_ce_vide_se_date is not null then z.scheme_id else null end lying_ce,
+	case when admin_app_gop_letter_date is null and admin_app_sent_govt_vide_ce_date is null and admin_app_sent_ce_vide_se_date is null and admin_app_sent_se_vide_ee_date is not null then z.scheme_id else null end lying_se,
+	case when admin_app_gop_letter_date is null and admin_app_sent_govt_vide_ce_date is null and admin_app_sent_ce_vide_se_date is null and admin_app_sent_se_vide_ee_date is null then z.scheme_id else null end lying_div,
+
+	case when tech_app_ee_date is not null or tech_app_se_letter_date is not null or tech_app_ce_letter_date is not null or tech_app_sent_to_se_vide_ee_date is not null or tech_app_sent_to_ce_vide_se_date is not null then z.scheme_id else null end dsr_app,
+	case when tech_app_ee_date is null and tech_app_se_letter_date is null and tech_app_ce_letter_date is null and tech_app_sent_to_se_vide_ee_date is  null and tech_app_sent_to_ce_vide_se_date is null then z.scheme_id else null end dsr_yet_tobe_app,
+
+	case when scheme_commissioned_date is not null or scheme_completed_date is not null then z.scheme_id else null end scheme_commissioned,
+	case when scheme_commissioned_date is not null or scheme_completed_date is not null then z.village_id else null end village_commissioned,
+	case when scheme_completed_date is not null then z.scheme_id else null end scheme_completed,
+	case when beneficiary_by_community<>0 and beneficiary_by_community is not null then bene_collected*100/beneficiary_by_community else 0 end bene_collected_per
+
+from
+(select sh.location_id,sd.*,scheme_commissioned_date,mv.village_id,
+	rank() OVER (PARTITION BY mv.village_id ORDER BY  scheme_commissioned_date desc,sh.scheme_id desc) AS rank
+from prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_details sd,prwss_main.mst_scheme_village sv,prwss_main.mst_village mv
+where sh.scheme_id=sd.scheme_id
+and   sd.scheme_id=sv.scheme_id
+and   sv.village_id=mv.village_id and sh.scheme_source not in ('SEWERAGE')
+and   prog_id in ('PROG15') and habitation_type='MH' and sh.scheme_id not like 'HP%'
+--and   scheme_commissioned_date between to_date('$P!{from_date}','yyyy-mm-dd') and to_date('$P!{to_date}','yyyy-mm-dd')
+and   sh.status<>'D' and sd.status<>'D' and sv.status<>'D' and mv.status<>'D')z ,
+
+(select scheme_id,sum(receipt_amount) as bene_collected
+from prwss_main.t_finance_gpwsc_register
+where transaction_type='RECEIPT'
+and receipt_type='Beneficiary-Share' and status<>'D'
+--and date_of_transaction between to_date('$P!{from_date}','yyyy-mm-dd') and to_date('$P!{to_date}','yyyy-mm-dd')
+group by scheme_id) bene
+where z.scheme_id=bene.scheme_id
+and rank=1)x,
+
+
+-----------------------------------------1 set----------------------------------------------
+(select location_id,scheme_id,village_id as vill_cnt
+from
+(select sh.location_id,sh.scheme_id,sv.village_id,
+	rank() OVER (PARTITION BY mv.village_id ORDER BY  scheme_commissioned_date desc,sh.scheme_id DESC) AS rank
+from prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_details sd,prwss_main.mst_scheme_village sv,prwss_main.mst_village mv
+where sh.scheme_id=sd.scheme_id
+and   sd.scheme_id=sv.scheme_id and sh.scheme_source not in ('SEWERAGE')
+and   sv.village_id=mv.village_id and habitation_type='MH'
+and   prog_id in ('PROG15') and sh.scheme_id not like 'HP%'
+--and   scheme_commissioned_date between to_date('$P!{from_date}','yyyy-mm-dd') and to_date('$P!{to_date}','yyyy-mm-dd')
+and   sh.status<>'D' and sd.status<>'D' and sv.status<>'D' and mv.status<>'D')x
+where rank=1) xx
+where x.scheme_id=xx.scheme_id and x.village_id=xx.vill_cnt and bene_collected_per>=90) a
+
+left join
+
+-------------------------------------------3 set---------------------------------------------
+(select distinct location_id,scheme_id,bid_doc_app,
+	case when bid_doc_app is null then scheme_id else null end as bid_doc_yet_app
+from
+(select location_id,scheme_id
+from
+(select  location_id,scheme_id,village_id,
+	case when tech_app_ee_date is not null or tech_app_se_letter_date is not null or tech_app_ce_letter_date is not null or tech_app_sent_to_se_vide_ee_date is not null or tech_app_sent_to_ce_vide_se_date is not null then scheme_id else null end dsr_app
+from
+(select sh.location_id,sd.*,scheme_commissioned_date,sv.village_id,
+	rank() OVER (PARTITION BY mv.village_id ORDER BY  scheme_commissioned_date desc,sh.scheme_id desc) AS rank
+from prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_details sd,prwss_main.mst_scheme_village sv,prwss_main.mst_village mv
+where sh.scheme_id=sd.scheme_id
+and   sd.scheme_id=sv.scheme_id and prog_id='PROG15' and sh.scheme_source not in ('SEWERAGE')
+and   sv.village_id=mv.village_id and habitation_type='MH' and mv.status<>'D'
+--and   scheme_commissioned_date between to_date('$P!{from_date}','yyyy-mm-dd') and to_date('$P!{to_date}','yyyy-mm-dd')
+and   sh.status<>'D' and sd.status<>'D' and sv.status<>'D')z
+where rank=1)xy where dsr_app is not null )yy
+left join
+(select  scheme_code,sch_id,case when bid_sanc_no<>0 then sch_id else null end as bid_doc_app,
+		case when bid_sanc_no=0 then sch_id else null end as bid_doc_yet_app
+	from
+	(select scheme_code,sch_id,
+		sum(case when trim(bid_sanction_number) is not null then 1 else 0 end) as bid_sanc_no
+	from
+	(select distinct (scheme_name||' ('||scheme_code||')') sch_id,scheme_code,bid_sanction_number
+	from prwss_main.t_tender_hdr th,prwss_main.mst_scheme_header sh where th.scheme_code=sh.scheme_id and tender_type='WORKS' and th.status<>'D' and sh.status<>'D') xxx
+	group by scheme_code,sch_id
+	order by scheme_code)y)yyy
+on yy.scheme_id=yyy.scheme_code)b
+
+on a.scheme_id=b.scheme_id) aa
+
+left join
+
+---------------------------------------------------4 set------------------------------------------------
+(select distinct  location_id,scheme_id,
+	case when con_award is null then null else scheme_id end as con_award ,
+	case when bid_nnder_process is null then null else scheme_id end as bid_nnder_process,
+	case when bid_invited is null then null else scheme_id end as bid_invited,
+	case when (con_award is null and bid_nnder_process is null and bid_invited is null) or bid_yest_to_invited is not null then scheme_id else null end as bid_yest_to_invited
+
+from
+(select distinct location_id,scheme_id,bid_doc_app,
+	case when bid_doc_app is null then scheme_id else null end as bid_doc_yet_app
+from
+(select location_id,scheme_id
+from
+(select  location_id,scheme_id,
+	case when tech_app_ee_date is not null or tech_app_se_letter_date is not null or tech_app_ce_letter_date is not null or tech_app_sent_to_se_vide_ee_date is not null or tech_app_sent_to_ce_vide_se_date is not null then scheme_id else null end dsr_app
+from
+(select sh.location_id,sd.*,scheme_commissioned_date,
+	rank() OVER (PARTITION BY mv.village_id ORDER BY  scheme_commissioned_date desc,sh.scheme_id desc) AS rank
+from prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_details sd,prwss_main.mst_scheme_village sv,prwss_main.mst_village mv
+where sh.scheme_id=sd.scheme_id
+and   sd.scheme_id=sv.scheme_id and prog_id='PROG15' and sh.scheme_source not in ('SEWERAGE')
+and   sv.village_id=mv.village_id and habitation_type='MH' and mv.status<>'D'
+--and   scheme_commissioned_date between to_date('$P!{from_date}','yyyy-mm-dd') and to_date('$P!{to_date}','yyyy-mm-dd')
+and   sh.status<>'D' and sd.status<>'D' and sv.status<>'D')z
+where rank=1 )xy where dsr_app is not null)yy
+left join
+(select  scheme_code,case when bid_sanc_no<>0 then scheme_code else null end as bid_doc_app,
+	case when bid_sanc_no=0 then scheme_code else null end as bid_doc_yet_app
+from
+(select scheme_code,
+	sum(case when trim(bid_sanction_number) is not null then 1 else 0 end) as bid_sanc_no
+from
+(select distinct scheme_code,bid_sanction_number
+from prwss_main.t_tender_hdr where tender_type='WORKS' and status<>'D') xxx
+group by scheme_code
+order by scheme_code)y)yyy
+on yy.scheme_id=yyy.scheme_code
+where bid_doc_app is not null)xyz
+
+left join
+(select distinct  scheme_code,
+	       (case when signing_of_contract is not null then sch_name else null end) as con_award,
+	       (case when signing_of_contract is null and open_date >now() then sch_name else null end) as bid_nnder_process,
+	       (case when signing_of_contract is null and (open_date is null or open_date<now())  and publish_date is not null then sch_name else null end) as bid_invited,
+	       (case when signing_of_contract is null and open_date is null and publish_date is  null then sch_name else null end) as bid_yest_to_invited
+	from
+	(select scheme_code,sch_name,rank() over (partition by scheme_code order by signing_of_contract,open_date,publish_date) rank,signing_of_contract,open_date,publish_date
+		from
+		(select  tender_id,scheme_code,(scheme_name||' ('||scheme_code||')') sch_name,open_date,publish_date--,rank() over (partition by scheme_code order by signing_of_contract,open_date,publish_date) rank,signing_of_contract,open_date,publish_date
+	from prwss_main.t_tender_hdr th,prwss_main.mst_scheme_header sh--,prwss_main.t_tender_award ta
+	where th.scheme_code=sh.scheme_id
+	and tender_type='WORKS'
+	and   th.status<>'D' and sh.status<>'D')a left join
+	(select * from prwss_main.t_tender_award where status<>'D')b
+	on a.tender_id=b.tender_id)zz where rank=1)yz
+on xyz.scheme_id=yz.scheme_code)c
+on aa.scheme_id=c.scheme_id
+group by aa.location_id) main,prwss_main.mst_divisional di,prwss_main.mst_district md,prwss_main.mst_circle mc,prwss_main.mst_zone mz
+where main.location_id=di.divisional_id
+and   di.district_id=md.district_id
+and   md.circle_id=mc.circle_id
+and   mc.zone_id=mz.zone_id
+group by mz.zone_id,zone_name,mc.circle_id,circle_name,md.district_id,district_name)xxxx
+where $P!{where}]]>
+	</queryString>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="cnt_scheme" class="java.math.BigDecimal"/>
+	<field name="cnt_village" class="java.math.BigDecimal"/>
+	<field name="app" class="java.math.BigDecimal"/>
+	<field name="lying_gop" class="java.math.BigDecimal"/>
+	<field name="lying_ce" class="java.math.BigDecimal"/>
+	<field name="lying_se" class="java.math.BigDecimal"/>
+	<field name="lying_div" class="java.math.BigDecimal"/>
+	<field name="dsr_app" class="java.math.BigDecimal"/>
+	<field name="dsr_yet_tobe_app" class="java.math.BigDecimal"/>
+	<field name="scheme_commissioned" class="java.math.BigDecimal"/>
+	<field name="village_commissioned" class="java.math.BigDecimal"/>
+	<field name="scheme_completed" class="java.math.BigDecimal"/>
+	<field name="bid_doc_app" class="java.math.BigDecimal"/>
+	<field name="bid_doc_yet_app" class="java.math.BigDecimal"/>
+	<field name="con_award" class="java.math.BigDecimal"/>
+	<field name="bids_under_process" class="java.math.BigDecimal"/>
+	<field name="bids_invited" class="java.math.BigDecimal"/>
+	<field name="bids_yet_tobe_invited" class="java.math.BigDecimal"/>
+	<variable name="cnt_scheme_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{cnt_scheme}]]></variableExpression>
+	</variable>
+	<variable name="cnt_village_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{cnt_village}]]></variableExpression>
+	</variable>
+	<variable name="app_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{app}]]></variableExpression>
+	</variable>
+	<variable name="lying_gop_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{lying_gop}]]></variableExpression>
+	</variable>
+	<variable name="lying_ce_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{lying_ce}]]></variableExpression>
+	</variable>
+	<variable name="lying_se_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{lying_se}]]></variableExpression>
+	</variable>
+	<variable name="lying_div_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{lying_div}]]></variableExpression>
+	</variable>
+	<variable name="dsr_app_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{dsr_app}]]></variableExpression>
+	</variable>
+	<variable name="dsr_yet_tobe_app_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{dsr_yet_tobe_app}]]></variableExpression>
+	</variable>
+	<variable name="bids_invited_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bids_invited}]]></variableExpression>
+	</variable>
+	<variable name="bids_yet_tobe_invited_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bids_yet_tobe_invited}]]></variableExpression>
+	</variable>
+	<variable name="bids_invited_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bids_invited}]]></variableExpression>
+	</variable>
+	<variable name="bids_under_process_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bids_under_process}]]></variableExpression>
+	</variable>
+	<variable name="bids_invited_3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bids_invited}]]></variableExpression>
+	</variable>
+	<variable name="bids_yet_tobe_invited_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bids_yet_tobe_invited}]]></variableExpression>
+	</variable>
+	<variable name="scheme_commissioned_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{scheme_commissioned}]]></variableExpression>
+	</variable>
+	<variable name="scheme_completed_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{scheme_completed}]]></variableExpression>
+	</variable>
+	<variable name="bid_doc_app_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bid_doc_app}]]></variableExpression>
+	</variable>
+	<variable name="bid_doc_yet_app_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{bid_doc_yet_app}]]></variableExpression>
+	</variable>
+	<variable name="con_award_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{con_award}]]></variableExpression>
+	</variable>
+	<variable name="village_commissioned_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{village_commissioned}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<staticText>
+				<reportElement x="228" y="21" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="63" width="846" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[District wise Status of Estimates and Award of Contracts of IDA Schemes where Beneficiary Share Collection ranges from 90% to 100%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="641" y="21" width="205" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[M & E Report: B.1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="632" y="41" width="26" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[From:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="846" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="658" y="41" width="69" height="20"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{from}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="727" y="41" width="25" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[To:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="752" y="41" width="94" height="20"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{to}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="100" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="371" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="81" y="0" width="52" height="85" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Number of Schemes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="618" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Bids Invited]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="183" y="38" width="38" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="658" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Bids yet to be Invited]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="531" y="38" width="47" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Contracts awarded]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="221" y="60" width="35" height="25" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Govt]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="735" y="38" width="56" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Commissioned]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="29" y="0" width="52" height="85" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Name of District]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="578" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Bid under Process]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="451" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="491" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[ Yet to be App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="133" y="0" width="50" height="85" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Number of Villages]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="291" y="60" width="35" height="25" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[SE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="221" y="38" width="150" height="22" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Lying with]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="326" y="60" width="45" height="25" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Division]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="256" y="60" width="35" height="25" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[CE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="791" y="38" width="55" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Completed]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="411" y="38" width="40" height="47" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[ Yet to be App.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="371" y="0" width="80" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Status of technical Sanction of DSR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="735" y="0" width="111" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Number of Schemes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="531" y="0" width="167" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Status of Approved Bid docfuments]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="451" y="0" width="80" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[No. of Schemes where bid documents]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="183" y="0" width="188" height="38" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Status of Administrative Approvalof Estimates]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="85" width="29" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="29" height="85" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr. No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="291" y="85" width="35" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="183" y="85" width="38" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="81" y="85" width="52" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="133" y="85" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="256" y="85" width="35" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="221" y="85" width="35" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="29" y="85" width="52" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="578" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[15]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="791" y="85" width="55" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[20]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="491" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[13]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="735" y="85" width="56" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[19]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="531" y="85" width="47" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[14]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="326" y="85" width="45" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="658" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[17]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="411" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="618" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[16]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="451" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[12]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="371" y="85" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="698" y="0" width="37" height="85" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Village Commissioned]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="698" y="85" width="37" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[18]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="29" y="0" width="52" height="20" forecolor="#000000" backcolor="#FAF6F6"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{district_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="81" y="0" width="52" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{cnt_scheme}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="183" y="0" width="38" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="221" y="0" width="35" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{lying_gop}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="256" y="0" width="35" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{lying_ce}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="371" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{dsr_app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="411" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{dsr_yet_tobe_app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="735" y="0" width="56" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{scheme_commissioned}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="791" y="0" width="55" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{scheme_completed}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="658" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{bids_yet_tobe_invited}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="618" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{bids_invited}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="578" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{bids_under_process}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="326" y="0" width="45" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{lying_div}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="291" y="0" width="35" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{lying_se}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="133" y="0" width="50" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{cnt_village}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="0" y="0" width="29" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="451" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{bid_doc_app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="491" y="0" width="40" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{bid_doc_yet_app}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="531" y="0" width="47" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{con_award}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="698" y="0" width="37" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{village_commissioned}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="734" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="81" y="0" width="40" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="300" y="0" width="191" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[M & E Report B.1]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20">
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="81" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="81" y="0" width="52" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{cnt_scheme_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="133" y="0" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{cnt_village_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="183" y="0" width="38" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{app_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="221" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{lying_gop_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="256" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{lying_ce_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="291" y="0" width="35" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{lying_se_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="326" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{lying_div_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="371" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{dsr_app_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="411" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{dsr_yet_tobe_app_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="578" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{bids_under_process_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="618" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{bids_invited_3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="658" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{bids_yet_tobe_invited_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="735" y="0" width="56" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{scheme_commissioned_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="791" y="0" width="55" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{scheme_completed_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="451" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{bid_doc_app_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="491" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{bid_doc_yet_app_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="531" y="0" width="47" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{con_award_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="698" y="0" width="37" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{village_commissioned_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

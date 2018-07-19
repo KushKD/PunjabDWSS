@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+	<form-beans>
+		<form-bean name="receiveSampleForm"
+			type="com.prwss.min.quality.ReceiveSampleForm"></form-bean>
+		<form-bean name="labMasterForm"
+			type="com.prwss.min.quality.LabMasterForm"></form-bean>
+			<form-bean name="resultEntryForm"
+			type="com.prwss.min.quality.ResultEntryForm"></form-bean>
+			<form-bean name="sampleDistributionForm"
+			type="com.prwss.min.quality.SampleDistributionForm"></form-bean>
+			<form-bean name="resultDisplayForm"
+			type="com.prwss.min.quality.ResultDisplayForm"></form-bean>
+			<form-bean name="estimatesAwardContractsReportForm"
+			type="com.prwss.mis.pmm.report.struts.EstimatesAwardContractsReportForm" />
+			<form-bean name="parameterMasterForm"
+			type="com.prwss.min.quality.ParameterMasterForm"></form-bean>
+			<form-bean name="testResultForm"
+			type="com.prwss.min.quality.TestResultForm"></form-bean>    
+			<form-bean name="waterParameterReportForm"
+			type="com.prwss.min.quality.struts.WaterParameterReportForm"></form-bean>  
+			
+			<form-bean name="collectionCenterForm"
+			type="com.prwss.min.quality.CollectionCenterForm"></form-bean>  
+			
+			<form-bean name="testResultReportForm"
+			type="com.prwss.min.quality.TestResultReportForm"></form-bean>  
+			<form-bean name="freezeUnFreezeForm"
+			type="com.prwss.min.quality.struts.FreezeUnFreezeForm"></form-bean>  
+			
+			
+			  
+			
+	</form-beans>
+	<action-mappings>
+	<action path="/freezeUnFreezeAction" input="freeze.sample.report.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="freezeUnFreezeForm"
+			parameter="method" scope="session">
+			<forward name="display" path="freeze.sample.report.view"></forward>
+		</action>
+	
+	<action path="/testResultReportAction" input="test.result.report.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="testResultReportForm"
+			parameter="method" scope="session">
+			<forward name="display" path="test.result.report.view"></forward>
+		</action>
+		
+	
+	<action path="/collectionCenterAction" input="collectionCenter.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="collectionCenterForm"
+			parameter="method" scope="session">
+			<forward name="display" path="collectionCenter.view"></forward>
+		</action>
+		
+		
+		<action path="/testResultEntryAR" input="testResultEntryAR.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="testResultForm"
+			parameter="method" scope="session">
+			<forward name="display" path="testResultEntryAR.view"></forward>
+		</action>
+		<action path="/parameterMasterAction" input="parameterMaster.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="parameterMasterForm"
+			parameter="method" scope="session">
+			<forward name="display" path="parameterMaster.view"></forward>
+		</action>
+		
+		<action path="/waterParameterReportAction" input="waterParameterReportAction.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="waterParameterReportForm"
+			parameter="method" scope="session">
+			<forward name="display" path="waterParameterReportAction.view"></forward>
+		</action>
+		<action path="/receiveSampleAction" input="receiveSample.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="receiveSampleForm"
+			parameter="method" scope="session">
+			<forward name="display" path="receiveSample.view"></forward>
+		</action>
+		<action path="/labMasterAction" input="labMaster.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="labMasterForm"
+			parameter="method" scope="session">
+			<forward name="display" path="labMaster.view"></forward>
+		</action>
+		<action path="/sampleDistributionAction" input="sampleDistribution.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="sampleDistributionForm"
+			parameter="method" scope="session">
+			<forward name="display" path="sampleDistribution.view"></forward>
+		</action>
+		
+		
+			<action path="/resultEntryAction" input="resultEntry.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="resultEntryForm"
+			parameter="method" scope="session">
+			<forward name="display" path="resultEntry.view"></forward>
+		</action>
+		
+		<action path="/resultDisplayAction" input="resultDisplay.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="resultDisplayForm"
+			parameter="method" scope="session">
+			<forward name="display" path="resultDisplay.view"></forward>
+		</action>
+		<action path="/estimatesAwardContractsReportAction" input="estimatesAwardContracts.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="estimatesAwardContractsReportForm"
+			parameter="method" scope="session">
+			<forward name="cScreen" path="estimatesAwardContracts.view"></forward>
+			<forward name="display" path="estimatesAwardContractsReport.view"></forward>
+			<forward name="login" path="/sessionOut.jsp"></forward>
+		</action>
+	</action-mappings>
+	
+	<message-resources parameter="WaterQualityResources"
+		key="Waterquality" />
+</struts-config>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>PRWSS MIS</display-name>
+	<filter>
+		<filter-name>ResponseOverrideFilter</filter-name>
+		<filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ResponseOverrideFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ResponseOverrideFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>/WEB-INF/struts-config.xml,/WEB-INF/water-quality-config.xml, /WEB-INF/admin-struts-config.xml,/WEB-INF/sanitation-struts-config.xml,/WEB-INF/construction_quality.xml,/WEB-INF/rti-struts-config.xml,/WEB-INF/finance-struts-config.xml,/WEB-INF/sdu-struts-config.xml,/WEB-INF/environment-struts-config.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>chainConfig</param-name>
+			<param-value>org/apache/struts/tiles/chain-config.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<param-name>detail</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>GetFilterValues</servlet-name>
+		<servlet-class>com.prwss.mis.common.util.servlets.GetFilterValues</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>GetFilterValues</servlet-name>
+		<url-pattern>/GetFilterValues.to</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>GetSchemeCodeFilterValues</servlet-name>
+		<servlet-class>com.prwss.mis.common.util.servlets.GetSchemeCodeFilterValues</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>GetSchemeCodeFilterValues</servlet-name>
+		<url-pattern>/GetSchemeCodeFilterValues.to</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>TenderUploadServlet</servlet-name>
+		<servlet-class>com.prwss.mis.common.util.servlets.TenderUploadServlet</servlet-class>
+	</servlet>
+
+
+
+	<servlet-mapping>
+		<servlet-name>TenderUploadServlet</servlet-name>
+		<url-pattern>/TenderUploadServlet.to</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>GetSchemeFilterValues</servlet-name>
+		<servlet-class>com.prwss.mis.common.util.servlets.GetSchemeFilterValues</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>GetSchemeFilterValues</servlet-name>
+		<url-pattern>/GetSchemeFilterValues.to</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>PbDwssController</servlet-name>
+		<servlet-class>com.prwss.mis.common.util.servlets.PbDwssController</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>PbDwssController</servlet-name>
+		<url-pattern>/PbDwssController.to</url-pattern>
+	</servlet-mapping>
+	
+		<servlet>
+		<servlet-name>PublicReportController</servlet-name>
+		<servlet-class>com.prwss.mis.common.util.servlets.PublicReportController</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>PublicReportController</servlet-name>
+		<url-pattern>/PublicReportController.to</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
+		<servlet-name>SendMailServlet</servlet-name>
+		<servlet-class>com.prwss.mis.common.util.servlets.SendMailServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>SendMailServlet</servlet-name>
+		<url-pattern>/SendMailServlet.to</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>image</servlet-name>
+		<servlet-class>net.sf.jasperreports.j2ee.servlets.ImageServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>image</servlet-name>
+		<url-pattern>/report/image</url-pattern>
+	</servlet-mapping>
+
+	<listener>
+		<display-name>spring</display-name>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring-config.xml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/log4j.properties</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
+	<welcome-file-list>
+		<welcome-file>welcome.jsp</welcome-file>
+	</welcome-file-list>
+
+ <description>PostGes Test App</description>
+  <resource-ref>
+      <description>DB Connection</description>
+      <res-ref-name>jdbc/TestDB</res-ref-name>
+      <res-type>javax.sql.DataSource</res-type>
+      <res-auth>Container</res-auth>
+  </resource-ref>
+
+</web-app>

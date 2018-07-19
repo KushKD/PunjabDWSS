@@ -1,0 +1,1275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PMMRPT001_21" language="groovy" pageWidth="946" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="936" leftMargin="5" rightMargin="5" topMargin="20" bottomMargin="5" whenResourceMissingType="Empty">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="250"/>
+	<property name="ireport.y" value="16"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="where" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from" class="java.lang.String">
+		<defaultValueExpression><![CDATA["1960-04-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2014-06-25"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2014-06-25"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA["1960-04-01"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="swap2" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" SWAP-NON IDA"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="program_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA["1=1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="prog_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA["1=1"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select zone_id,zone_name as zone ,circle_name as circle ,circle_id,district_id,district_name,loc,divisional_name,block_id, block_name,program_name, prog_id
+,sum(swap)+sum(swap_hp_sh) swap,sum(non_swap)+sum(nonswap_hp_sh) non_swap,sum(canal_sh)canal_sh,sum(tubewell_sh)tubewell_sh,sum(handpump_sh) handpump_sh
+,sum(mh_handpump)+sum(mh_canal) +sum(mh_tubewell)as mh_habitation
+,sum(oh_handpump)+sum(oh_canal) +sum(oh_tubewell)as oh_habitation
+,sum(fc_upgraded1) +sum(fc_upgraded2)as fc_upgraded
+,sum(pc_habitation1) +sum(pc_habitation2)as pc_habitation
+,sum(nc_habitation1) +sum(nc_habitation2)as nc_habitation
+
+,sum(mh_tubewell) +sum(oh_tubewell)as tubewell
+,sum(mh_handpump) +sum(oh_handpump)as handpump
+,sum(mh_canal) +sum(oh_canal)as canal,sum(existing_water_works)as existing_water_works,sum(new_water_works)as new_water_works
+
+from(
+select mz.zone_id,zone_name ,circle_name ,mc.circle_id,main.district_id,district_name,loc,divisional_name,main.block_id, block_name,program_name, prog_id,
+case when canal_sh is null then 0 else canal_sh end as canal_sh,
+case when tubewell_sh is null then 0 else tubewell_sh end as tubewell_sh,
+case when handpump_sh is null then 0 else handpump_sh end as handpump_sh,
+
+case when swap is null then 0 else swap end as swap
+,case when swap_hp_sh is null then 0 else swap_hp_sh end as swap_hp_sh,
+case when nonswap_hp_sh is null then 0 else nonswap_hp_sh end as nonswap_hp_sh,
+case when non_swap is null then 0 else non_swap end as non_swap,
+
+case when mh_handpump is null then 0 else mh_handpump end as mh_handpump,
+case when oh_handpump is null then 0 else oh_handpump end as oh_handpump,
+case when mh_canal is null then 0 else mh_canal end as mh_canal,
+case when oh_canal is null then 0 else oh_canal end as oh_canal,
+case when oh_tubewell is null then 0 else oh_tubewell end as oh_tubewell,
+case when mh_tubewell is null then 0 else mh_tubewell end as mh_tubewell,
+case when existing_water_works is null then 0 else existing_water_works end as existing_water_works
+,case when new_water_works is null then 0 else new_water_works end as new_water_works,
+
+case when nc_habitation1 is null then 0 else nc_habitation1 end as nc_habitation1,
+case when fc_upgraded1 is null then 0 else fc_upgraded1 end as fc_upgraded1,
+case when pc_habitation1 is null then 0 else pc_habitation1 end as pc_habitation1,
+case when nc_habitation2 is null then 0 else nc_habitation2 end as nc_habitation2,
+case when pc_habitation2 is null then 0 else pc_habitation2 end as pc_habitation2,
+case when fc_upgraded2 is null then 0 else fc_upgraded2 end as fc_upgraded2
+from
+
+(select case when pws_district is not null then pws_district else hp_district end as district_id,
+case when pws_loc is not null then pws_loc else hp_loc end as loc,
+case when pws_block is not null then pws_block else hp_block end as block_id,
+case when pws_prog is not null then pws_prog else hp_prog end as prog_id,
+--case when nc_habitation is not null then nc_habitation else 0 end as nc_habitation,
+
+sum(canal_sh) canal_sh,sum(tubewell_sh) tubewell_sh, sum(handpump_sh) handpump_sh,
+sum(swap_hp_sh) swap_hp_sh,sum(swap_sh) swap ,sum(nonswap_hp_sh) nonswap_hp_sh, sum(nonswap_sh)non_swap,
+sum(mh_handpump) mh_handpump,sum(oh_handpump) oh_handpump,
+sum(canal_mh) mh_canal, sum(canal_oh) oh_canal, sum(tubewell_mh) mh_tubewell, sum(tubewell_oh) oh_tubewell, sum(existing_water_works) existing_water_works,
+sum(new_water_works) new_water_works,sum(nc_habitation1) nc_habitation1,sum(pc_habitation1)pc_habitation1,sum(fc_upgraded1)fc_upgraded1
+,sum(nc_habitation2) nc_habitation2,sum(pc_habitation2)pc_habitation2,sum(fc_upgraded2)fc_upgraded2
+
+from
+(select abs_sch_pws.district_id pws_district,abs_sch_hp.district_id hp_district,abs_sch_pws.location_id as pws_loc, abs_sch_hp.location_id as hp_loc, abs_sch_pws.block_id as pws_block,abs_sch_hp.block_id as hp_block, abs_sch_pws.prog_id as pws_prog, abs_sch_hp.prog_id as hp_prog, canal_sh,tubewell_sh, handpump_sh,swap_sh,nonswap_sh,swap_hp_sh,nonswap_hp_sh, mh_handpump,oh_handpump, canal_mh, canal_oh, tubewell_mh, tubewell_oh, existing_water_works,new_water_works,nc_habitation1,pc_habitation1,fc_upgraded1
+,nc_habitation2,pc_habitation2,fc_upgraded2
+ from
+
+(select location_id, district_id,block_id, prog_id,
+
+count(distinct case when (scheme_source in ('LIFTINGOFWATERFROMRSDLAKE','CANAL') and row_id2 =1 and  row_id3 =1) then scheme_id else null end) as canal_sh,
+count(distinct case when (scheme_source not in ('LIFTINGOFWATERFROMRSDLAKE','CANAL') and row_id2 =1 and  row_id3 =1) then scheme_id else null end) as tubewell_sh,
+
+count(distinct case when (prog_id in ('PROG15','PROG06','PROG11','PROG20') and row_id2 =1 and  row_id3 =1) then scheme_id else null end) as swap_sh,
+count(distinct case when (prog_id not in ('PROG15','PROG06','PROG11','PROG20') and row_id2 =1 and  row_id3 =1) then scheme_id else null end) as nonswap_sh,
+
+count(distinct case when (scheme_source in ('LIFTINGOFWATERFROMRSDLAKE','CANAL' ) and habitation_type = 'MH') then village_id else null end) as canal_mh,
+count(distinct case when (scheme_source in ('LIFTINGOFWATERFROMRSDLAKE','CANAL') and habitation_type = 'OH') then village_id else null end) as canal_oh,
+
+count(distinct case when (scheme_source not in ('LIFTINGOFWATERFROMRSDLAKE','CANAL') and habitation_type = 'MH') then village_id else null end) as tubewell_mh,
+count(distinct case when (scheme_source not in ('LIFTINGOFWATERFROMRSDLAKE','CANAL') and habitation_type = 'OH') then village_id else null end) as tubewell_oh,
+
+sum(case when habitation_type='MH' and ncpc_2008='NC' and scheme_commissioned_date between to_date($P{from_date},'yyyy-mm-dd') and to_date($P{to_date},'yyyy-mm-dd')
+then 1 else 0 end) nc_habitation1,
+sum(case when habitation_type='MH' and ncpc_2008='PC'  and scheme_commissioned_date between to_date($P{from_date},'yyyy-mm-dd') and to_date($P{to_date},'yyyy-mm-dd')
+then 1 else 0 end) pc_habitation1,
+sum(case when habitation_type='MH' and ncpc_2008='FC'  and scheme_commissioned_date between to_date($P{from_date},'yyyy-mm-dd') and to_date($P{to_date},'yyyy-mm-dd')
+then 1 else 0 end) fc_upgraded1,
+
+
+count(distinct case when water_works_existing_new='NEW' then scheme_id else null end) new_water_works,
+count(distinct case when water_works_existing_new <> 'NEW' then scheme_id else null end) existing_water_works
+
+
+ from
+
+(select location_id, district_id,village_id,scheme_id,scheme_commissioned_date,scheme_source,prog_id,habitation_type,water_works_existing_new,block_id,location_water_works,row_id,
+dense_rank() over (partition by scheme_id, row_id order by block_id,scheme_commissioned_date desc, prog_id) row_id2,
+dense_rank() over ( partition by scheme_id,row_id order by block_id, scheme_commissioned_date desc) row_id3,ncpc_2008 from
+
+(select location_id, mv.district_id,mv.village_id,sh.scheme_id,scheme_commissioned_date,sh.scheme_source,prog_id,habitation_type,water_works_existing_new,block_id,location_water_works,nc_pc_status as ncpc_2008,
+rank() over (partition by sv.village_id order by scheme_commissioned_date desc nulls last, sv.scheme_id) row_id
+from prwss_main.mst_village mv,prwss_main.mst_scheme_village sv,prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_details sd,prwss_main.tbl_proposed_program_2008 ncpc
+where mv.village_id=sv.village_id and mv.village_id=ncpc.village_id
+and   sh.scheme_id=sv.scheme_id and sv.scheme_id=sd.scheme_id and sh.status<>'D' and sd.status<>'D'
+and   sh.scheme_upgraded = sv.scheme_upgraded and sh.scheme_upgraded = sd.scheme_upgraded
+and   sh.scheme_source not in ('SEWERAGE','HANDPUMP','TUBEWELLWITHRO')
+and   mv.status<>'D' and sv.status<>'D'
+and scheme_commissioned_date is not null
+and spl_flags is null
+and   scheme_commissioned_date between to_date($P{from_date},'yyyy-mm-dd') and to_date($P{to_date},'yyyy-mm-dd')
+and $P!{prog_id}
+) sch_pws ) x
+where row_id = 1
+
+group by location_id, district_id,block_id, prog_id) abs_sch_pws
+
+full outer join
+
+
+(select location_id,district_id,prog_id,block_id,count(distinct case when  dist_rank = 1 then scheme_id else null end) as handpump_sh,
+	count(distinct case when  dist_rank = 1 AND prog_id in ('PROG15','PROG06','PROG11','PROG20') then scheme_id else null end) as swap_hp_sh
+	,count(distinct case when  dist_rank = 1 AND prog_id not in ('PROG15','PROG06','PROG11','PROG20')then scheme_id else null end) as nonswap_hp_sh,
+	sum(case when habitation_type='MH' and nc_pc_status='NC' and scheme_commissioned_date between to_date($P{from_date},'yyyy-mm-dd') and to_date($P{to_date},'yyyy-mm-dd')
+	then 1 else 0 end) nc_habitation2,
+	sum(case when habitation_type='MH' and nc_pc_status='PC' and scheme_commissioned_date between to_date($P{from_date},'yyyy-mm-dd') and to_date($P{to_date},'yyyy-mm-dd')
+	then 1 else 0 end) pc_habitation2,
+	sum(case when habitation_type='MH' and nc_pc_status='FC' and scheme_commissioned_date between to_date($P{from_date},'yyyy-mm-dd') and to_date($P{to_date},'yyyy-mm-dd')
+	then 1 else 0 end) fc_upgraded2,
+
+	count(case when habitation_type = 'MH' then hp_sch.village_id else null end) as mh_handpump,
+	count(case when habitation_type = 'OH' then hp_sch.village_id else null end) as oh_handpump from
+	(select *, dense_rank() over (partition by scheme_id order by block_id,scheme_commissioned_date desc) dist_rank
+	from prwss_main.vw_baseline_hp_sch_only where no_of_sources = 1
+	and scheme_commissioned_date between to_date($P{from_date},'yyyy-mm-dd') and to_date($P{to_date},'yyyy-mm-dd')) hp_sch ,prwss_main.tbl_proposed_program_2008 ncpc
+	where ncpc.village_id=hp_sch.village_id
+	group by district_id,location_id, block_id,prog_id) abs_sch_hp
+
+	on abs_sch_pws.location_id = abs_sch_hp.location_id
+	and abs_sch_pws.prog_id = abs_sch_hp.prog_id
+	and abs_sch_pws.block_id = abs_sch_hp.block_id) sub_main
+	group by loc, block_id, prog_id, district_id) main, prwss_main.mst_block mb, prwss_main.mst_district md,prwss_main.mst_divisional mdiv, prwss_main.mst_program mp,prwss_main.mst_circle mc, prwss_main.mst_zone mz
+
+	where
+	main.loc = mdiv.divisional_id and mdiv.status <> 'D'
+	and main.block_id = mb.block_id and mb.status <> 'D'
+	and main.prog_id = mp.program_id
+	and main.district_id = md.district_id
+	and mc.circle_id = md.circle_id
+	and mz.zone_id = mc.zone_id
+	order by zone_name,circle_name, district_name, block_name)main
+	where $P!{where}
+	group by zone_id,zone_name ,circle_name ,circle_id,district_id,district_name,loc,divisional_name,block_id, block_name,program_name, prog_id]]>
+	</queryString>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone" class="java.lang.String"/>
+	<field name="circle" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="loc" class="java.lang.String"/>
+	<field name="divisional_name" class="java.lang.String"/>
+	<field name="block_id" class="java.lang.String"/>
+	<field name="block_name" class="java.lang.String"/>
+	<field name="program_name" class="java.lang.String"/>
+	<field name="prog_id" class="java.lang.String"/>
+	<field name="swap" class="java.math.BigDecimal"/>
+	<field name="non_swap" class="java.math.BigDecimal"/>
+	<field name="canal_sh" class="java.math.BigDecimal"/>
+	<field name="tubewell_sh" class="java.math.BigDecimal"/>
+	<field name="handpump_sh" class="java.math.BigDecimal"/>
+	<field name="mh_habitation" class="java.math.BigDecimal"/>
+	<field name="oh_habitation" class="java.math.BigDecimal"/>
+	<field name="fc_upgraded" class="java.math.BigDecimal"/>
+	<field name="pc_habitation" class="java.math.BigDecimal"/>
+	<field name="nc_habitation" class="java.math.BigDecimal"/>
+	<field name="tubewell" class="java.math.BigDecimal"/>
+	<field name="handpump" class="java.math.BigDecimal"/>
+	<field name="canal" class="java.math.BigDecimal"/>
+	<field name="existing_water_works" class="java.math.BigDecimal"/>
+	<field name="new_water_works" class="java.math.BigDecimal"/>
+	<variable name="block_id_1" class="java.lang.Integer" resetType="Group" resetGroup="district" calculation="Count">
+		<variableExpression><![CDATA[$F{block_id}]]></variableExpression>
+	</variable>
+	<variable name="swap_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{swap}]]></variableExpression>
+	</variable>
+	<variable name="non_swap_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{non_swap}]]></variableExpression>
+	</variable>
+	<variable name="mh_habitation_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{mh_habitation}]]></variableExpression>
+	</variable>
+	<variable name="oh_habitation_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{oh_habitation}]]></variableExpression>
+	</variable>
+	<variable name="nc_habitation_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_habitation}]]></variableExpression>
+	</variable>
+	<variable name="pc_habitation_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_habitation}]]></variableExpression>
+	</variable>
+	<variable name="tubewell_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{tubewell}]]></variableExpression>
+	</variable>
+	<variable name="canal_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{canal}]]></variableExpression>
+	</variable>
+	<variable name="handpump_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{handpump}]]></variableExpression>
+	</variable>
+	<variable name="new_water_works_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{new_water_works}]]></variableExpression>
+	</variable>
+	<variable name="existing_water_works_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{existing_water_works}]]></variableExpression>
+	</variable>
+	<variable name="block_id_2" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{block_id}]]></variableExpression>
+	</variable>
+	<variable name="program_name_1" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{program_name}]]></variableExpression>
+	</variable>
+	<variable name="swap_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{swap}]]></variableExpression>
+	</variable>
+	<variable name="non_swap_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{non_swap}]]></variableExpression>
+	</variable>
+	<variable name="mh_habitation_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{mh_habitation}]]></variableExpression>
+	</variable>
+	<variable name="oh_habitation_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{oh_habitation}]]></variableExpression>
+	</variable>
+	<variable name="nc_habitation_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_habitation}]]></variableExpression>
+	</variable>
+	<variable name="pc_habitation_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_habitation}]]></variableExpression>
+	</variable>
+	<variable name="tubewell_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tubewell}]]></variableExpression>
+	</variable>
+	<variable name="handpump_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{handpump}]]></variableExpression>
+	</variable>
+	<variable name="new_water_works_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{new_water_works}]]></variableExpression>
+	</variable>
+	<variable name="existing_water_works_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{existing_water_works}]]></variableExpression>
+	</variable>
+	<variable name="canal_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{canal}]]></variableExpression>
+	</variable>
+	<variable name="swap_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{swap}]]></variableExpression>
+	</variable>
+	<variable name="non_swap_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{non_swap}]]></variableExpression>
+	</variable>
+	<variable name="swap_4" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{swap}]]></variableExpression>
+	</variable>
+	<variable name="non_swap_4" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{non_swap}]]></variableExpression>
+	</variable>
+	<variable name="tubewell_sh_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{tubewell_sh}]]></variableExpression>
+	</variable>
+	<variable name="canal_sh_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{canal_sh}]]></variableExpression>
+	</variable>
+	<variable name="handpump_sh_1" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{handpump_sh}]]></variableExpression>
+	</variable>
+	<variable name="tubewell_sh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tubewell_sh}]]></variableExpression>
+	</variable>
+	<variable name="canal_sh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{canal_sh}]]></variableExpression>
+	</variable>
+	<variable name="handpump_sh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{handpump_sh}]]></variableExpression>
+	</variable>
+	<variable name="swap_5" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{swap}]]></variableExpression>
+	</variable>
+	<variable name="non_swap_5" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{non_swap}]]></variableExpression>
+	</variable>
+	<variable name="tubewell_sh_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{tubewell_sh}]]></variableExpression>
+	</variable>
+	<variable name="canal_sh_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{canal_sh}]]></variableExpression>
+	</variable>
+	<variable name="handpump_sh_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{handpump_sh}]]></variableExpression>
+	</variable>
+	<variable name="mh_habitation_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{mh_habitation}]]></variableExpression>
+	</variable>
+	<variable name="oh_habitation_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{oh_habitation}]]></variableExpression>
+	</variable>
+	<variable name="nc_habitation_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_habitation}]]></variableExpression>
+	</variable>
+	<variable name="pc_habitation_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_habitation}]]></variableExpression>
+	</variable>
+	<variable name="tubewell_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{tubewell}]]></variableExpression>
+	</variable>
+	<variable name="canal_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{canal}]]></variableExpression>
+	</variable>
+	<variable name="handpump_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{handpump}]]></variableExpression>
+	</variable>
+	<variable name="new_water_works_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{new_water_works}]]></variableExpression>
+	</variable>
+	<variable name="existing_water_works_3" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{existing_water_works}]]></variableExpression>
+	</variable>
+	<variable name="fc_upgraded_1" class="java.lang.Long" resetType="Group" resetGroup="block_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{fc_upgraded}]]></variableExpression>
+	</variable>
+	<variable name="fc_upgraded_2" class="java.lang.Long" resetType="Group" resetGroup="district" calculation="Sum">
+		<variableExpression><![CDATA[$F{fc_upgraded}]]></variableExpression>
+	</variable>
+	<variable name="fc_upgraded_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{fc_upgraded}]]></variableExpression>
+	</variable>
+	<group name="zone">
+		<groupExpression><![CDATA[$F{zone}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+	</group>
+	<group name="circle">
+		<groupExpression><![CDATA[$F{circle}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+	</group>
+	<group name="district">
+		<groupExpression><![CDATA[$F{district_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="832" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Zone:  "+$F{zone}+",  Circle:  "+$F{circle}+",  District:  "+$F{district_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement style="table_TH" x="0" y="0" width="187" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["District "+$F{district_name}+" Total:"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="412" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{mh_habitation_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="457" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{oh_habitation_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="560" y="0" width="32" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_habitation_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="530" y="0" width="30" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_habitation_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="592" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tubewell_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="637" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{canal_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="682" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{handpump_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="727" y="0" width="54" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{new_water_works_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" x="781" y="0" width="51" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{existing_water_works_1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="table_TH" x="187" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{swap_4}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="table_TH" x="232" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{non_swap_4}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="277" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tubewell_sh_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="322" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{canal_sh_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="367" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{handpump_sh_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TH" mode="Opaque" x="502" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{fc_upgraded_2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="total"/>
+	<group name="block_name">
+		<groupExpression><![CDATA[$F{block_id}]]></groupExpression>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement style="table_TH" x="0" y="0" width="187" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Block "+$F{block_name}+"  Total:"]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="187" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{swap_5}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="232" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{non_swap_5}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="277" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tubewell_sh_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="322" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{canal_sh_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="367" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{handpump_sh_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="412" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{mh_habitation_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="457" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{oh_habitation_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="560" y="0" width="32" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_habitation_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="530" y="0" width="30" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_habitation_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="592" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tubewell_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="637" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{canal_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="682" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{handpump_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="727" y="0" width="54" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{new_water_works_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TD" mode="Opaque" x="781" y="0" width="51" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{existing_water_works_3}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="502" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{fc_upgraded_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="85" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="65" width="832" height="20"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Abstract of Habitations/Schemes Commissioned under " + $P{swap2}+ "  (District-Wise & Block-Wise)"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="726" y="43" width="23" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[To:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="598" y="43" width="50" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[From :]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="749" y="43" width="83" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{to}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="832" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="648" y="43" width="78" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{from}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="219" y="21" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="609" y="21" width="223" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SWAp/Non-SWAp Report A-3.1]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="107" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="29" y="0" width="79" height="91" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Block]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="108" y="0" width="79" height="91" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Program ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="187" y="0" width="90" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Schemes covered under SWAp / Non-SWAp]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="187" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SWAp]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="232" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Non-SWAp]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="412" y="0" width="90" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Number of Habitations Commissioned ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="412" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="457" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="727" y="0" width="105" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Water Works Constructed/Upgraded]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="727" y="39" width="54" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Newly Constructed ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="781" y="39" width="51" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Existing/ Upgraded]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="502" y="0" width="90" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Number of Main Habitations falling under Category ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="530" y="39" width="30" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="560" y="39" width="32" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="592" y="0" width="135" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Habitations based upon Source]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="592" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tube Wells]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="637" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Canal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="682" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hand pumps]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="91" width="29" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="29" y="91" width="79" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="108" y="91" width="79" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="187" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="322" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="367" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="412" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="457" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="560" y="91" width="32" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[13]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="530" y="91" width="30" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[12]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="592" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[14]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="637" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[15]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="682" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[16]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="727" y="91" width="54" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[17]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="781" y="91" width="51" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="29" height="91" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr. No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="367" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hand pumps]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="277" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tube Wells]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="277" y="0" width="135" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Schemes based upon Source]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="322" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Canal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="277" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="232" y="91" width="45" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="502" y="91" width="28" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="502" y="39" width="28" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FC* Upgraded]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="29" y="0" width="79" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{block_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="108" y="0" width="79" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{program_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="187" y="0" width="45" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{swap}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="232" y="0" width="45" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{non_swap}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="412" y="0" width="45" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{mh_habitation}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="457" y="0" width="45" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{oh_habitation}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="560" y="0" width="32" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{nc_habitation}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="530" y="0" width="30" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{pc_habitation}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="592" y="0" width="45" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{tubewell}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="637" y="0" width="45" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{canal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="682" y="0" width="45" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{handpump}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="727" y="0" width="54" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{new_water_works}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="781" y="0" width="51" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{existing_water_works}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="0" y="0" width="29" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="277" y="0" width="45" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{tubewell_sh}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="322" y="0" width="45" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{canal_sh}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="367" y="0" width="45" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{handpump_sh}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="502" y="0" width="28" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{fc_upgraded}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="731" y="1" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="110" y="1" width="38" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="1" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="322" y="1" width="201" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[SWAp/Non-SWAp Report A-3.1]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="48">
+			<textField>
+				<reportElement style="table_TH" x="187" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{swap_3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="232" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{non_swap_3}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="187" height="20" backcolor="#CCFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[  Grand Total:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="412" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{mh_habitation_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="457" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{oh_habitation_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="560" y="0" width="32" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_habitation_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="530" y="0" width="30" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_habitation_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="592" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{tubewell_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="637" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{canal_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="682" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{handpump_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="727" y="0" width="54" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{new_water_works_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="781" y="0" width="51" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{existing_water_works_2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="277" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{tubewell_sh_2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="322" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{canal_sh_2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="367" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{handpump_sh_2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="502" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{fc_upgraded_3}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="783" y="20" width="50" height="20"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Version:1.1]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

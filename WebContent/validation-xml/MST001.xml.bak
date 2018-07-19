@@ -1,0 +1,11 @@
+<SCREEN id="MST001">
+	<SCREEN-ELEMENT id="componentId">
+		<SCREEN-EVENT handler="onkeypress" execute="return validateKey(event,this,'a@50');" />		
+	</SCREEN-ELEMENT>
+	<SCREEN-ELEMENT id="componentName">
+		<SCREEN-EVENT handler="onkeypress" execute="return validateKey(event,this,'a@50');" />		
+	</SCREEN-ELEMENT>
+	<SCREEN-ELEMENT id="componentDescription">
+		<SCREEN-EVENT handler="onkeypress" execute="return validateKey(event,this,'a@50');" />		
+	</SCREEN-ELEMENT>
+</SCREEN>

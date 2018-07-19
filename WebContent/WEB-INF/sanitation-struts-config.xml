@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+	<form-beans>
+		<form-bean name="benifecieryForm"
+			type="com.prwss.min.sanitation.form.BeneficiaryForm"></form-bean>
+		<form-bean name="gramPanchayatRegisterForm"
+			type="com.prwss.min.sanitation.form.GramPanchayatRegisterForm"></form-bean>
+
+		<form-bean name="viewRegistrationsForm"
+			type="com.prwss.min.sanitation.form.ViewRegistrationsForm"></form-bean>
+		<form-bean name="motivatorEntryForm"
+			type="com.prwss.min.sanitation.form.MotivatorEntryForm"></form-bean>
+		<form-bean name="surveyMasterForm"
+			type="com.prwss.min.sanitation.form.SurveyMasterForm"></form-bean>
+
+		<form-bean name="baseLineForm" type="com.prwss.min.sanitation.form.BaseLineForm"></form-bean>
+
+		<form-bean name="validatRequestForm"
+			type="com.prwss.min.sanitation.form.ValidateRequestForm"></form-bean>
+		<form-bean name="latrineUsageForm"
+			type="com.prwss.min.sanitation.form.LatrineUsageForm"></form-bean>
+		<form-bean name="odfDeclarationForm"
+			type="com.prwss.min.sanitation.form.ODFDeclarationForm"></form-bean>
+		<form-bean name="validateBeneficiaryForm"
+			type="com.prwss.min.sanitation.form.ValidateBeneficiaryForm"></form-bean>
+		<form-bean name="reValidateBeneficiary"
+			type="com.prwss.min.sanitation.form.ReValidateBeneficiary"></form-bean>
+		<form-bean name="forwardBeneficiaryForm"
+			type="com.prwss.min.sanitation.form.ForwardBeneficiaryForm"></form-bean>
+		<form-bean name="beneficiaryApprovalForm"
+			type="com.prwss.min.sanitation.form.BeneficiaryApprovalForm"></form-bean>
+		<form-bean name="paymentRequestForm"
+			type="com.prwss.min.sanitation.form.PaymentRequestForm"></form-bean>
+
+		<form-bean name="gramPanchayatMasterForm"
+			type="com.prwss.min.sanitation.form.GramPanchayatMasterForm"></form-bean>
+
+		<form-bean name="verifyPaymentForm"
+			type="com.prwss.min.sanitation.form.VerifyPaymentForm"></form-bean>
+		<form-bean name="hallofFameForm"
+			type="com.prwss.min.sanitation.form.HallofFameForm"></form-bean>
+
+		<form-bean name="approvePaymentForm"
+			type="com.prwss.min.sanitation.form.ApprovePaymentForm"></form-bean>
+
+		<form-bean name="progressofWorkForm"
+			type="com.prwss.min.sanitation.form.ProgressofWorkForm"></form-bean>
+	</form-beans>
+
+
+
+	<action-mappings>
+		<action path="/hallofFameAction" input="hall.ofFame.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="hallofFameForm"
+			parameter="method" scope="session">
+			<forward name="display" path="hall.ofFame.view"></forward>
+		</action>
+		<action path="/progressofWorkAction" input="progressof.Work.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="progressofWorkForm"
+			parameter="method" scope="session">
+			<forward name="display" path="progressof.Work.view"></forward>
+		</action>
+		
+		<action path="/approvePaymentAction" input="approve.payment.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="approvePaymentForm"
+			parameter="method" scope="session">
+			<forward name="display" path="approve.payment.view"></forward>
+		</action>
+
+		<action path="/verifyPaymentAction" input="verify.payment.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="verifyPaymentForm"
+			parameter="method" scope="session">
+			<forward name="display" path="verify.payment.view"></forward>
+		</action>
+
+		<action path="/gramPanchayatMasterAction" input="grampanchayat.Master.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="gramPanchayatMasterForm"
+			parameter="method" scope="session">
+			<forward name="display" path="grampanchayat.Master.view"></forward>
+		</action>
+		<action path="/paymentRequestAction" input="payment.request"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="paymentRequestForm"
+			parameter="method" scope="session">
+			<forward name="display" path="payment.request"></forward>
+		</action>
+
+
+		<action path="/beneficiaryApprovalAction" input="beneficiary.approval.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="beneficiaryApprovalForm"
+			parameter="method" scope="session">
+			<forward name="display" path="beneficiary.approval.view"></forward>
+		</action>
+
+		<action path="/forwardBeneficiaryValidationAction" input="revalidate.beneficiary.forward.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="forwardBeneficiaryForm"
+			parameter="method" scope="session">
+			<forward name="display" path="revalidate.beneficiary.forward.view"></forward>
+		</action>
+
+		<action path="/reValidateBeneficiaryAction" input="revalidate.beneficiary.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="reValidateBeneficiary"
+			parameter="method" scope="session">
+			<forward name="display" path="revalidate.beneficiary.view"></forward>
+		</action>
+
+		<action path="/validateBeneficiaryAction" input="validate.beneficiary.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="validateBeneficiaryForm"
+			parameter="method" scope="session">
+			<forward name="display" path="validate.beneficiary.view"></forward>
+		</action>
+
+		<action path="/odfDeclarationAction" input="odf.declaration.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="odfDeclarationForm"
+			parameter="method" scope="session">
+			<forward name="display" path="odf.declaration.view"></forward>
+		</action>
+		<action path="/latrineUsageAction" input="latrine.usage.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="latrineUsageForm"
+			parameter="method" scope="session">
+			<forward name="display" path="latrine.usage.view"></forward>
+		</action>
+
+		<action path="/validateRequestAction" input="validate.request.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="validatRequestForm"
+			parameter="method" scope="session">
+			<forward name="display" path="validate.request.view"></forward>
+		</action>
+
+		<action path="/baselineSurveyAction" input="baseline.survey.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="baseLineForm"
+			parameter="method" scope="session">
+			<forward name="display" path="baseline.survey.view"></forward>
+		</action>
+
+		<action path="/surveyMasterAction" input="survey.master.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="surveyMasterForm"
+			parameter="method" scope="session">
+			<forward name="display" path="survey.master.view"></forward>
+		</action>
+
+		<action path="/motivatorEntryAction" input="motivator.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="motivatorEntryForm"
+			parameter="method" scope="session">
+			<forward name="display" path="motivator.view"></forward>
+		</action>
+		<action path="/benifecieryEntryAction" input="benifecieryEntry.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="benifecieryForm"
+			parameter="method" scope="session">
+			<forward name="display" path="benifecieryEntry.view"></forward>
+		</action>
+
+		<action path="/benifecieryEntryViewAction" input="benifecieryEntryView.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="viewRegistrationsForm"
+			parameter="method" scope="session">
+			<forward name="display" path="benifecieryEntryView.view"></forward>
+		</action>
+
+		<action path="/gramPanchayatRegisterAction" input="gramPanchayatRegister.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="gramPanchayatRegisterForm"
+			parameter="method" scope="session">
+			<forward name="display" path="gramPanchayatRegister.view"></forward>
+		</action>
+
+
+		<action path="/viewRegistrationsAction" input="viewRegistrations.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="viewRegistrationsForm"
+			parameter="method" scope="session">
+			<forward name="display" path="viewRegistrations.view"></forward>
+		</action>
+	</action-mappings>
+	<message-resources parameter="SanitationResources"
+		key="sanitation" />
+</struts-config>

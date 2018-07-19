@@ -1,0 +1,208 @@
+/**
+ * 
+ */
+package com.prwss.mis.pmm.report.struts;
+
+import org.apache.struts.validator.ValidatorForm;
+
+import com.prwss.mis.common.util.MisUtility;
+
+/**
+ * @author pjha
+ *
+ */
+public class EstimatesAwardContractsReportForm extends ValidatorForm {
+
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8095551153236274729L;
+	private String currentDate= MisUtility.now("dd-MM-yyyy");
+	private String fileTitle;
+	private String selectZone="A";
+	private String selectCircle="A";
+	private String selectDistrict="A";
+	private String selectProgram="A";
+	private String zoneId;
+	private String circleId;
+	private String districtId;
+	private String programId;
+	private String asOnDate=this.currentDate;
+	private String toDate=this.currentDate;
+	private String approvalStatus="UA";
+	private String selectReport="PMMRPT001_1";
+	private String jasperFile;
+	public String getCurrentDate() {
+		return currentDate;
+	}
+	public void setCurrentDate(String currentDate) {
+		this.currentDate = currentDate;
+	}
+	
+	public String getSelectZone() {
+		return selectZone;
+	}
+	public void setSelectZone(String selectZone) {
+		this.selectZone = selectZone;
+	}
+	public String getSelectCircle() {
+		return selectCircle;
+	}
+	public void setSelectCircle(String selectCircle) {
+		this.selectCircle = selectCircle;
+	}
+	public String getSelectDistrict() {
+		return selectDistrict;
+	}
+	public void setSelectDistrict(String selectDistrict) {
+		this.selectDistrict = selectDistrict;
+	}
+	public String getSelectProgram() {
+		return selectProgram;
+	}
+	public void setSelectProgram(String selectProgram) {
+		this.selectProgram = selectProgram;
+	}
+	public String getAsOnDate() {
+		return asOnDate;
+	}
+	public void setAsOnDate(String asOnDate) {
+		this.asOnDate = asOnDate;
+	}
+	public String getToDate() {
+		return toDate;
+	}
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+	public String getApprovalStatus() {
+		return approvalStatus;
+	}
+	public void setApprovalStatus(String approvalStatus) {
+		this.approvalStatus = approvalStatus;
+	}
+	public void setSelectReport(String selectReport) {
+		this.selectReport = selectReport;
+	}
+	public String getSelectReport() {
+		return selectReport;
+	}
+	public void setZoneId(String zoneId) {
+		this.zoneId = zoneId;
+	}
+	public String getZoneId() {
+		return zoneId;
+	}
+	public void setCircleId(String circleId) {
+		this.circleId = circleId;
+	}
+	public String getCircleId() {
+		return circleId;
+	}
+	public void setDistrictId(String districtId) {
+		this.districtId = districtId;
+	}
+	public String getDistrictId() {
+		return districtId;
+	}
+	public void setProgramId(String programId) {
+		this.programId = programId;
+	}
+	public String getProgramId() {
+		return programId;
+	}
+	public void setJasperFile(String jasperFile) {
+		this.jasperFile = jasperFile;
+	}
+	public String getJasperFile() {
+		if(selectReport.equals("PMMRPT001_1"))
+			return "/pmm/reports/PMMRPT001_1.jasper";
+		if(selectReport.equals("PMMRPT001_2"))
+			return "/pmm/reports/PMMRPT001_2.jasper";
+		if(selectReport.equals("PMMRPT001_3"))
+			return "/pmm/reports/PMMRPT001_3.jasper";
+		if(selectReport.equals("PMMRPT001_4"))
+			return "/pmm/reports/PMMRPT001_4.jasper";
+		if(selectReport.equals("PMMRPT001_5"))
+			return "/pmm/reports/PMMRPT001_5.jasper";
+		if(selectReport.equals("PMMRPT001_6"))
+			return "/pmm/reports/PMMRPT001_6.jasper";
+		if(selectReport.equals("PMMRPT001_7"))
+			return "/pmm/reports/PMMRPT001_7.jasper";
+		if(selectReport.equals("PMMRPT001_8"))
+			return "/pmm/reports/PMMRPT001_8.jasper";
+		if(selectReport.equals("PMMRPT001_9"))
+			return "/pmm/reports/PMMRPT001_9.jasper";
+		if(selectReport.equals("PMMRPT001_10"))
+			return "/pmm/reports/PMMRPT001_10.jasper";
+		if(selectReport.equals("PMMRPT001_11"))
+			return "/pmm/reports/PMMRPT001_11.jasper";
+		if(selectReport.equals("PMMRPT001_12"))
+			return "/pmm/reports/PMMRPT001_12.jasper";
+		if(selectReport.equals("PMMRPT001_13"))
+			return "/pmm/reports/PMMRPT001_13.jasper";
+		if(selectReport.equals("PMMRPT001_14"))
+			return "/pmm/reports/PMMRPT001_14.jasper";
+		if(selectReport.equals("PMMRPT001_15"))
+			return "/pmm/reports/PMMRPT001_15.jasper";
+		if(selectReport.equals("PMMRPT001_16"))
+			return "/pmm/reports/PMMRPT001_16.jasper";
+		if(selectReport.equals("PMMRPT001_17"))
+			return "/pmm/reports/PMMRPT001_17.jasper";
+		if(selectReport.equals("PMMRPT001_18"))
+			return "/pmm/reports/PMMRPT001_18.jasper";
+	return null;
+	}
+	public void setFileTitle(String fileTitle) {
+		this.fileTitle = fileTitle;
+	}
+	public String getFileTitle() {
+		if(selectReport.equals("PMMRPT001_1"))
+			return "Beneficiary_Share-1_";
+		if(selectReport.equals("PMMRPT001_2"))
+			return "Beneficiary_Share-2_";
+		if(selectReport.equals("PMMRPT001_3"))
+			return "Beneficiary_Share-3_";
+		if(selectReport.equals("PMMRPT001_4"))
+			return "Scheme_Village_";
+		if(selectReport.equals("PMMRPT001_5"))
+			return "Water_Connection_";
+		if(selectReport.equals("PMMRPT001_6"))
+			return "PMM_Table2_";
+		if(selectReport.equals("PMMRPT001_7"))
+			return "PMM_Table2a_";
+		if(selectReport.equals("PMMRPT001_8"))
+			return "PMM_Table2b_";
+		if(selectReport.equals("PMMRPT001_9"))
+			return "PMM_Table2c_";
+		if(selectReport.equals("PMMRPT001_10"))
+			return "PMM_Table1_";
+		if(selectReport.equals("PMMRPT001_11"))
+			return "PMM_Table3_";
+		if(selectReport.equals("PMMRPT001_12"))
+			return "PMM_Table3a_";
+		if(selectReport.equals("PMMRPT001_13"))
+			return "PMM_Table3b_";
+		if(selectReport.equals("PMMRPT001_14"))
+			return "PMM_Table4_";
+		if(selectReport.equals("PMMRPT001_15"))
+			return "PMM_Table4a_";
+		if(selectReport.equals("PMMRPT001_16"))
+			return "PMM_Table4b_";
+		if(selectReport.equals("PMMRPT001_17"))
+			return "Operational_Sustainability";
+		if(selectReport.equals("PMMRPT001_18"))
+			return "State Habitation Abstract";
+	return null;
+	}
+	@Override
+	public String toString() {
+		return "EstimatesAwardContractsReportForm [selectZone="+ selectZone + ", selectCircle=" + selectCircle
+				+ ", zoneId=" + zoneId + ", circleId="+circleId+", districtId="+districtId+", programId="+programId
+				+ ", jasperFile="+jasperFile
+				+", selectReport=" + selectReport + ", selectDistrict=" + selectDistrict + ", selectProgram="
+				+ selectProgram + ", asOnDate=" + asOnDate + ", approvalStatus=" + approvalStatus + "]";
+	}			
+}

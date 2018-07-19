@@ -1,0 +1,1209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Report_IV" language="groovy" pageWidth="864" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="854" leftMargin="5" rightMargin="5" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="queryString" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="where" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="month" class="java.lang.String">
+		<defaultValueExpression><![CDATA["03"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fincode" class="java.lang.String">
+		<defaultValueExpression><![CDATA["5"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select zone_id,zone_name,circle_name,circle_id,district_name,district_id,divisional_name,divisional_id,scheme_id,prog_id,village_id,village_name,block_id,block_name,
+	constituency_id,constituency_name,target_commissioning_date,
+	balance/100000 balance,rel_to_office,row_sch,estimate_cost/100000 estimate_cost,'--' as status_of_revised,scheme_source, 0 as funds_available,prog_name,scheme_name,exp/100000 exp,
+
+
+	case when habitation_type='MH' and ncpc_2008='NC' then vill else null end as nc_mh,
+	case when habitation_type='OH' and ncpc_2008='NC' then vill else null end as nc_oh,
+	case when habitation_type='MH' and ncpc_2008='PC' then vill else null end as pc_mh,
+	case when habitation_type='OH' and ncpc_2008='PC' then vill else null end as pc_oh,
+	case when habitation_type='MH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then vill else null end as slip_mh,
+	case when habitation_type='OH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then vill else null end as slip_oh,
+	case when habitation_type='MH' then vill else null end mh,
+	case when habitation_type='OH' then vill else null end oh
+
+
+
+from
+(select z.zone_id,z.zone_name,c.circle_id,c.circle_name,d.district_id,district_name,divisional_id,divisional_name,block_name,constituency_name,main.*,
+	(admin_app_gop_amount-exp) as balance
+
+from
+(select xx.*,case when xxx.expenditure is null then 0 else xxx.expenditure end as exp,estimate_cost,rel_to_office,target_commissioning_date
+from
+
+
+(select *,rank() over (partition by scheme_id order by village_id,location_id)as row_sch
+from
+(select sh.location_id,sh.scheme_id,sh.prog_id,sh.scheme_source,sh.scheme_name,mv.village_id,village_name,habitation_type,nc_pc_status,scheme_commissioned_date,sd.scheme_completed_date,block_id,constituency_id,
+	case when admin_app_gop_amount is null then 0 else admin_app_gop_amount end as admin_app_gop_amount,admin_app_gop_letter_date,admin_app_gop_letter_no,vill,ncpc_2008,prog_name,
+	rank() over (partition by mv.village_id order by scheme_commissioned_date desc,sh.scheme_id desc,admin_app_gop_letter_date desc,sh.scheme_upgraded)rank
+from prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_village sv,prwss_main.mst_scheme_details sd,prwss_main.mst_village mv,
+	-----------------------------------------------------current nc pc status--------------------------------------
+	(select village_id,(village_name||'('||village_id ||')' ) vill, nc_pc_status, ncpc_2008, prog_name
+		from
+		(select x.*,scheme_id,scheme_commissioned_date,prog_id,
+		case when (ncpc_2008 in ('NC','PC') and scheme_commissioned_date is not null and scheme_commissioned_date>'2008-04-01') or spl_flags is not null then 'FC' else ncpc_2008 end as nc_pc_status
+		from
+		(select mv.*,nc_pc_status as ncpc_2008, proposed_program_name prog_name
+		from prwss_main.mst_village mv,prwss_main.tbl_proposed_program_2008 ncpc
+		where mv.village_id=ncpc.village_id
+		and   mv.status<>'D')x
+		left join
+		(select * from
+		(select mv.village_id,sh.scheme_id,scheme_commissioned_date,prog_id,
+		rank() over (partition by mv.village_id order by scheme_commissioned_date desc, sh.scheme_id desc,admin_app_gop_letter_date desc,sh.scheme_upgraded desc) row_id
+		from prwss_main.mst_village mv,prwss_main.mst_scheme_village sv,prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_details sd
+		where mv.village_id=sv.village_id
+		--and   sh.scheme_source not in ( 'SEWERAGE','IMPROVEMENT')
+		and   sh.scheme_id=sv.scheme_id and sv.scheme_id=sd.scheme_id and sh.status<>'D' and sd.status<>'D'
+		and   mv.status<>'D' and sv.status<>'D'
+		and   scheme_commissioned_date>=to_date('2008-04-01','yyyy-mm-dd') and scheme_commissioned_date < now())y where row_id=1)xx
+		on x.village_id=xx.village_id)xx) a,
+--------------------------------------------------------------------------------------------------------------------
+	(select *
+	from
+	(select  th.tender_id,scheme_code,(scheme_name||' ('||scheme_code||')') sch_name,open_date,publish_date,
+		rank() over (partition by scheme_code order by signing_of_contract,open_date,publish_date,th.tender_id) rank,signing_of_contract
+	from prwss_main.t_tender_hdr th,prwss_main.mst_scheme_header sh,prwss_main.t_tender_award ta
+	where th.scheme_code=sh.scheme_id
+	and   th.tender_id=ta.tender_id
+	and tender_type='WORKS' and signing_of_contract is not null
+	and   th.status<>'D' and sh.status<>'D' and ta.status<>'D')a
+	where rank=1
+	)b
+where sh.scheme_id=sv.scheme_id
+and   sv.scheme_id=sd.scheme_id
+and   sd.scheme_id=b.scheme_code
+and   sv.village_id=mv.village_id
+and   mv.village_id=a.village_id
+and   sh.status<>'D' and sv.status<>'D'
+and sd.status<>'D' and mv.status<>'D')x
+where rank=1 and scheme_commissioned_date is  null)xx
+
+
+left join
+-------------------------------------------set 2 for Balance Amount-----------------------------------
+
+
+(select sh.location_id,sh.scheme_id,sum(vh.amount) expenditure
+from prwss_main.t_finance_voucher_hdr vh--,prwss_main.t_finance_voucher_detail vd
+,prwss_main.mst_scheme_header sh
+where --vh.voc_id=vd.voc_id and
+vh.scheme_id=sh.scheme_id
+and   vh.status<>'D' --and vd.status<>'D'
+and sh.status<>'D'
+and   vh.voc_type='PAYMENT'
+group  by sh.location_id,sh.scheme_id)xxx
+
+on xx.scheme_id=xxx.scheme_id
+
+left join
+------------------------------------------------------------------------------------------------------
+(select * from
+(select scheme_id,
+       sum(case when voc_type='PAYMENT' and payee_payer_type='OFFICE' then amount/100000 end) as rel_to_office
+from prwss_main.t_finance_voucher_hdr
+where status<>'D' and scheme_id <>'N/A'
+group by scheme_id)p
+where rel_to_office is not null)xxxx
+
+on xx.scheme_id=xxxx.scheme_id
+
+left join
+------------------------------------------------------------------------------------------------------
+(select scheme_id, sum(estimate_package_cost) estimate_cost
+from prwss_main.t_proc_package_header ph
+where ph.status <>'D'
+group by scheme_id
+)est
+on xx.scheme_id = est.scheme_id
+
+--------------------------------------target comm date shit-----------------------------------------
+left  join
+(select location_id,scheme_id,sum(estimate_package_cost) as total_estimate_packages_cost,max(anticipated_expenditure_cost) as anticipated_expenditure,target_commissioning_date
+from (select * from
+prwss_main.t_proc_package_header ph
+left join prwss_main.t_proc_package_works pw on ph.package_id = pw.package_id
+where ph.status <>'D' and pw.status<>'D'
+) p,prwss_main.mst_divisional md
+where md.divisional_id=p.location_id
+group by scheme_id,location_id,target_commissioning_date
+)pl on pl.scheme_id=xx.scheme_id
+
+------------------------------------------------------------------------------------------------------
+
+)main,prwss_main.mst_block mb,prwss_main.mst_constituency mc,prwss_main.mst_divisional di,prwss_main.mst_district d,prwss_main.mst_circle c,prwss_main.mst_zone z
+where main.block_id=mb.block_id
+and   main.constituency_id=mc.constituency_id
+and   main.location_id=di.divisional_id
+and   di.district_id=d.district_id
+and   d.circle_id=c.circle_id
+and   c.zone_id=z.zone_id
+and   mb.status<>'D' and mc.status<>'D'
+)final
+where $P!{where}
+order by zone_name,circle_name,district_name,divisional_name]]>
+	</queryString>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="divisional_name" class="java.lang.String"/>
+	<field name="divisional_id" class="java.lang.String"/>
+	<field name="scheme_id" class="java.lang.String"/>
+	<field name="prog_id" class="java.lang.String"/>
+	<field name="village_id" class="java.lang.String"/>
+	<field name="village_name" class="java.lang.String"/>
+	<field name="block_id" class="java.lang.String"/>
+	<field name="block_name" class="java.lang.String"/>
+	<field name="constituency_id" class="java.lang.String"/>
+	<field name="constituency_name" class="java.lang.String"/>
+	<field name="target_commissioning_date" class="java.sql.Date"/>
+	<field name="balance" class="java.math.BigDecimal"/>
+	<field name="rel_to_office" class="java.math.BigDecimal"/>
+	<field name="row_sch" class="java.lang.Long"/>
+	<field name="estimate_cost" class="java.math.BigDecimal"/>
+	<field name="status_of_revised" class="java.lang.String"/>
+	<field name="scheme_source" class="java.lang.String"/>
+	<field name="funds_available" class="java.lang.Integer"/>
+	<field name="prog_name" class="java.lang.String"/>
+	<field name="scheme_name" class="java.lang.String"/>
+	<field name="exp" class="java.math.BigDecimal"/>
+	<field name="nc_mh" class="java.lang.String"/>
+	<field name="nc_oh" class="java.lang.String"/>
+	<field name="pc_mh" class="java.lang.String"/>
+	<field name="pc_oh" class="java.lang.String"/>
+	<field name="slip_mh" class="java.lang.String"/>
+	<field name="slip_oh" class="java.lang.String"/>
+	<field name="mh" class="java.lang.String"/>
+	<field name="oh" class="java.lang.String"/>
+	<variable name="constituency_name_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{constituency_name}]]></variableExpression>
+	</variable>
+	<variable name="scheme_name_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{scheme_name}]]></variableExpression>
+	</variable>
+	<variable name="prog_name_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{prog_name}]]></variableExpression>
+	</variable>
+	<variable name="status_of_revised_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{status_of_revised}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="slip_mh_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{slip_mh}]]></variableExpression>
+	</variable>
+	<variable name="slip_oh_1" class="java.lang.Integer" resetType="Group" resetGroup="div_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{slip_oh}]]></variableExpression>
+	</variable>
+	<variable name="rel_to_office_1" class="java.math.BigDecimal" resetType="Group" resetGroup="div_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{rel_to_office}]]></variableExpression>
+	</variable>
+	<variable name="exp_1" class="java.math.BigDecimal" resetType="Group" resetGroup="div_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{exp}]]></variableExpression>
+	</variable>
+	<variable name="balance_1" class="java.math.BigDecimal" resetType="Group" resetGroup="div_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{balance}]]></variableExpression>
+	</variable>
+	<variable name="constituency_name_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{constituency_name}]]></variableExpression>
+	</variable>
+	<variable name="scheme_name_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{scheme_name}]]></variableExpression>
+	</variable>
+	<variable name="prog_name_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{prog_name}]]></variableExpression>
+	</variable>
+	<variable name="estimate_cost_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{estimate_cost}]]></variableExpression>
+	</variable>
+	<variable name="status_of_revised_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{status_of_revised}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="slip_mh_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{slip_mh}]]></variableExpression>
+	</variable>
+	<variable name="slip_oh_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{slip_oh}]]></variableExpression>
+	</variable>
+	<variable name="rel_to_office_2" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{rel_to_office}]]></variableExpression>
+	</variable>
+	<variable name="exp_2" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{exp}]]></variableExpression>
+	</variable>
+	<variable name="balance_2" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{balance}]]></variableExpression>
+	</variable>
+	<variable name="constituency_name_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{constituency_name}]]></variableExpression>
+	</variable>
+	<variable name="scheme_name_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{scheme_name}]]></variableExpression>
+	</variable>
+	<variable name="prog_name_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{prog_name}]]></variableExpression>
+	</variable>
+	<variable name="estimate_cost_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{estimate_cost}]]></variableExpression>
+	</variable>
+	<variable name="status_of_revised_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{status_of_revised}]]></variableExpression>
+	</variable>
+	<variable name="estimate_cost_3" class="java.math.BigDecimal" resetType="Group" resetGroup="div_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{estimate_cost}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="slip_mh_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{slip_mh}]]></variableExpression>
+	</variable>
+	<variable name="slip_oh_3" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{slip_oh}]]></variableExpression>
+	</variable>
+	<variable name="rel_to_office_3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{rel_to_office}]]></variableExpression>
+	</variable>
+	<variable name="exp_3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{exp}]]></variableExpression>
+	</variable>
+	<variable name="balance_3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{balance}]]></variableExpression>
+	</variable>
+	<group name="circle_grp">
+		<groupExpression><![CDATA[$F{circle_name}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="854" height="21" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Circle: "+$F{circle_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="30">
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="94" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{circle_name}+"Total:"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="table_TH" mode="Opaque" x="584" y="0" width="50" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" mode="Opaque" x="634" y="0" width="54" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="94" y="0" width="81" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{constituency_name_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="175" y="0" width="66" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_name_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="241" y="0" width="66" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{prog_name_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="307" y="0" width="65" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{estimate_cost_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="372" y="0" width="36" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{status_of_revised_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="408" y="0" width="30" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{nc_mh_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="438" y="0" width="30" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{nc_oh_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="468" y="0" width="30" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{pc_mh_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="498" y="0" width="29" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{pc_oh_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="527" y="0" width="28" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{slip_mh_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="555" y="0" width="29" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{slip_oh_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="688" y="0" width="55" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{rel_to_office_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="743" y="0" width="55" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{exp_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="798" y="0" width="56" height="30" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{balance_2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="div_grp">
+		<groupExpression><![CDATA[$F{divisional_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="854" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Division:  "+$F{divisional_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<staticText>
+					<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="94" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[Division Total:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="94" y="0" width="81" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{constituency_name_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="175" y="0" width="66" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_name_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="241" y="0" width="66" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{prog_name_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="372" y="0" width="36" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{status_of_revised_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="408" y="0" width="30" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{nc_mh_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="438" y="0" width="30" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{nc_oh_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="468" y="0" width="30" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{pc_mh_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="498" y="0" width="29" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{pc_oh_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="527" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{slip_mh_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="555" y="0" width="29" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{slip_oh_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="688" y="0" width="55" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{rel_to_office_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="743" y="0" width="55" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{exp_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="798" y="0" width="56" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{balance_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="table_TH" mode="Opaque" x="634" y="0" width="54" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table_TH" mode="Opaque" x="584" y="0" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="307" y="0" width="65" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{estimate_cost_3}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="41" width="372" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Detail of schemes in Progress but to be commissioned.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="233" y="21" width="383" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="712" y="21" width="142" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[WP Report : W4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="854" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="101" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="468" y="39" width="59" height="30" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="527" y="39" width="57" height="30" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Slipped Back]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="175" y="0" width="66" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Scheme]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="584" y="0" width="50" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Source of scheme (Canal/ Tubewell / Hand Pump)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="408" y="39" width="60" height="30" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="408" y="0" width="176" height="39" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  No. and Name of villages covered   in the scheme ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="20" y="0" width="74" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Name of District/Block ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="307" y="0" width="65" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estimated cost with Admn. Approval No. & Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="372" y="0" width="36" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status of revised estimate, if required]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="408" y="69" width="30" height="17" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="438" y="69" width="30" height="17" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="498" y="69" width="29" height="17" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="468" y="69" width="30" height="17" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="555" y="69" width="29" height="17" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="527" y="69" width="28" height="17" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="743" y="0" width="55" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Expenditure incurred]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="798" y="0" width="56" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Balance funds required]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="634" y="0" width="54" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Target date of commissioning balance villages (village wise)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="20" y="86" width="74" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="86" width="20" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="743" y="86" width="55" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[14]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="527" y="86" width="28" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="468" y="86" width="30" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="307" y="86" width="65" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="555" y="86" width="29" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="634" y="86" width="54" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[13]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="498" y="86" width="29" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="438" y="86" width="30" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="372" y="86" width="36" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="584" y="86" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[12]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="408" y="86" width="30" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="175" y="86" width="66" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="20" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr. No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="798" y="86" width="56" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="688" y="86" width="55" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[14]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="688" y="0" width="55" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Funds released to division]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="241" y="0" width="66" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Program]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="241" y="86" width="66" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="94" y="0" width="81" height="86" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Constituency]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="94" y="86" width="81" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="0" y="0" width="20" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="20" y="0" width="74" height="20" forecolor="#000000" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{district_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="94" y="0" width="81" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{constituency_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="175" y="0" width="66" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{scheme_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="241" y="0" width="66" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{prog_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="307" y="0" width="65" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{estimate_cost}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="372" y="0" width="36" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{status_of_revised}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="408" y="0" width="30" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nc_mh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="438" y="0" width="30" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nc_oh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="468" y="0" width="30" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{pc_mh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="498" y="0" width="29" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{pc_oh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="527" y="0" width="28" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{slip_mh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="555" y="0" width="29" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{slip_oh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="584" y="0" width="50" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{scheme_source}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="634" y="0" width="54" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{target_commissioning_date}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="688" y="0" width="55" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{rel_to_office}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="743" y="0" width="55" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{exp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="798" y="0" width="56" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{balance}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="724" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="332" y="0" width="160" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[WP Report : W4]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement x="80" y="0" width="40" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="94" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Grand Total:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" mode="Opaque" x="634" y="0" width="54" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" mode="Opaque" x="584" y="0" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="94" y="0" width="81" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{constituency_name_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="175" y="0" width="66" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{scheme_name_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="241" y="0" width="66" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{prog_name_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="372" y="0" width="36" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{status_of_revised_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="307" y="0" width="65" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{estimate_cost_2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="408" y="0" width="30" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{nc_mh_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="438" y="0" width="31" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{nc_oh_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="469" y="0" width="29" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{pc_mh_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="498" y="0" width="29" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{pc_oh_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="527" y="0" width="29" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{slip_mh_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="556" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{slip_oh_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="688" y="0" width="55" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{rel_to_office_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="743" y="0" width="55" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{exp_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="798" y="0" width="56" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{balance_3}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+	<form-beans>
+		
+		<form-bean name="locationMasterForm"
+			type="com.prwss.min.quality.struts.LocationMasterForm"></form-bean>
+		<form-bean name="locationTypeForm"
+			type="com.prwss.min.quality.struts.LocationTypeForm"></form-bean>
+	</form-beans>
+	<action-mappings>
+		
+		<action path="/locationMasterAction" input="locationMaster.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="locationMasterForm"   
+			parameter="method" scope="session">
+			<forward name="display" path="locationMaster.view"></forward>
+		</action>
+		<action path="/locationTypeAction" input="locationTypeMaster.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="locationTypeForm"
+			parameter="method" scope="session">
+			<forward name="display" path="locationTypeMaster.view"></forward>
+		</action>
+	</action-mappings>
+	<message-resources parameter="AdminMessageResources"
+		key="admin" />
+</struts-config>

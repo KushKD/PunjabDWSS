@@ -1,0 +1,769 @@
+/**
+ * Dr. KD
+ */
+	var parsed;
+var labMaster;
+var LabMaster = {
+	LabMasterType : function() {
+		labMaster = $("#labMasterDT")
+				.DataTable(
+						{
+							"language": {
+					            "lengthMenu": "Display _MENU_ records per page",
+					            "zeroRecords": "Nothing found - sorry",
+					            "info": "Showing page _PAGE_ of _PAGES_",
+					            "infoEmpty": "No records available",
+					            "infoFiltered": "(filtered from _MAX_ total records)"
+					        },
+							"deferRender" : true,
+							fixedHeader : true,
+							"bJQueryUI" : true,
+							"bAutoWidth" : false,
+							"sScrollX" : "100%",
+							"scrollY" : "170px",
+							scrollCollapse : true,
+							"bProcessing" : true,
+							"bPaginate" : true,
+							"serverSide" : true,
+							"bSort" : true,
+							'sAjaxSource' : 'labMasterAction.do?method=populateLabMaster&d__mode="+d__mode+"&menuId=WQ002',
+							columnDefs : [ {
+								orderable : false,
+								className : 'select-checkbox',
+								targets : 0,
+								"orderable" : false,
+								'render' : function(data, type, full, meta) {
+									return '';
+								}
+							},
+							
+							
+							  {
+								"targets" : [ 8 ],
+								"visible" : true,
+								"searchable" : false
+							}, {
+								"targets" : [ 5 ],
+								"visible" : false,
+								"searchable" : false
+							}, {
+								"targets" : [ 6 ],
+								"visible" : false,
+								"searchable" : false
+							} ],
+							select : {
+								style : 'os',
+								selector : 'td:first-child'
+							},
+							"columns" : [ {
+								"data" : 'render '
+
+							}, {
+								"data" : "labName",
+								"defaultContent" : ""
+							}, {
+								"data" : "district",
+								"defaultContent" : ""
+							}, {
+								"data" : "block",
+								"defaultContent" : ""
+							}, {
+								"data" : "villageId",
+								"defaultContent" : ""
+							}, {
+								"data" : "startDate",
+								"defaultContent" : ""
+							}, {
+								"data" : "endDate",
+								"defaultContent" : ""
+							}, {
+								"data" : "status",
+								"defaultContent" : ""
+							}, {
+								"data" : "labId",
+								"defaultContent" : ""
+							} ]
+
+						});
+		$('.datatable').each(function(){
+			var datatable = $(this);
+			// SEARCH - Add the placeholder for Search and Turn this into in-line form control
+			var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
+			search_input.attr('placeholder', 'Search');
+			search_input.addClass('form-control input-sm');
+			// LENGTH - Inline-Form control
+			var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
+			length_sel.addClass('form-control input-sm');
+		});
+		$('#labMasterDT tbody').on('click', 'tr', function() {
+			var data = labMaster.row(this).data();
+			labMasterData.populateLabTypeData(data);
+		});
+
+	}
+}
+var labMasterData = {
+	populateLabTypeData : function(data) {
+
+		document.getElementById('labId').value = data.labId;
+
+		document.getElementById('labName').value = data.labName;
+
+		document.getElementById('district').value = data.district;
+
+		triggerEvent(document.getElementById('district'), 'onchange');
+		document.getElementById('block').value = data.block;
+
+		triggerEvent(document.getElementById('block'), 'onchange');
+		document.getElementById('villageId').value = data.villageId;
+
+		document.getElementById('status').value = data.status;
+
+		if (typeof data.startDate != 'undefined') {
+			document.getElementById('startDate').value = data.startDate;
+		}
+		if (typeof data.endDate != 'undefined') {
+			document.getElementById('endDate').value = data.endDate;
+
+		}
+
+	}
+}
+
+var sampleCollection;
+var ReceiveSample = {
+	sample : function() {
+		sampleCollection1 = $("#sampleCollection")
+				.DataTable(
+						{
+							"language": {
+					            "lengthMenu": "Display _MENU_ records per page",
+					            "zeroRecords": "Nothing found - sorry",
+					            "info": "Showing page _PAGE_ of _PAGES_",
+					            "infoEmpty": "No records available",
+					            "infoFiltered": "(filtered from _MAX_ total records)"
+					        },
+							"deferRender" : true,
+							fixedHeader : true,
+							"bJQueryUI" : true,
+							"bAutoWidth" : false,
+							"sScrollX": false,
+							
+							"scrollY" : "170px",
+							scrollCollapse : true,
+							"bProcessing" : false,
+							"bPaginate" : true,
+							"serverSide" : true,
+							"bSort" : true,
+							'sAjaxSource' : 'receiveSampleAction.do?method=populateSampleCollection&d__mode="+d__mode+"&menuId=WQ002',
+							columnDefs : [ {
+								orderable : false,
+								className : 'select-checkbox',
+								targets : 0,
+								"orderable" : false,
+								'render' : function(data, type, full, meta) {
+									return '';
+								},
+							},
+							{
+				                "targets": [ 5 ],
+				                "visible": false,
+				                "searchable": false
+				            },
+				            {
+				                "targets": [ 6 ],
+				                "visible": false,
+				                "searchable": false
+				            },
+				            {
+				                "targets": [ 7 ],
+				                "visible": false,
+				                "searchable": false
+				            },
+				            {
+				                "targets": [ 8 ],
+				                "visible": false,
+				                "searchable": false
+				            },
+				            {
+				                "targets": [ 9 ],
+				                "visible": false,
+				                "searchable": false
+				            },
+				            {
+				                "targets": [ 10 ],
+				                "visible": false,
+				                "searchable": false
+				            },
+				            {
+				                "targets": [ 11 ],
+				                "visible": false,
+				                "searchable": false
+				            }
+							,
+							{
+				                "targets": [ 12 ],
+				                "visible": false,
+				                "searchable": false
+				            },
+				            
+				            {
+				                "targets": [ 13 ],
+				                "visible": false,
+				                "searchable": false
+				            },
+				            {
+				                "targets": [ 14 ],
+				                "visible": false,
+				                "searchable": false
+				            }, {
+				                "targets": [ 15 ],
+				                "visible": false,
+				                "searchable": false
+				            },
+				            {
+				                "targets": [ 16 ],
+				                "visible": false,
+				                "searchable": false
+				            }
+				            ],
+							select : {
+								style : 'os',
+								selector : 'td:first-child'
+							},
+							"columns" : [ {
+								"data" : 'render '
+									
+							}, {
+								"data" : "sampleNumber",
+								"defaultContent" : ""
+							}, {
+								"data" : "lab",
+								"defaultContent" : ""
+							}, {
+								"data" : "waterSource",
+								"defaultContent" : ""
+							}, {
+								"data" : "habitation",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "mobileNo",
+								"defaultContent" : ""
+							},
+							 
+							 {
+								"data" : "district",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "block",
+								"defaultContent" : ""
+							},
+							 {
+								"data" : "villageId",
+								"defaultContent" : ""
+							},{
+								"data" : "gramPanchayat",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "schemeName",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "collectionType",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "testType",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "poiType",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "createdBy",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "email",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "sampleId",
+								"defaultContent" : ""
+							}
+							
+							]
+
+						});
+		
+		$('.datatable').each(function(){
+			var datatable = $(this);
+			// SEARCH - Add the placeholder for Search and Turn this into in-line form control
+			var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
+			search_input.attr('placeholder', 'Search');
+			search_input.addClass('form-control input-sm');
+			// LENGTH - Inline-Form control
+			var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
+			length_sel.addClass('form-control input-sm');
+		});
+
+		$('#sampleCollection tbody').on('click', 'tr', function() {
+			var data1 = sampleCollection1.row(this).data();
+			//alert('hiii');
+			console.log("data.---------------------------------------------------------------"+data1);
+			collectionData.populateCollectionData(data1);
+		});
+
+	}
+}
+var collectionData = {
+		populateCollectionData : function(data) {
+		document.getElementById('lab').value = data.lab;
+		document.getElementById('collectionType').value = data.collectionType;
+		
+		if(data.collectionType!=''){
+			if(data.collectionType==='1'){
+			triggerEvent(document.getElementById('collectionType'), 'onchange');
+			document.getElementById('designation').value = data.designation;
+			
+			triggerEvent(document.getElementById('designation'), 'onchange');
+			document.getElementById('collectedBy').value = data.collectedBy;
+			
+			triggerEvent(document.getElementById('collectedBy'), 'onchange');
+			Receivesample.collectionSample();
+			/*
+				document.getElementById('designation').value='';
+				document.getElementById('collectedBy').value ='';*/
+			}
+			if(data.collectionType==='2'){
+			triggerEvent(document.getElementById('collectionType'), 'onchange');
+			
+				document.getElementById('mobileNo').value = data.mobileNo;
+
+				document.getElementById('email').value = data.email;
+				document.getElementById('poiId').value = data.poiId;
+				document.getElementById('poiType').value = data.poiType;
+			}
+			
+		}
+
+		//enteredBy
+		document.getElementById('sampleId').value = data.sampleId;
+		
+		
+		console.log("data.data.collDate-------------"+data.collDate);
+		//alert(data.destrict);
+		document.getElementById('district').value = data.district;
+
+		triggerEvent(document.getElementById('district'), 'onchange');
+		document.getElementById('block').value = data.block;
+		
+		triggerEvent(document.getElementById('block'), 'onchange');
+		document.getElementById('villageId').value = data.villageId;
+		
+		triggerEvent(document.getElementById('villageId'), 'onchange');
+		document.getElementById('gramPanchayat').value = data.gramPanchayat;
+		document.getElementById('habitation').value = data.habitation;
+		document.getElementById('schemeName').value = data.schemeName;
+		triggerEvent(document.getElementById('schemeName'), 'onchange');
+		document.getElementById('waterSource').value = data.waterSource;
+		document.getElementById('testType').value = data.testType;
+		document.getElementById('sampleNumber').value = data.sampleNumber;
+		
+
+		
+		if(typeof data.collDate!='undefined'){
+			document.getElementById('collDate').value = data.collDate;
+
+		}
+
+		
+		
+		
+		
+		
+		/*if(typeof data.startDate!='undefined'){
+		document.getElementById('startDate').value = data.startDate;
+		}
+		if(typeof data.endDate!='undefined'){
+			document.getElementById('endDate').value = data.endDate;
+
+		}
+		document.getElementById('status').value = data.status;
+		
+		document.getElementById('locationTypeId').value = data.locationTypeId;*/
+
+	}
+}
+
+
+//to fetch mobile no and emailid
+
+
+var Receivesample = {
+
+		collectionSample : function() {
+			//alert('hiihiii');
+			var locationData = $("#collectedBy").serialize();
+			
+			console.log("locationDatalocationDatalocationData----------"+locationData);
+			$.ajax({
+				type : "POST",
+				url : "receiveSampleAction.do?method=fetchMobileNoAndEmailId&d__mode="+d__mode+"&menuId=WQ002",
+				data : locationData,
+				success : function(data) {
+					setMobileAndEmail(data);
+				},
+				error : function(e) {
+					//showStickyErrorToast(e);
+				}
+			});
+		}
+	}
+
+function setMobileAndEmail(data){
+	//alert(data);
+	var dataArr=data.split(',');
+	$("#emailId").text(dataArr[0]);
+	document.getElementById('emailDwss').value=dataArr[0];
+	$("#mobileNo1").text(dataArr[1]);
+	document.getElementById('mobileNoDwss').value=dataArr[1];
+}
+
+
+
+
+//Sample distribution
+
+var sampleDistribution;
+var SampleDistribution = {
+	SampleDistributionType : function() {
+		sampleDistribution = $("#sampleDistributionDT")
+				.DataTable(
+						{
+							"language": {
+					            "lengthMenu": "Display _MENU_ records per page",
+					            "zeroRecords": "Nothing found - sorry",
+					            "info": "Showing page _PAGE_ of _PAGES_",
+					            "infoEmpty": "No records available",
+					            "infoFiltered": "(filtered from _MAX_ total records)"
+					        },
+							"deferRender" : true,
+							fixedHeader : true,
+							"bJQueryUI" : true,
+							"bAutoWidth" : false,
+							"sScrollX" : true,
+							"scrollY" : "170px",
+							scrollCollapse : true,
+							"bProcessing" : true,
+							"bPaginate" : true,
+							"serverSide" : true,
+							"bSort" : true,
+							'sAjaxSource' : 'sampleDistributionAction.do?method=populateLabMaster&d__mode="+d__mode+"&menuId=WQ003',
+							columnDefs : [ {
+								orderable : false,
+								className : 'select-checkbox',
+								targets : 0,
+								"orderable" : false,
+								'render' : function(data, type, full, meta) {
+									return '';
+								}
+							}, {
+								"targets" : [ 5 ],
+								"visible" : false,
+								"searchable" : false
+							}, {
+								"targets" : [ 6 ],
+								"visible" : false,
+								"searchable" : false
+							} ],
+							select : {
+								style : 'os',
+								selector : 'td:first-child'
+							},
+							"columns" : [ {
+								"data" : 'render '
+
+							}, {
+								"data" : "sampleNum",
+								"defaultContent" : ""
+							}, {
+								"data" : "samplePartNum",
+								"defaultContent" : ""
+							}, {
+								"data" : "labName",
+								"defaultContent" : ""
+							}, {
+								"data" : "tests",
+								"defaultContent" : ""
+							}, {
+								"data" : "distributionDate",
+								"defaultContent" : ""
+							}, {
+								"data" : "requiredBy",
+								"defaultContent" : ""
+							},
+
+							]
+
+						});
+		$('.datatable').each(function(){
+			var datatable = $(this);
+			// SEARCH - Add the placeholder for Search and Turn this into in-line form control
+			var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
+			search_input.attr('placeholder', 'Search');
+			search_input.addClass('form-control input-sm');
+			// LENGTH - Inline-Form control
+			var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
+			length_sel.addClass('form-control input-sm');
+		});
+		$('#sampleDistributionDT tbody').on('click', 'tr', function() {
+			var data = sampleDistribution.row(this).data();
+			labMasterData2.populateLabTypeData(data);
+		});
+
+	}
+}
+var labMasterData2 = {
+
+	populateLabTypeData : function(data) {
+
+		document.getElementById('sampleNum').value = data.sampleNum;
+
+		document.getElementById('samplePartNum').value = data.samplePartNum;
+
+		document.getElementById('labName').value = data.labName;
+		
+		triggerEvent(document.getElementById('labName'), 'onchange');
+		document.getElementById('technician').value = data.technician;
+
+		document.getElementById('tests').value = data.tests;
+		
+		document.getElementById('locationname').value = data.locationName;
+
+		
+		document.getElementById('distributionDate').value = data.distributionDate;
+		document.getElementById('requiredBy').value = data.requiredBy;
+		document.getElementById('locationname').value = data.locationName;
+
+
+
+	}
+}
+var resultEntry1;
+var ResultEntryAction = {
+		ResultEntryAct : function() {
+			//alert('sdfdss');
+			resultEntry1 = $("#resultEntry")
+				.DataTable(
+						{
+							"language": {
+					            "lengthMenu": "Display _MENU_ records per page",
+					            "zeroRecords": "Nothing found - sorry",
+					            "info": "Showing page _PAGE_ of _PAGES_",
+					            "infoEmpty": "No records available",
+					            "infoFiltered": "(filtered from _MAX_ total records)"
+					        },
+							"deferRender" : true,
+							fixedHeader : true,
+							"bJQueryUI" : true,
+							"bAutoWidth" : false,
+							"sScrollX" : true,
+							"scrollY" : "170px",
+							scrollCollapse : true,
+							"bProcessing" : true,
+							"bPaginate" : true,
+							"serverSide" : true,
+							"bSort" : true,
+							'sAjaxSource' : 'resultEntryAction.do?method=resultEntry&d__mode="+ d__mode + "&menuId=WQ002',
+							columnDefs : [
+							
+							{
+							    "targets": 0,
+							    "data": 'sampleNum',
+							    "render": function ( data, type, row, meta ) {
+							      return '<a href="resultDisplayAction.do?menuId=WQ005">'+data+'</a>';
+							    }
+							  }],
+							  select : {
+								style : 'os',
+								selector : 'td:first-child'
+							},
+							"columns" : [{
+								"data" : "sampleNum",
+								"defaultContent" : ""
+							},
+							{
+								"data" : "labname",
+								"defaultContent" : ""
+							}, {
+								"data" : "technician",
+								"defaultContent" : ""
+							}
+							]
+
+						});
+		$('.datatable').each(function(){
+			var datatable = $(this);
+			// SEARCH - Add the placeholder for Search and Turn this into in-line form control
+			var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
+			search_input.attr('placeholder', 'Search');
+			search_input.addClass('form-control input-sm');
+			// LENGTH - Inline-Form control
+			var length_sel = datatable.closest('.dataTables_wrapper').find('div[id$=_length] select');
+			length_sel.addClass('form-control input-sm');
+		});
+		$('#resultEntry tbody').on('click', 'tr', function() {
+			var data = resultEntry1.row(this).data();
+			//alert('data--------------------'+data.sampleNum);
+		//	alert("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii1111111111111111111112222222222222");
+			ResultEntry.resultEntryDisplay(data.sampleNum);
+		});
+
+	}
+}
+
+
+var ResultEntry = {
+
+		resultEntryDisplay : function(sampleNumbers) {
+		
+			$.ajax({
+				type : "POST",
+				url : "resultDisplayAction.do?method=displayTestResult&d__mode="+ d__mode + "&menuId=WQ005",
+				data : {sampleNumbers:sampleNumbers},
+				success : function(data) {
+					//alert("data--------"+data);
+					displayResultData(data);
+				},
+				error : function(e) {
+					//showStickyErrorToast(e);
+				}
+			});
+		}
+	}
+
+
+function displayResultData(data){
+ 
+ localStorage.setItem("bar", data);
+	/*alert('parsed------------'+parsed[0].samplePartNo)
+	alert("data.testResultId------------"+parsed[0].testDoneBy);
+	console.log("data.locDetailBeans.testResultId--------"+data.testResultId);
+	document.getElementById('sampleNumbers').value=parsed[0].sampleId
+	//$("#samplePart").text(parsed[0].samplePartNo);
+	$("#sampleNumbers").text(parsed[0].sampleId);
+	$("#labName").text(parsed[0].labId);*/
+	/*document.getElementById('samplePart').value=parsed[0].samplePartNo;
+	document.getElementById('testDone').value=parsed[0].testDone;
+	document.getElementById('labName').value=parsed[0].labName;*/
+	
+	
+	/*if(parsed[0].locDetailBeans[2].paramId===1){
+		alert('almunium'+parsed[0].locDetailBeans[2].paramId);
+	}*/
+	
+}
+
+
+
+var parameterDT1;
+var parameterMaster = {
+		parameter1 : function() {
+			parameterDT1 = $("#parameterDT")
+				.DataTable(
+						{
+							"deferRender" : true,
+							fixedHeader : true,
+							"bJQueryUI" : true,
+							"bAutoWidth" : false,
+							"sScrollX" : "100%",
+							"scrollY" : "170px",
+							scrollCollapse : true,
+							"bProcessing" : true,
+							"bPaginate" : true,
+							"serverSide" : true,
+							"bSort" : true,
+							'sAjaxSource' : 'parameterMasterAction.do?method=populate11&d__mode="+d__mode+"&menuId=WQ006',
+							columnDefs : [ {
+								orderable : false,
+								className : 'select-checkbox',
+								targets : 0,
+								"orderable" : false,
+								'render' : function(data, type, full, meta) {
+									return '';
+								}
+							}, {
+								"targets" : [ 5 ],
+								"visible" : false,
+								"searchable" : false
+							}, {
+								"targets" : [ 6 ],
+								"visible" : false,
+								"searchable" : false
+							} , {
+								"targets" : [ 7 ],
+								"visible" : false,
+								"searchable" : false
+							}, {
+								"targets" : [ 8 ],
+								"visible" : false,
+								"searchable" : false
+							}, {
+								"targets" : [ 9 ],
+								"visible" : false,
+								"searchable" : false
+							}],
+							
+							select : {
+								style : 'os',
+								selector : 'td:first-child'
+							},
+							"columns" : [ {
+								"data" : 'render '
+
+							}, {
+								"data" : "parameterName",
+								"defaultContent" : ""
+							}, {
+								"data" : "uom",
+								"defaultContent" : ""
+							}, {
+								"data" : "permissibleLimit",
+								"defaultContent" : ""
+							}, {
+								"data" : "acceptableLimit",
+								"defaultContent" : ""
+							}, {
+								"data" : "wHOPermissibleLimit",
+								"defaultContent" : ""
+							}, {
+								"data" : "wHOAcceptableLimit",
+								"defaultContent" : ""
+							}, {
+								"data" : "status",
+								"defaultContent" : ""
+							}, {
+								"data" : "startDate",
+								"defaultContent" : ""
+							}, {
+								"data" : "endDate",
+								"defaultContent" : ""
+							}
+							]
+
+						});
+		$('#labMasterDT tbody').on('click', 'tr', function() {
+			var data = labMaster.row(this).data();
+			labMasterData.populateLabTypeData(data);
+		});
+
+	}
+}
+
+
+

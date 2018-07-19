@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE struts-config PUBLIC
+       "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+       "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+
+<struts-config>
+	<form-beans>
+		<form-bean name="loginForm" type="com.prwss.mis.login.LoginForm"></form-bean>
+		<form-bean name="datagridForm" type="com.prwss.mis.common.DatagridForm"></form-bean>
+		<form-bean name="voucherForm"
+			type="com.prwss.mis.finance.voucher.struts.VoucherForm"></form-bean>
+		<form-bean name="changePasswordForm"
+			type="com.prwss.mis.login.changepassword.struts.ChangePasswordForm"></form-bean>   
+	</form-beans>
+
+	<global-forwards>
+		<forward name="login" path="login.jsp"></forward>
+	</global-forwards>
+<action-mappings>
+<action path="/languageSelection"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			validate="true" scope="session" input="login.fail.view"
+			parameter="method">
+			<forward name="success" path="/welcome.jsp" />
+</action>
+		<action path="/loginAction"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="loginForm"
+			validate="true" scope="session" input="/welcome.jsp">
+			<forward name="success" path="/homeAction.do" />
+			<forward name="fail" path="/welcome.jsp" />
+		</action>
+		<action path="/homeAction"
+			type="org.springframework.web.struts.DelegatingActionProxy" validate="true"
+			scope="session">
+			<forward name="success" path="home.view" />
+			<forward name="fail" path="login.fail.view" />
+		</action>
+		<action path="/voucherAction" input="voucher.view"
+			type="com.prwss.mis.finance.voucher.struts.VoucherAction" name="voucherForm"
+			parameter="method" scope="session">
+			<forward name="display" path="voucher.view"></forward>
+		</action>
+
+		<action path="/changePasswordAction" input="changePassword.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="changePasswordForm"
+			parameter="method" scope="session">
+			<forward name="display" path="changePassword.view"></forward>
+		</action>
+
+		<action path="/datagrid" input="masters/datagrid.jsp"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="datagridForm"
+			parameter="reqCode" scope="session">
+			<forward name="jsp" path="/masters/dataGrid.jsp"></forward>
+		</action>
+
+	</action-mappings>
+
+	<message-resources parameter="MessageResources" />
+
+	<plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+		<set-property property="pathnames"
+			value="/org/apache/struts/validator/validator-rules.xml, /WEB-INF/validation.xml" />
+	</plug-in>
+
+	<plug-in className="org.apache.struts.tiles.TilesPlugin">
+		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
+		<set-property property="moduleAware" value="true" />
+		<set-property property="definitions-parser-validate"
+			value="true" />
+	</plug-in>
+
+
+</struts-config>

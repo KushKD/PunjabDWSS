@@ -1,0 +1,12 @@
+package com.prwss.mis.admin.dao;
+
+
+import java.util.Set;
+
+import org.springframework.dao.DataAccessException;
+
+public interface RoleDao {
+	
+	public Set<RoleBean> getRoleIds() throws DataAccessException ;
+
+}

@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RPT001_1" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="where" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2011-09-01"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from (
+select  z.zone_id,z.zone_name,c.circle_id,c.circle_name,d.district_id,d.district_name,b.block_id,b.block_name,dv.divisional_id,dv.divisional_name,
+mc.constituency_id,mc.constituency_name,x.village_id,x.village_name,x.nc_pc_status as present_status,
+EXTRACT(month from to_date('$P!{to_date}','yyyy-mm-dd'))||'/'||EXTRACT(year from to_date('$P!{to_date}','yyyy-mm-dd')) mnth_yr,
+case when xcom.prog_id is not null then xcom.swap_nonswap
+when xcom.prog_id is null and x.nc_pc_status='FC' then 'NA'
+when xcom.prog_id is null and (x.nc_pc_status='PC' or x.nc_pc_status='NC') then pro.proposed_swap_nonswap end cover_under,
+
+case when xcom.prog_id is null and x.nc_pc_status='FC' then 'NA'
+when xcom.prog_id is null and (x.nc_pc_status='PC' or x.nc_pc_status='NC') and pro.proposed_program_id='PROG15' then 'PRWSS Project'
+when xcom.prog_id is null and (x.nc_pc_status='PC' or x.nc_pc_status='NC') and pro.proposed_program_id<>'PROG15' then pro.proposed_program_name
+when xcom.prog_id is not null
+	and scheme_commissioned_date is null
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+	and admin_app_gop_letter_no is not null
+	and admin_app_gop_letter_date>='2008-04-01'  then xcom.program_name
+when xcom.prog_id is not null
+	and scheme_commissioned_date is null
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+	and (admin_app_gop_letter_no is null or admin_app_gop_letter_date is null)
+	and pro.proposed_program_id='PROG15'  then 'PRWSS Project'
+when xcom.prog_id is not null
+	and scheme_commissioned_date is null
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+	and (admin_app_gop_letter_no is null or admin_app_gop_letter_date is null)
+	and pro.proposed_program_id<>'PROG15'  then pro.proposed_program_name
+when xcom.prog_id is not null
+	and scheme_commissioned_date is null
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+	and admin_app_gop_letter_no is not null
+	and admin_app_gop_letter_date>='2008-04-01'  then xcom.program_name
+when xcom.prog_id is not null
+	and scheme_commissioned_date is null
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+	and admin_app_gop_letter_no is not null
+	and admin_app_gop_letter_date<'2008-04-01'  then 'PRWSS Project'
+when xcom.prog_id is not null
+	and scheme_commissioned_date is not null
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+	and admin_app_gop_letter_no is not null
+	and admin_app_gop_letter_date<'2008-04-01'  then 'PRWSS Project'
+when xcom.prog_id is not null
+	and scheme_commissioned_date is not null
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+	and admin_app_gop_letter_no is not null
+	and admin_app_gop_letter_date>='2008-04-01'  then xcom.program_name
+when xcom.prog_id is not null then xcom.program_name
+end name_of_prog,admin_app_gop_letter_no,admin_app_gop_letter_date,pro.proposed_program_name,
+total_population as population,no_of_water_connection as water_connection,no_of_standpost,households,
+
+case when (scheme_commissioned_date is null or scheme_commissioned_date<'2008-04-01')
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+	and admin_app_gop_letter_date>'2008-04-01'
+     then 'Under Progress'
+     when  (scheme_commissioned_date is null or scheme_commissioned_date<'2008-04-01')
+	and admin_app_gop_letter_date is null
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+     then 'Yet to be taken up'
+     when  (scheme_commissioned_date is null or scheme_commissioned_date<'2008-04-01')
+	and admin_app_gop_letter_date <'2008-04-1'
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+     then 'Yet to be taken up'
+
+     when scheme_commissioned_date is not null
+	and (x.nc_pc_status='PC' or x.nc_pc_status='NC')
+	and scheme_commissioned_date>=to_date('2008-04-01','yyyy-mm-dd')
+     then to_char(scheme_commissioned_date, 'MON/yyyy')
+end as scheme_commissioned_date
+ from (
+select mv.*,nc_pc.nc_pc_status from prwss_main.mst_village mv, prwss_main.tbl_proposed_program_2008 nc_pc
+where mv.village_id=nc_pc.village_id
+and mv.habitation_type='MH'
+and  mv.village_id in (select village_id from prwss_main.vw_prwss_project_habitation)
+and mv.status<>'D'
+) x
+---------------------------------population---------------------------------------------
+left outer join
+(
+select population_id,village_id,total_population,population_year,as_on_date from
+(select *,rank() over (partition by village_id order by as_on_date desc,population_id desc) as row_id
+from prwss_main.mst_village_population mp
+where as_on_date <=to_date('$P!{to_date}','yyyy-MM-dd')
+and status<>'D'
+order by village_id) pop
+where row_id=1
+)xp on x.village_id=xp.village_id
+---------------------------------pvt connection ---------------------------------------------
+left outer join
+(
+select connection_id,village_id,no_of_water_connection,no_of_standpost,as_on_date from
+(select *,rank() over (partition by village_id order by as_on_date desc,connection_id desc) as row_id
+from prwss_main.mst_village_connection
+where as_on_date <=to_date('$P!{to_date}','yyyy-MM-dd')
+and status<>'D'
+order by village_id) con
+where row_id=1
+)xpc on x.village_id=xpc.village_id
+
+
+---------------------------------household ---------------------------------------------
+left outer join
+(
+select household_id,village_id,(sc_households+gc_households) as households,as_on_date from
+(select *,rank() over (partition by village_id order by as_on_date desc,household_id desc) as row_id
+from prwss_main.mst_village_households
+where as_on_date <=to_date('$P!{to_date}','yyyy-MM-dd')
+and status<>'D'
+order by village_id) con
+where row_id=1
+)xh on x.village_id=xh.village_id
+---------------------------------commissioning ---------------------------------------------
+left outer join
+(
+select * from
+(select mv.district_id,district_name,block_name,sv.village_id,mv.village_name,sh.scheme_id,scheme_name,prog_id,program_name,scheme_commissioned_date,nc_pc_status,
+	admin_app_gop_letter_date,admin_app_gop_letter_no,swap_nonswap,
+	rank() over(partition by mv.village_id order by scheme_commissioned_date desc,sh.scheme_id) as row_id
+from prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_village sv,prwss_main.mst_scheme_details sd,prwss_main.mst_village mv,prwss_main.vw_prwss_project_habitation ncPc,
+	prwss_main.mst_program p,prwss_main.mst_block mb,prwss_main.mst_district md
+where sh.scheme_id=sv.scheme_id
+and   sv.scheme_id=sd.scheme_id
+and   sv.village_id=mv.village_id
+and   mv.block_id=mb.block_id
+and   mb.district_id=md.district_id
+and   mv.village_id=ncPc.village_id
+and   sh.prog_id=p.program_id
+and   sh.scheme_source not in ('SEWERAGE')
+and   sh.status<>'D' and sv.status<>'D' and sd.status<>'D' and mv.status<>'D')xx where row_id=1 and prog_id in ('PROG06','PROG15','PROG11','PROG20'))xcom
+ on x.village_id=xcom.village_id
+, prwss_main.mst_zone z,prwss_main.mst_circle c, prwss_main.mst_district d, prwss_main.mst_divisional dv,prwss_main.mst_block b,prwss_main.mst_constituency mc,prwss_main.tbl_proposed_program_2008 pro
+where z.zone_id=c.zone_id
+and c.circle_id=d.circle_id
+and d.district_id=b.district_id
+and x.divisional_office_id=dv.divisional_id
+and x.block_id=b.block_id
+and x.constituency_id=mc.constituency_id
+and x.village_id=pro.village_id
+and x.village_id in (select village_id from prwss_main.vw_prwss_project_habitation)
+) main
+where $P!{where}
+order by zone_name,circle_name,district_name,block_name,village_name asc, scheme_commissioned_date asc]]>
+	</queryString>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="block_id" class="java.lang.String"/>
+	<field name="block_name" class="java.lang.String"/>
+	<field name="divisional_id" class="java.lang.String"/>
+	<field name="divisional_name" class="java.lang.String"/>
+	<field name="constituency_id" class="java.lang.String"/>
+	<field name="constituency_name" class="java.lang.String"/>
+	<field name="village_id" class="java.lang.String"/>
+	<field name="village_name" class="java.lang.String"/>
+	<field name="present_status" class="java.lang.String"/>
+	<field name="mnth_yr" class="java.lang.String"/>
+	<field name="cover_under" class="java.lang.String"/>
+	<field name="name_of_prog" class="java.lang.String"/>
+	<field name="admin_app_gop_letter_no" class="java.lang.String"/>
+	<field name="admin_app_gop_letter_date" class="java.sql.Date"/>
+	<field name="proposed_program_name" class="java.lang.String"/>
+	<field name="population" class="java.math.BigDecimal"/>
+	<field name="water_connection" class="java.math.BigDecimal"/>
+	<field name="no_of_standpost" class="java.math.BigDecimal"/>
+	<field name="households" class="java.math.BigDecimal"/>
+	<field name="scheme_commissioned_date" class="java.lang.String"/>
+	<variable name="village_name_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{village_name}]]></variableExpression>
+	</variable>
+	<variable name="population_1" class="java.math.BigDecimal" resetType="Group" resetGroup="district_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{population}]]></variableExpression>
+	</variable>
+	<variable name="households_1" class="java.math.BigDecimal" resetType="Group" resetGroup="district_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{households}]]></variableExpression>
+	</variable>
+	<variable name="water_connection_1" class="java.math.BigDecimal" resetType="Group" resetGroup="district_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{water_connection}]]></variableExpression>
+	</variable>
+	<variable name="village_name_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{village_name}]]></variableExpression>
+	</variable>
+	<variable name="population_2" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{population}]]></variableExpression>
+	</variable>
+	<variable name="households_2" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{households}]]></variableExpression>
+	</variable>
+	<variable name="water_connection_2" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{water_connection}]]></variableExpression>
+	</variable>
+	<variable name="village_name_3" class="java.lang.Integer" resetType="Group" resetGroup="zone_grp" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{village_name}]]></variableExpression>
+	</variable>
+	<variable name="population_3" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{population}]]></variableExpression>
+	</variable>
+	<variable name="households_3" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{households}]]></variableExpression>
+	</variable>
+	<variable name="water_connection_3" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{water_connection}]]></variableExpression>
+	</variable>
+	<variable name="village_name_4" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{village_name}]]></variableExpression>
+	</variable>
+	<variable name="population_4" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{population}]]></variableExpression>
+	</variable>
+	<variable name="households_4" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{households}]]></variableExpression>
+	</variable>
+	<variable name="water_connection_4" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{water_connection}]]></variableExpression>
+	</variable>
+	<variable name="district_name_1" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{district_name}]]></variableExpression>
+	</variable>
+	<variable name="village_id_1" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{village_id}]]></variableExpression>
+	</variable>
+	<variable name="constituency_name_1" class="java.lang.Integer" resetType="Group" resetGroup="district_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{constituency_name}]]></variableExpression>
+	</variable>
+	<variable name="constituency_name_2" class="java.lang.Integer" resetType="Group" resetGroup="circle_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{constituency_name}]]></variableExpression>
+	</variable>
+	<variable name="constituency_name_3" class="java.lang.Integer" resetType="Group" resetGroup="zone_grp" calculation="Count">
+		<variableExpression><![CDATA[$F{constituency_name}]]></variableExpression>
+	</variable>
+	<variable name="constituency_id_1" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{constituency_id}]]></variableExpression>
+	</variable>
+	<group name="zone_grp">
+		<groupExpression><![CDATA[$F{zone_name}]]></groupExpression>
+		<groupFooter>
+			<band height="27">
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="18" y="0" width="141" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{zone_name}+" Total"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="242" y="0" width="74" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{village_name_3}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="table_TD" x="316" y="0" width="87" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table_TD" x="403" y="0" width="90" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table_TD" x="728" y="0" width="74" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="493" y="0" width="88" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{population_3}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="581" y="0" width="84" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{households_3}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="665" y="0" width="63" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{water_connection_3}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" mode="Opaque" x="159" y="0" width="83" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{constituency_name_3}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="circle_grp">
+		<groupExpression><![CDATA[$F{circle_name}]]></groupExpression>
+		<groupFooter>
+			<band height="28">
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="18" y="0" width="141" height="28" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[" Circle "+$F{circle_name}+" Total"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="242" y="0" width="74" height="28" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{village_name_2}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="table_TD" x="316" y="0" width="87" height="28" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table_TD" x="403" y="0" width="90" height="28" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="493" y="0" width="88" height="28" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{population_2}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="581" y="0" width="84" height="28" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{households_2}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="665" y="0" width="63" height="28" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{water_connection_2}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="table_TD" x="728" y="0" width="74" height="28" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" mode="Opaque" x="159" y="0" width="83" height="28" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{constituency_name_2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="district_grp">
+		<groupExpression><![CDATA[$F{district_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement style="table_TH" mode="Opaque" x="18" y="0" width="784" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{zone_name}+" Circle: "+$F{circle_name}+" Dist: "+$F{district_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="27">
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="18" y="0" width="141" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["District "+$F{district_name}+" Total"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="242" y="0" width="74" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{village_name_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="table_TD" x="316" y="0" width="87" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table_TD" x="403" y="0" width="90" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="493" y="0" width="88" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{population_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="581" y="0" width="84" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{households_1}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" x="665" y="0" width="63" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{water_connection_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="table_TD" x="728" y="0" width="74" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement style="table_TD" mode="Opaque" x="159" y="0" width="83" height="27" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{constituency_name_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="90" splitType="Stretch">
+			<staticText>
+				<reportElement x="663" y="24" width="124" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Report D-2.3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="802" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="64" width="626" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Project: Name / Coverage Status of Habitations (Constituency-Wise)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="208" y="21" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="644" y="64" width="73" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[As on:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="717" y="64" width="73" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{mnth_yr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="102" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="51" y="0" width="108" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of District]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="159" y="0" width="83" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Constituency]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="242" y="0" width="74" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Main Habitation (MH)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="316" y="0" width="87" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status as on
+01-04-2008
+(FC/PC/NC)
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="403" y="0" width="90" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Covered Under Program]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="493" y="0" width="88" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Population]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="581" y="0" width="84" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[    Number of Households]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="665" y="0" width="63" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Number of Private Connections]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="728" y="0" width="74" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Month/ Year of Commissioning]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="51" y="87" width="108" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="159" y="87" width="83" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="242" y="87" width="74" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="316" y="87" width="87" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="403" y="87" width="90" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="493" y="87" width="88" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="581" y="87" width="84" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="665" y="87" width="63" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="728" y="87" width="74" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="18" y="0" width="33" height="87" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr.No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="18" y="87" width="33" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[1]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="51" y="0" width="108" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{district_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="242" y="0" width="74" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{village_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="316" y="0" width="87" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{present_status}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="403" y="0" width="90" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{name_of_prog}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="493" y="0" width="88" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{population}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="581" y="0" width="84" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{households}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="665" y="0" width="63" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{water_connection}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMM/yyyy" isBlankWhenNull="true">
+				<reportElement style="table_TH" x="728" y="0" width="74" height="20" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{scheme_commissioned_date}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="159" y="0" width="83" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{constituency_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" mode="Opaque" x="18" y="0" width="33" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="18" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="689" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="98" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="345" y="0" width="124" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Report D-2.3]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="581" y="0" width="84" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{households_4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="665" y="0" width="63" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{water_connection_4}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" mode="Opaque" x="18" y="0" width="141" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" mode="Opaque" x="316" y="0" width="87" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" mode="Opaque" x="402" y="0" width="92" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="242" y="0" width="74" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{village_id_1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="159" y="0" width="83" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{constituency_id_1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" x="494" y="0" width="87" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{population_4}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" mode="Opaque" x="728" y="0" width="74" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

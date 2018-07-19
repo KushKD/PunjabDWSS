@@ -1,0 +1,144 @@
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+
+	<form-beans>
+		<form-bean name="financeHeadsForm"
+			type="com.prwss.min.finance.form.FinanceHeadsForm">
+		</form-bean>
+		<form-bean name="financeHeadsStructureForm"
+			type="com.prwss.min.finance.form.FinanceHeadsStructureForm">
+		</form-bean>
+		<form-bean name="componentForm" type="com.prwss.min.finance.form.ComponentForm">
+		</form-bean>
+		<form-bean name="divisionBudgetForm"
+			type="com.prwss.min.finance.form.DivisionBudgetForm">
+		</form-bean>
+		<form-bean name="fundSourceMasterForm"
+			type="com.prwss.min.finance.form.FundSourceMasterForm">
+		</form-bean>
+		<form-bean name="gPWSCRegisterForm"
+			type="com.prwss.min.finance.form.GPWSCRegisterForm">
+		</form-bean>
+		<form-bean name="ddoMasterForm" type="com.prwss.min.finance.form.DdoMasterForm">
+		</form-bean>
+		<form-bean name="fundRequestForm" type="com.prwss.min.finance.form.FundRequestForm">
+		</form-bean>
+
+		<form-bean name="allocationForm" type="com.prwss.min.finance.form.AllocationForm">
+		</form-bean>
+
+	</form-beans>
+
+	<action-mappings>
+		<action path="/financialHeadsAction" input="finance.head.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="financeHeadsForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="finance.head.view"></forward>
+		</action>
+
+		<action path="/financialHeadStructureAction" input="finance.head.structure.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="financeHeadsStructureForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="finance.head.structure.view"></forward>
+		</action>
+
+		<action path="/componentAction" input="finance.component.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="componentForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="finance.component.view"></forward>
+		</action>
+
+		<action path="/divisionBudgetAction" input="finance.division.budget.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="divisionBudgetForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="finance.division.budget.view"></forward>
+		</action>
+
+		<action path="/viewDivisionBudgetAction" input="view.finance.division.budget.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="divisionBudgetForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="view.finance.division.budget.view"></forward>
+		</action>
+
+		<action path="/updateBudgetAction" input="update.division.budget.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="divisionBudgetForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="update.division.budget.view"></forward>
+		</action>
+		
+		<action path="/updateStateBudgetAction" input="update.division.budget.state"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="divisionBudgetForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="update.division.budget.state"></forward>
+		</action>
+
+		<action path="/divisionBudgetViewAction" input="division.budget.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="divisionBudgetForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="division.budget.view"></forward>
+		</action>
+
+		<action path="/stateBudgetViewAction" input="state.budget.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="divisionBudgetForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="state.budget.view"></forward>
+		</action>
+
+		<action path="/nodalDivisionBudgetViewAction" input="nodal.division.budget.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="divisionBudgetForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="nodal.division.budget.view"></forward>
+		</action>
+
+		<action path="/fundSourceMasterAction" input="find.source.master.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="fundSourceMasterForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="find.source.master.view"></forward>
+		</action>
+
+		<action path="/gpwscRegisterAction" input="gpwsc.register.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="gPWSCRegisterForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="gpwsc.register.view"></forward>
+		</action>
+
+		<action path="/ddoMasterAction" input="ddo.master.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="ddoMasterForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="ddo.master.view"></forward>
+		</action>
+
+		<action path="/fundRequestAction" input="fund.request.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="fundRequestForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="fund.request.view"></forward>
+		</action>
+
+		<action path="/allocationAction" input="fund.allocation.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="allocationForm"
+			parameter="method" scope="session">
+			<forward name="login" path="/sessionOut.jsp"></forward>
+			<forward name="display" path="fund.allocation.view"></forward>
+		</action>
+
+
+
+
+
+	</action-mappings>
+	<message-resources parameter="FinanceResources" key="finance" />
+</struts-config>

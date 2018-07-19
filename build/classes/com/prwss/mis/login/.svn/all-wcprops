@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/PRWSS/!svn/ver/1860/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login
+END
+LoginUserMenuBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/PRWSS/!svn/ver/879/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/LoginUserMenuBean.java
+END
+LoginUserLocationBOImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/PRWSS/!svn/ver/1667/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/LoginUserLocationBOImpl.java
+END
+LoginUserPermissionBOImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/PRWSS/!svn/ver/1525/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/LoginUserPermissionBOImpl.java
+END
+LoginAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/PRWSS/!svn/ver/1929/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/LoginAction.java
+END
+LoginBO.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/PRWSS/!svn/ver/1667/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/LoginBO.java
+END
+LoginBOImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/PRWSS/!svn/ver/1926/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/LoginBOImpl.java
+END
+LoginForm.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/PRWSS/!svn/ver/17/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/login/LoginForm.java
+END

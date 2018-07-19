@@ -1,0 +1,32 @@
+@CHARSET "ISO-8859-1";
+
+.modal-header {
+	background-color: #000000;
+	padding: 6px 6px;
+	color: #E8EAF6;
+	border-bottom: 2px dashed #000000;
+}
+
+.modal-title {
+	text-align: center;
+}
+.close{ 
+ 	color:#ffffff 
+} 
+.close {
+	color: #fff;
+	opacity: 1;
+}
+
+ Important part
+ .modal-dialog {
+ 	overflow-y: initial !important
+} 
+
+.modal-content {
+	width: 400px;
+}
+
+ .modal-footer {
+	margin: -10px;
+} 

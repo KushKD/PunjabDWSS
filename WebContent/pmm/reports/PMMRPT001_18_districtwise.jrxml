@@ -1,0 +1,1812 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PMMRPT001_18" language="groovy" pageWidth="842" pageHeight="659" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="5" bottomMargin="0" whenResourceMissingType="Empty">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box padding="2">
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="where" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select  distinct x2.*,district_name ,mc.circle_id, circle_name, mz.zone_id, zone_name  from
+(select district_id, count(village_id) as no_of_village, count(MH) main_habitation,count(OH) other_habitation,count(FC) FC,
+sum( case when FC_MH  = 'FC' then 1 else 0 end) as FC_MH,
+sum( case when FC_OH  = 'FC' then 1 else 0 end) as FC_OH,
+
+count(PC) PC,
+sum( case when PC_MH  = 'PC' and trim(PC_MH)<>'' then 1 else 0 end) as PC_MH,
+sum( case when PC_OH  = 'PC' and trim(PC_OH)<>'' then 1 else 0 end) as PC_OH,
+
+count(NC) NC,
+sum( case when NC_MH  = 'NC' and trim(NC_MH)<>'' then 1 else 0 end) as NC_MH,
+sum( case when NC_OH  = 'NC' and trim(NC_OH)<>'' then 1 else 0 end) as NC_OH,
+
+sum(pc_ong) rws_pc,
+sum(case when pc_ong  = 1 and habitation_type = 'MH'  then 1 else 0 end) as rws_pc_mh,
+sum(case when pc_ong  = 1 and habitation_type = 'OH'  then 1 else 0 end) as rws_pc_oh,
+
+sum(pc_arp) arp_pc,
+
+sum(case when pc_arp  = 1 and habitation_type = 'MH'  then 1 else 0 end) as arp_pc_mh,
+sum(case when pc_arp  = 1 and habitation_type = 'OH'  then 1 else 0 end) as arp_pc_oh,
+
+sum(pc_qa) qa_pc,
+sum(case when pc_qa  = 1 and habitation_type = 'MH'  then 1 else 0 end) as qp_pc_mh,
+sum(case when pc_qa  = 1 and habitation_type = 'OH'  then 1 else 0 end) as qp_pc_oh,
+
+
+sum(pc_ida) wb_ada_pc,
+sum(case when pc_ida  = 1 and habitation_type = 'MH'  then 1 else 0 end) as wb_ada_pc_mh,
+sum(case when pc_ida  = 1 and habitation_type = 'OH'  then 1 else 0 end) as wb_ada_pc_oh,
+
+
+sum(pc_xii) nabard_pc,
+sum(case when pc_xii  = 1 and habitation_type = 'MH' then 1 else 0 end) as nabard_pc_mh,
+sum(case when pc_xii  = 1 and habitation_type = 'OH' then 1 else 0 end) as nabard_pc_oh,
+
+
+sum(nc_ong) rws_nc,
+sum(case when nc_ong  = 1 and habitation_type = 'MH' then 1 else 0 end) as rws_nc_mh,
+sum(case when nc_ong  = 1 and habitation_type = 'OH' then 1 else 0 end) as rws_nc_oh,
+
+
+sum(nc_arp) arp_nc,
+sum(case when nc_arp  = 1 and habitation_type = 'MH'  then 1 else 0 end) as arp_nc_mh,
+sum(case when nc_arp  = 1 and habitation_type = 'OH'  then 1 else 0 end) as arp_nc_oh,
+
+sum(nc_qa) qa_nc,
+sum(case when nc_qa  = 1 and habitation_type = 'MH'  then 1 else 0 end) as qp_nc_mh,
+sum(case when nc_qa  = 1 and habitation_type = 'OH'  then 1 else 0 end) as qp_nc_oh,
+
+sum(nc_ida) wb_ada_nc,
+sum(case when nc_ida  = 1 and habitation_type = 'MH'  then 1 else 0 end) as wb_ada_nc_mh,
+sum(case when nc_ida  = 1 and habitation_type = 'OH'  then 1 else 0 end) as wb_ada_nc_oh,
+
+
+
+sum(nc_xii) nabard_nc,
+sum(case when nc_xii  = 1 and habitation_type = 'MH'  then 1 else 0 end) as nabard_nc_mh,
+sum(case when nc_xii  = 1 and habitation_type = 'OH'  then 1 else 0 end) as nabard_nc_oh,
+
+sum(case when habitation_type is not null and FC is null then 1 else 0 end ) as total_habitaion_to_be_covered  from
+
+(select district_id,habitation_type,
+village_id ,
+case when habitation_type = 'MH' then 'MH' end as MH,
+case when habitation_type = 'OH' then 'OH' end as OH,
+case when nc_pc_status = 'FC' then 'FC' end as FC,
+case when nc_pc_status = 'PC' then 'PC' end as PC,
+case when nc_pc_status = 'NC' then 'NC' end as NC,
+
+	case when nc_pc_status like '%PC%' and habitation_type = 'MH' then nc_pc_status end as PC_MH,
+	case when nc_pc_status like '%NC%' and habitation_type = 'MH' then nc_pc_status end as NC_MH,
+	case when nc_pc_status like '%FC%' and habitation_type = 'MH' then nc_pc_status end as FC_MH,
+
+	case when nc_pc_status like '%PC%' and habitation_type = 'OH' then nc_pc_status end as PC_OH,
+	case when nc_pc_status like '%NC%' and habitation_type = 'OH' then nc_pc_status end as NC_OH,
+	case when nc_pc_status like '%FC%' and habitation_type = 'OH' then nc_pc_status end as FC_OH,
+
+case when prgm_to_be_impl_pc_vill_habit_rws = 'NA' then 0 else 1 end pc_ong,
+case when prgm_to_be_impl_pc_vill_habit_arp = 'NA'then 0 else 1 end pc_arp,
+case when prgm_to_be_impl_pc_vill_habit_qp = 'NA' then 0 else 1 end pc_qa,
+case when prgm_to_be_impl_pc_vill_habit_wb_ada = 'NA' then 0 else 1 end pc_ida,
+case when prgm_to_be_impl_pc_vill_habit_nabard_xii = 'NA' then 0 else 1 end pc_xii,
+case when prgm_to_be_impl_nc_vill_habit_rws = 'NA'then 0 else 1 end nc_ong,
+case when prgm_to_be_impl_nc_vill_habit_arp = 'NA'then 0 else 1 end nc_arp,
+case when prgm_to_be_impl_nc_vill_habit_qp = 'NA' then 0 else 1 end nc_qa,
+case when prgm_to_be_impl_nc_vill_habit_wb_ada = 'NA' then 0 else 1 end nc_ida,
+case when prgm_to_be_impl_nc_vill_habit_nabard_xii = 'NA' then 0 else 1 end nc_xii
+
+
+from prwss_main.mst_village_15170) x
+
+group by district_id ) x2, prwss_main.mst_district md  ,  prwss_main.mst_circle mc, prwss_main.mst_zone mz
+
+where md.status <> 'D'  and mc.status <> 'D' and mz.status <> 'D'
+
+and x2.district_id = md.district_id
+and md.circle_id = mc.circle_id
+and mc.zone_id = mz.zone_id
+order by district_name
+
+--pc = 16953
+--nc = 4126,4120,14379]]>
+	</queryString>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="no_of_village" class="java.lang.Long"/>
+	<field name="main_habitation" class="java.lang.Long"/>
+	<field name="other_habitation" class="java.lang.Long"/>
+	<field name="fc" class="java.lang.Long"/>
+	<field name="fc_mh" class="java.lang.Long"/>
+	<field name="fc_oh" class="java.lang.Long"/>
+	<field name="pc" class="java.lang.Long"/>
+	<field name="pc_mh" class="java.lang.Long"/>
+	<field name="pc_oh" class="java.lang.Long"/>
+	<field name="nc" class="java.lang.Long"/>
+	<field name="nc_mh" class="java.lang.Long"/>
+	<field name="nc_oh" class="java.lang.Long"/>
+	<field name="rws_pc" class="java.lang.Long"/>
+	<field name="rws_pc_mh" class="java.lang.Long"/>
+	<field name="rws_pc_oh" class="java.lang.Long"/>
+	<field name="arp_pc" class="java.lang.Long"/>
+	<field name="arp_pc_mh" class="java.lang.Long"/>
+	<field name="arp_pc_oh" class="java.lang.Long"/>
+	<field name="qa_pc" class="java.lang.Long"/>
+	<field name="qp_pc_mh" class="java.lang.Long"/>
+	<field name="qp_pc_oh" class="java.lang.Long"/>
+	<field name="wb_ada_pc" class="java.lang.Long"/>
+	<field name="wb_ada_pc_mh" class="java.lang.Long"/>
+	<field name="wb_ada_pc_oh" class="java.lang.Long"/>
+	<field name="nabard_pc" class="java.lang.Long"/>
+	<field name="nabard_pc_mh" class="java.lang.Long"/>
+	<field name="nabard_pc_oh" class="java.lang.Long"/>
+	<field name="rws_nc" class="java.lang.Long"/>
+	<field name="rws_nc_mh" class="java.lang.Long"/>
+	<field name="rws_nc_oh" class="java.lang.Long"/>
+	<field name="arp_nc" class="java.lang.Long"/>
+	<field name="arp_nc_mh" class="java.lang.Long"/>
+	<field name="arp_nc_oh" class="java.lang.Long"/>
+	<field name="qa_nc" class="java.lang.Long"/>
+	<field name="qp_nc_mh" class="java.lang.Long"/>
+	<field name="qp_nc_oh" class="java.lang.Long"/>
+	<field name="wb_ada_nc" class="java.lang.Long"/>
+	<field name="wb_ada_nc_mh" class="java.lang.Long"/>
+	<field name="wb_ada_nc_oh" class="java.lang.Long"/>
+	<field name="nabard_nc" class="java.lang.Long"/>
+	<field name="nabard_nc_mh" class="java.lang.Long"/>
+	<field name="nabard_nc_oh" class="java.lang.Long"/>
+	<field name="total_habitaion_to_be_covered" class="java.lang.Long"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<variable name="no_of_village_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{no_of_village}]]></variableExpression>
+	</variable>
+	<variable name="fc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{fc}]]></variableExpression>
+	</variable>
+	<variable name="pc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc}]]></variableExpression>
+	</variable>
+	<variable name="nc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc}]]></variableExpression>
+	</variable>
+	<variable name="rws_pc_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_pc}]]></variableExpression>
+	</variable>
+	<variable name="arp_pc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_pc}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_pc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_pc}]]></variableExpression>
+	</variable>
+	<variable name="nabard_pc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_pc}]]></variableExpression>
+	</variable>
+	<variable name="rws_nc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_nc}]]></variableExpression>
+	</variable>
+	<variable name="arp_nc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_nc}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_nc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_nc}]]></variableExpression>
+	</variable>
+	<variable name="nabard_nc_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_nc}]]></variableExpression>
+	</variable>
+	<variable name="rws_pc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="rws_pc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="arp_pc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="arp_nc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="qp_pc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qp_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="qp_pc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qp_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_pc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_nc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_nc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_nc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="rws_nc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="rws_nc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="arp_nc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="arp_nc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="qp_nc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qp_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="qp_nc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qp_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_nc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_nc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_nc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_nc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_pc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="arp_pc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_pc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_pc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="main_habitation_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{main_habitation}]]></variableExpression>
+	</variable>
+	<variable name="other_habitation_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{other_habitation}]]></variableExpression>
+	</variable>
+	<variable name="fc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{fc_mh}]]></variableExpression>
+	</variable>
+	<variable name="fc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{fc_oh}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="main_habitation_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{main_habitation}]]></variableExpression>
+	</variable>
+	<variable name="other_habitation_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{other_habitation}]]></variableExpression>
+	</variable>
+	<variable name="no_of_village_5" class="java.lang.Long" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{no_of_village}]]></variableExpression>
+	</variable>
+	<variable name="main_habitation_6" class="java.lang.Long" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{main_habitation}]]></variableExpression>
+	</variable>
+	<variable name="main_habitation_7" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{main_habitation}]]></variableExpression>
+	</variable>
+	<variable name="rws_pc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="arp_pc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="qp_pc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qp_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_pc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_pc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="rws_nc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="arp_nc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="qp_nc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qp_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_nc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_nc_mh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh}]]></variableExpression>
+	</variable>
+	<variable name="rws_pc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="arp_pc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="qp_pc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qp_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_pc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_pc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="rws_nc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="arp_nc_oh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="qp_nc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qp_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_nc_oh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_nc_oh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh}]]></variableExpression>
+	</variable>
+	<variable name="rws_pc_mh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="arp_pc_mh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{arp_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="qp_pc_mh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{qp_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="wb_ada_pc_mh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{wb_ada_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="nabard_pc_mh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="rws_pc_mh_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{rws_pc_mh}]]></variableExpression>
+	</variable>
+	<variable name="fc_oh_2" class="java.lang.Long" resetType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$F{fc_oh}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_3" class="java.lang.Long" resetType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="fc_oh_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{fc_oh}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh}]]></variableExpression>
+	</variable>
+	<variable name="fc_mh_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{fc_mh}]]></variableExpression>
+	</variable>
+	<variable name="district_running" class="java.lang.Integer" incrementType="Report">
+		<variableExpression><![CDATA[$V{district_running}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="nabard_nc_1" class="java.lang.Long" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{nabard_nc}]]></variableExpression>
+	</variable>
+	<variable name="total_habitaion_to_be_covered_1" class="java.lang.Long" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_habitaion_to_be_covered}]]></variableExpression>
+	</variable>
+	<variable name="total_habitaion_to_be_covered_2" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_habitaion_to_be_covered}]]></variableExpression>
+	</variable>
+	<variable name="no_of_village_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{no_of_village}]]></variableExpression>
+	</variable>
+	<variable name="district_name_1" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{district_name}]]></variableExpression>
+	</variable>
+	<variable name="main_habitation_1" class="java.lang.Long" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{main_habitation}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="654" y="21" width="178" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SWAp/Non-SWAp Report A-1.1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="755" y="41" width="77" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[01-04-2008]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="654" y="41" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[As on :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="224" y="21" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="832" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="41" width="654" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Abstract of Habitation Survey- Freezed - April 2008 & its Action plan (District-Wise)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="106" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="260" y="0" width="133" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Water-Supply Coverage Status of Habitations]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="593" y="0" width="200" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Program to be Implemented in NC Villages/Habitations]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="170" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="260" y="39" width="43" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="303" y="39" width="46" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="349" y="39" width="44" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="393" y="39" width="42" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ongoing RWS Sector invest.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="435" y="39" width="40" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="475" y="39" width="40" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QA (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="515" y="39" width="40" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Project]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="555" y="39" width="38" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nabard-XII (Non-SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="593" y="39" width="41" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ongoing RWS Sector invest.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="634" y="39" width="40" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="674" y="39" width="40" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QA (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="714" y="39" width="40" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Project]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="754" y="39" width="39" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nabard-XII (Non-SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="793" y="0" width="39" height="91" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total
+Habitations
+to be covered]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="215" y="39" width="45" height="52" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="30" y="91" width="83" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="113" y="91" width="57" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="170" y="91" width="45" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="215" y="91" width="45" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="260" y="91" width="43" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="303" y="91" width="46" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="349" y="91" width="44" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="393" y="91" width="42" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="435" y="91" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="475" y="91" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="515" y="91" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[12]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="555" y="91" width="38" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[13]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="593" y="91" width="41" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[14]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="634" y="91" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[15]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="674" y="91" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[16]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="714" y="91" width="40" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[17]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="754" y="91" width="39" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="793" y="91" width="39" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[19]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="91" width="30" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="30" height="91" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr.No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="393" y="0" width="200" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Program to be Implemented in PC
+Villages/Habitations]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="170" y="0" width="90" height="39" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Number of
+Habitations]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="113" y="0" width="57" height="91" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Number of
+Villages]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="30" y="0" width="83" height="91" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of District]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="113" y="0" width="57" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{no_of_village}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="170" y="0" width="45" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{main_habitation}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="215" y="0" width="45" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{other_habitation}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="260" y="0" width="43" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{fc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="303" y="0" width="46" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{pc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="349" y="0" width="44" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{nc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="393" y="0" width="42" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{rws_pc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="435" y="0" width="40" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{arp_pc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="515" y="0" width="40" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{wb_ada_pc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="555" y="0" width="38" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{nabard_pc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="593" y="0" width="41" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{rws_nc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="714" y="0" width="38" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{wb_ada_nc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="752" y="0" width="41" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{nabard_nc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="793" y="0" width="39" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{total_habitaion_to_be_covered}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="0" y="0" width="30" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="475" y="0" width="40" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{qa_pc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="634" y="0" width="40" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{arp_nc}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="674" y="0" width="40" height="20" backcolor="#FAF6F6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{arp_nc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="30" y="0" width="83" height="20" forecolor="#000000" backcolor="#FAF6F6"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{district_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="113" height="20" backcolor="#CCFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="113" y="0" width="57" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{no_of_village_4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="215" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{other_habitation_5}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="260" y="0" width="43" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{fc_4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="303" y="0" width="46" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="349" y="0" width="43" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_4}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="392" y="0" width="42" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_pc_mh_2}.longValue()+$V{rws_pc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="434" y="0" width="40" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{arp_pc_mh_2}.longValue()+$V{arp_pc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="474" y="0" width="41" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{qp_pc_mh_2}.longValue()+$V{qp_pc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="515" y="0" width="39" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{wb_ada_pc_mh_2}.longValue()+$V{wb_ada_pc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="554" y="0" width="38" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nabard_pc_mh_2}.longValue()+$V{nabard_pc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="592" y="0" width="41" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_nc_mh_2}.longValue()+$V{rws_nc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="633" y="0" width="40" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{arp_nc_mh_2}.longValue()+$V{arp_nc_oh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="673" y="0" width="40" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{qp_nc_mh_2}.longValue()+$V{qp_nc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="713" y="0" width="40" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{wb_ada_nc_mh_2}.longValue()+$V{wb_ada_nc_oh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="753" y="0" width="40" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nabard_nc_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="794" y="0" width="38" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_habitaion_to_be_covered_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="171" y="0" width="44" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{main_habitation_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="21">
+			<textField evaluationTime="Report">
+				<reportElement x="54" y="1" width="40" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="1" width="54" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="730" y="1" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="320" y="0" width="178" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[SWAp/Non-SWAp Report A-1.1]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="555" splitType="Stretch">
+			<textField>
+				<reportElement style="table_TH" x="23" y="80" width="779" height="18" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Summary as on 01-04-2008"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TH" x="427" y="115" width="225" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Water-Supply Coverage Status of Habitations]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="23" y="238" width="376" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Program to be Implemented in Villages/ Main Habitations (MH)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="427" y="238" width="375" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Program to be Implemented in Other Habitations (OH)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="23" y="115" width="225" height="25" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total Number of District]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="23" y="140" width="225" height="25" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total Number of Habitations]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="23" y="165" width="225" height="25" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total Number of Main Habitations (MH)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="427" y="135" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total Number of FC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="427" y="155" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total Number of PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="427" y="175" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total Number of NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="23" y="287" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Ongoing RWS Sector investment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="23" y="307" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[ARP (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="23" y="327" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[QA (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="23" y="347" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Project (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="23" y="367" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nabard-XII (Non-SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="427" y="289" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Ongoing RWS Sector investment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="427" y="309" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[ARP (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="427" y="329" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[QA (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="427" y="349" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[PRWSS Project (SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="427" y="369" width="225" height="20" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nabard-XII (Non-SWAp)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="23" y="432" width="226" height="20" backcolor="#CCCCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total Habilitations to be covered]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TH" x="248" y="140" width="150" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{no_of_village_4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="752" y="135" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{fc_4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="752" y="155" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="752" y="175" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="752" y="289" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_pc_oh_2}.longValue()+$V{rws_nc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="752" y="309" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{arp_pc_oh_2}.longValue()+$V{arp_nc_oh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="752" y="329" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{qp_pc_oh_2}.longValue()+$V{qp_nc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="752" y="349" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{wb_ada_pc_oh_2}.longValue()+$V{wb_ada_nc_oh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="752" y="369" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nabard_pc_oh_2}.longValue()+$V{nabard_nc_oh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TH" x="23" y="267" width="225" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Program Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="248" y="267" width="51" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="299" y="267" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="349" y="267" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="702" y="269" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="427" y="269" width="225" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Program Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="652" y="269" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="752" y="269" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TH" x="652" y="135" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{fc_mh_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="135" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{fc_oh_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="652" y="155" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_mh_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="155" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_oh_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="652" y="175" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_mh_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="175" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_oh_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TH" x="702" y="115" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="652" y="115" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="752" y="115" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="23" y="190" width="225" height="25" backcolor="#CCCCFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total Number of Other Habitations (OH)]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TH" x="248" y="165" width="150" height="25" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{main_habitation_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="248" y="190" width="150" height="25" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{other_habitation_5}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TH" x="427" y="195" width="225" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TH" x="652" y="195" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{main_habitation_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="195" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{other_habitation_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="248" y="287" width="51" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_pc_mh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="248" y="307" width="51" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{arp_pc_mh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="248" y="327" width="51" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{qp_pc_mh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="248" y="347" width="51" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{wb_ada_pc_mh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="248" y="367" width="51" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nabard_pc_mh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="299" y="287" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_nc_mh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="299" y="307" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{arp_nc_mh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="299" y="327" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{qp_nc_mh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="299" y="347" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{wb_ada_nc_mh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="299" y="367" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nabard_nc_mh_3}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TH" x="23" y="387" width="225" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TH" x="248" y="387" width="51" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_pc_mh_2}.longValue()+$V{arp_pc_mh_2}.longValue()+$V{qp_pc_mh_2}.longValue()+$V{wb_ada_pc_mh_2}.longValue()+$V{nabard_pc_mh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="299" y="387" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_nc_mh_2}.longValue()+$V{arp_nc_mh_2}.longValue()+$V{qp_nc_mh_2}.longValue()+$V{wb_ada_nc_mh_2}.longValue()+$V{nabard_nc_mh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="652" y="289" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_pc_oh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="652" y="309" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{arp_pc_oh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="652" y="329" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{qp_pc_oh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="652" y="349" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{wb_ada_pc_oh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="652" y="369" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nabard_pc_oh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="289" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_nc_oh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="309" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{arp_nc_oh_3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="329" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{qp_nc_oh_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="349" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{wb_ada_nc_oh_3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="369" width="50" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nabard_nc_oh_3}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TH" x="427" y="389" width="225" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TH" x="652" y="389" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_pc_oh_2}.longValue()+$V{arp_pc_oh_2}.longValue()+$V{qp_pc_oh_2}.longValue()+$V{wb_ada_pc_oh_2}.longValue()+$V{nabard_pc_oh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="702" y="389" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_nc_oh_2}.longValue()+$V{arp_nc_oh_3}.longValue()+$V{qp_nc_oh_2}.longValue()+$V{wb_ada_nc_oh_3}.longValue()+$V{nabard_nc_oh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="752" y="389" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_pc_oh_2}.longValue()+$V{arp_pc_oh_2}.longValue()+$V{qp_pc_oh_2}.longValue()+$V{wb_ada_pc_oh_2}.longValue()+$V{nabard_pc_oh_2}.longValue()+$V{rws_nc_oh_2}.longValue()+$V{arp_nc_oh_3}.longValue()+$V{qp_nc_oh_2}.longValue()+$V{wb_ada_nc_oh_3}.longValue()+$V{nabard_nc_oh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="349" y="327" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{qp_pc_mh_2}.longValue()+$V{qp_nc_mh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="349" y="367" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nabard_pc_mh_2}.longValue()+$V{nabard_nc_mh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="349" y="347" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{wb_ada_pc_mh_2}.longValue()+$V{wb_ada_nc_mh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="349" y="387" width="50" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_pc_mh_2}.longValue()+$V{rws_nc_mh_2}.longValue()+$V{arp_pc_mh_2}.longValue()+$V{arp_nc_mh_2}.longValue()+$V{qp_pc_mh_2}.longValue()+$V{qp_nc_mh_2}.longValue()+$V{wb_ada_pc_mh_2}.longValue()+$V{wb_ada_nc_mh_2}.longValue()+$V{nabard_pc_mh_2}.longValue()+$V{nabard_nc_mh_3}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="349" y="287" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{rws_pc_mh_2}.longValue()+$V{rws_nc_mh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="349" y="307" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{arp_pc_mh_2}.longValue()+$V{arp_nc_mh_2}.longValue()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="249" y="432" width="149" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_habitaion_to_be_covered_2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="752" y="195" width="50" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{no_of_village_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Opaque" x="248" y="115" width="150" height="25" forecolor="#000000" backcolor="#F0F8FF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{district_name_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

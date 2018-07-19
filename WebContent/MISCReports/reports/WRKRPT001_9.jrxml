@@ -1,0 +1,1964 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Report_VII" language="groovy" pageWidth="979" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="969" leftMargin="5" rightMargin="5" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="queryString" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="where" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="month" class="java.lang.String">
+		<defaultValueExpression><![CDATA["03"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fincode" class="java.lang.String">
+		<defaultValueExpression><![CDATA["5"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select zone_id,zone_name,circle_id,circle_name,district_id,district_name,divisional_id,divisional_name,
+	count(distinct case when prog_id='PROG15' then scheme_id else null end) as sch_wb,
+	count(distinct case when prog_id='PROG15' then village_id else null end) as habi_wb,
+	count(distinct case when prog_id='PROG15' and habitation_type='MH' and ncpc_2008='NC' then village_id else null end) as nc_mh_wb,
+	count(distinct case when prog_id='PROG15' and habitation_type='OH' and ncpc_2008='NC' then village_id else null end) as nc_oh_wb,
+	count(distinct case when prog_id='PROG15' and habitation_type='MH' and ncpc_2008='PC' then village_id else null end) as pc_mh_wb,
+	count(distinct case when prog_id='PROG15' and habitation_type='OH' and ncpc_2008='PC' then village_id else null end) as pc_oh_wb,
+	--count(distinct case when prog_id='PROG15' and habitation_type='MH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then village_id else null end) as slipped_mh_arwsp_n,
+	--count(distinct case when prog_id='PROG15' and habitation_type='OH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then village_id else null end) as slipped_oh_arwsp_n,
+	sum(case when prog_id='PROG15' and row_sch=1 and admin_app_gop_amount<>0 then admin_app_gop_amount/100000 else 0 end ) as anti_exp_wb,
+
+	count(distinct case when prog_id<>'PROG15' and swap_nonswap='SWAP' then scheme_id else null end) as sch_arwsp_n,
+	count(distinct case when prog_id<>'PROG15' and swap_nonswap='SWAP' then village_id else null end) as habi_arwsp_n,
+	count(distinct case when prog_id<>'PROG15' and swap_nonswap='SWAP' and habitation_type='MH' and ncpc_2008='NC' then village_id else null end) as nc_mh_arwsp_n,
+	count(distinct case when prog_id<>'PROG15' and swap_nonswap='SWAP' and habitation_type='OH' and ncpc_2008='NC' then village_id else null end) as nc_oh_arwsp_n,
+	count(distinct case when prog_id<>'PROG15' and swap_nonswap='SWAP' and habitation_type='MH' and ncpc_2008='PC' then village_id else null end) as pc_mh_arwsp_n,
+	count(distinct case when prog_id<>'PROG15' and swap_nonswap='SWAP' and habitation_type='OH' and ncpc_2008='PC' then village_id else null end) as pc_oh_arwsp_n,
+	count(distinct case when prog_id<>'PROG15' and swap_nonswap='SWAP' and habitation_type='MH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then village_id else null end) as slipped_mh_arwsp_n,
+	count(distinct case when prog_id<>'PROG15' and swap_nonswap='SWAP' and habitation_type='OH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then village_id else null end) as slipped_oh_arwsp_n,
+	sum(case when prog_id<>'PROG15' and swap_nonswap='SWAP' and row_sch=1 and swap_nonswap='SWAP' and balance<>0 then balance/100000 else 0 end ) as anti_exp_arwsp_n,
+
+	count(distinct case when swap_nonswap='NONSWAP' then scheme_id else null end) as sch_qa,
+	count(distinct case when swap_nonswap='NONSWAP' then village_id else null end) as habi_qa,
+	count(distinct case when swap_nonswap='NONSWAP' and habitation_type='MH' and ncpc_2008='NC' then village_id else null end) as nc_mh_qa,
+	count(distinct case when swap_nonswap='NONSWAP' and habitation_type='OH' and ncpc_2008='NC' then village_id else null end) as nc_oh_qa,
+	count(distinct case when swap_nonswap='NONSWAP' and habitation_type='MH' and ncpc_2008='PC' then village_id else null end) as pc_mh_qa,
+	count(distinct case when swap_nonswap='NONSWAP' and habitation_type='OH' and ncpc_2008='PC' then village_id else null end) as pc_oh_qa,
+	--count(distinct case when swap_nonswap='NON-SWAP' and habitation_type='MH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then village_id else null end) as slipped_mh_arwsp_n,
+	--count(distinct case when swap_nonswap='NON-SWAP' and habitation_type='OH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then village_id else null end) as slipped_oh_arwsp_n,
+	sum(case when swap_nonswap='NONSWAP' and row_sch=1 and balance<>0 then balance/100000 else 0 end ) as anti_exp_qa,
+
+	count(distinct case when swap_nonswap in ('NONSWAP','SWAP') then scheme_id else null end) as sch_nbd,
+	count(distinct case when swap_nonswap in ('NONSWAP','SWAP') then village_id else null end) as habi_nbd,
+	count(distinct case when swap_nonswap in ('NONSWAP','SWAP') and habitation_type='MH' and ncpc_2008='NC' then village_id else null end) as nc_mh_nbd,
+	count(distinct case when swap_nonswap in ('NONSWAP','SWAP') and habitation_type='OH' and ncpc_2008='NC' then village_id else null end) as nc_oh_nbd,
+	count(distinct case when swap_nonswap in ('NONSWAP','SWAP') and habitation_type='MH' and ncpc_2008='PC' then village_id else null end) as pc_mh_nbd,
+	count(distinct case when swap_nonswap in ('NONSWAP','SWAP') and habitation_type='OH' and ncpc_2008='PC' then village_id else null end) as pc_oh_nbd,
+	--count(distinct case when swap_nonswap='NON-SWAP' and habitation_type='MH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then village_id else null end) as slipped_mh_arwsp_n,
+	--count(distinct case when swap_nonswap='NON-SWAP' and habitation_type='OH' and ncpc_2008='FC' and scheme_commissioned_date>'2008-04-01' then village_id else null end) as slipped_oh_arwsp_n,
+	sum(case when swap_nonswap in ('NONSWAP','SWAP') and row_sch=1 and balance<>0 then balance/100000 else 0 end ) as anti_exp_nbd,
+	prwss_main.get_fin_year_code($P{fincode}) as fincode
+from
+(select z.zone_id,z.zone_name,c.circle_id,c.circle_name,d.district_id,district_name,divisional_id,divisional_name,main.*,(admin_app_gop_amount-exp) as balance
+from
+(select xx.*,case when xxx.expenditure is null then 0 else xxx.expenditure end as exp
+from
+(select *,rank() over (partition by scheme_id order by village_id,location_id)as row_sch
+from
+(select sh.location_id,sh.scheme_id,sh.prog_id,mv.village_id,habitation_type,nc_pc_status,scheme_commissioned_date,sd.scheme_completed_date,
+	case when admin_app_gop_amount is null then 0 else admin_app_gop_amount end as admin_app_gop_amount,admin_app_sent_se_vide_ee_date,
+	admin_app_sent_ce_vide_se_date,admin_app_sent_govt_vide_ce_date,admin_app_gop_letter_date,admin_app_lying_with_ee_amount,ncpc_2008,swap_nonswap,
+	rank() over (partition by mv.village_id order by scheme_commissioned_date desc,sh.scheme_id desc,admin_app_gop_letter_date desc,sh.scheme_upgraded)rank
+from prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_village sv,prwss_main.mst_scheme_details sd,prwss_main.mst_village mv,prwss_main.mst_program p,
+	----------------------------------------------current ncpc status------------------------------------------
+	(select village_id,nc_pc_status,ncpc_2008
+		from
+		(select x.*,scheme_id,scheme_commissioned_date,prog_id,
+		case when (ncpc_2008 in ('NC','PC') and scheme_commissioned_date is not null and scheme_commissioned_date>'2008-04-01') or spl_flags is not null then 'FC' else ncpc_2008 end as nc_pc_status
+		from
+		(select mv.*,nc_pc_status as ncpc_2008
+		from prwss_main.mst_village mv,prwss_main.tbl_proposed_program_2008 ncpc
+		where mv.village_id=ncpc.village_id
+		and   mv.status<>'D')x
+		left join
+		(select * from
+		(select mv.village_id,sh.scheme_id,scheme_commissioned_date,prog_id,
+		rank() over (partition by mv.village_id order by scheme_commissioned_date desc, sh.scheme_id desc,admin_app_gop_letter_date desc,sh.scheme_upgraded desc) row_id
+		from prwss_main.mst_village mv,prwss_main.mst_scheme_village sv,prwss_main.mst_scheme_header sh,prwss_main.mst_scheme_details sd
+		where mv.village_id=sv.village_id
+		--and   sh.scheme_source not in ( 'SEWERAGE','IMPROVEMENT')
+		and   sh.scheme_id=sv.scheme_id and sv.scheme_id=sd.scheme_id and sh.status<>'D' and sd.status<>'D'
+		and   mv.status<>'D' and sv.status<>'D'
+		and   scheme_commissioned_date>=to_date('2008-04-01','yyyy-mm-dd') and scheme_commissioned_date < prwss_main.get_fin_year_end_date($P{fincode}))y where row_id=1)xx
+		on x.village_id=xx.village_id)xx) a
+where sh.scheme_id=sv.scheme_id
+and   sv.scheme_id=sd.scheme_id
+and   sv.village_id=mv.village_id
+and   mv.village_id=a.village_id
+and   sh.prog_id=p.program_id
+and   sh.status<>'D' and sv.status<>'D'
+and sd.status<>'D' and mv.status<>'D')x
+where rank=1 and scheme_commissioned_date is null
+and   (admin_app_sent_se_vide_ee_date is null and  admin_app_sent_ce_vide_se_date is null and admin_app_sent_govt_vide_ce_date is null and admin_app_gop_letter_date is null)
+--and   admin_app_lying_with_ee_amount <>0
+)xx
+
+
+left join
+-------------------------------------------set 2 for Balance Amount-----------------------------------
+
+
+(select sh.location_id,sh.scheme_id,sum(vh.amount) expenditure
+from prwss_main.t_finance_voucher_hdr vh--,prwss_main.t_finance_voucher_detail vd
+,prwss_main.mst_scheme_header sh
+where --vh.voc_id=vd.voc_id and
+vh.scheme_id=sh.scheme_id
+and   vh.status<>'D' --and vd.status<>'D'
+and sh.status<>'D'
+and   vh.voc_type='PAYMENT'
+group  by sh.location_id,sh.scheme_id)xxx
+
+on xx.scheme_id=xxx.scheme_id)main,prwss_main.mst_divisional di,prwss_main.mst_district d,prwss_main.mst_circle c,prwss_main.mst_zone z
+where main.location_id=di.divisional_id
+and   di.district_id=d.district_id
+and   d.circle_id=c.circle_id
+and   c.zone_id=z.zone_id)oip
+group by zone_id,zone_name,circle_id,circle_name,district_id,district_name,divisional_id,divisional_name
+order by zone_name,circle_name,district_name,divisional_name]]>
+	</queryString>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="divisional_id" class="java.lang.String"/>
+	<field name="divisional_name" class="java.lang.String"/>
+	<field name="sch_wb" class="java.lang.Long"/>
+	<field name="habi_wb" class="java.lang.Long"/>
+	<field name="nc_mh_wb" class="java.lang.Long"/>
+	<field name="nc_oh_wb" class="java.lang.Long"/>
+	<field name="pc_mh_wb" class="java.lang.Long"/>
+	<field name="pc_oh_wb" class="java.lang.Long"/>
+	<field name="anti_exp_wb" class="java.math.BigDecimal"/>
+	<field name="sch_arwsp_n" class="java.lang.Long"/>
+	<field name="habi_arwsp_n" class="java.lang.Long"/>
+	<field name="nc_mh_arwsp_n" class="java.lang.Long"/>
+	<field name="nc_oh_arwsp_n" class="java.lang.Long"/>
+	<field name="pc_mh_arwsp_n" class="java.lang.Long"/>
+	<field name="pc_oh_arwsp_n" class="java.lang.Long"/>
+	<field name="slipped_mh_arwsp_n" class="java.lang.Long"/>
+	<field name="slipped_oh_arwsp_n" class="java.lang.Long"/>
+	<field name="anti_exp_arwsp_n" class="java.math.BigDecimal"/>
+	<field name="sch_qa" class="java.lang.Long"/>
+	<field name="habi_qa" class="java.lang.Long"/>
+	<field name="nc_mh_qa" class="java.lang.Long"/>
+	<field name="nc_oh_qa" class="java.lang.Long"/>
+	<field name="pc_mh_qa" class="java.lang.Long"/>
+	<field name="pc_oh_qa" class="java.lang.Long"/>
+	<field name="anti_exp_qa" class="java.math.BigDecimal"/>
+	<field name="sch_nbd" class="java.lang.Long"/>
+	<field name="habi_nbd" class="java.lang.Long"/>
+	<field name="nc_mh_nbd" class="java.lang.Long"/>
+	<field name="nc_oh_nbd" class="java.lang.Long"/>
+	<field name="pc_mh_nbd" class="java.lang.Long"/>
+	<field name="pc_oh_nbd" class="java.lang.Long"/>
+	<field name="anti_exp_nbd" class="java.math.BigDecimal"/>
+	<field name="fincode" class="java.lang.String"/>
+	<variable name="sch_arwsp_n_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="habi_arwsp_n_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_arwsp_n_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_arwsp_n_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_arwsp_n_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_arwsp_n_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="slipped_mh_arwsp_n_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{slipped_mh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="slipped_oh_arwsp_n_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{slipped_oh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_arwsp_n_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="sch_wb_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_wb}]]></variableExpression>
+	</variable>
+	<variable name="habi_wb_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_wb}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_wb_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_wb}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_wb_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_wb}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_wb_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_wb}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_wb_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_wb}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_wb_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_wb}]]></variableExpression>
+	</variable>
+	<variable name="sch_qa_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_qa}]]></variableExpression>
+	</variable>
+	<variable name="habi_qa_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_qa}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_qa_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_qa}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_qa_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_qa}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_qa_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_qa}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_qa_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_qa}]]></variableExpression>
+	</variable>
+	<variable name="sch_nbd_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_nbd}]]></variableExpression>
+	</variable>
+	<variable name="habi_nbd_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_nbd}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_nbd_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_nbd_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_nbd_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_nbd_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_nbd_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_nbd}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_qa_1" class="java.math.BigDecimal" resetType="Group" resetGroup="circle_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_qa}]]></variableExpression>
+	</variable>
+	<variable name="sch_arwsp_n_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="habi_arwsp_n_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_arwsp_n_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_arwsp_n_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_arwsp_n_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_arwsp_n_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="slipped_mh_arwsp_n_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{slipped_mh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="slipped_oh_arwsp_n_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{slipped_oh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_arwsp_n_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="sch_wb_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_wb}]]></variableExpression>
+	</variable>
+	<variable name="habi_wb_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_wb}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_wb_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_wb}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_wb_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_wb}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_wb_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_wb}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_wb_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_wb}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_wb_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_wb}]]></variableExpression>
+	</variable>
+	<variable name="sch_qa_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_qa}]]></variableExpression>
+	</variable>
+	<variable name="habi_qa_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_qa}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_qa_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_qa}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_qa_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_qa}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_qa_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_qa}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_qa_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_qa}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_qa_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_qa}]]></variableExpression>
+	</variable>
+	<variable name="sch_nbd_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_nbd}]]></variableExpression>
+	</variable>
+	<variable name="habi_nbd_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_nbd}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_nbd_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_nbd_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_nbd_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_nbd_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_nbd_2" class="java.math.BigDecimal" resetType="Group" resetGroup="zone_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_nbd}]]></variableExpression>
+	</variable>
+	<variable name="sch_arwsp_n_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="habi_arwsp_n_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_arwsp_n_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_arwsp_n_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_arwsp_n_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_arwsp_n_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="slipped_mh_arwsp_n_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{slipped_mh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="slipped_oh_arwsp_n_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{slipped_oh_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_arwsp_n_3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="sch_wb_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_wb}]]></variableExpression>
+	</variable>
+	<variable name="habi_wb_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_wb}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_wb_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_wb}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_wb_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_wb}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_wb_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_wb}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_wb_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_wb}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_wb_3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_wb}]]></variableExpression>
+	</variable>
+	<variable name="sch_qa_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_qa}]]></variableExpression>
+	</variable>
+	<variable name="habi_qa_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_qa}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_qa_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_qa}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_qa_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_qa}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_qa_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_qa}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_qa_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_qa}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_qa_3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_qa}]]></variableExpression>
+	</variable>
+	<variable name="sch_nbd_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{sch_nbd}]]></variableExpression>
+	</variable>
+	<variable name="habi_nbd_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{habi_nbd}]]></variableExpression>
+	</variable>
+	<variable name="nc_mh_nbd_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_mh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="nc_oh_nbd_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{nc_oh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="pc_mh_nbd_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_mh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="pc_oh_nbd_3" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{pc_oh_nbd}]]></variableExpression>
+	</variable>
+	<variable name="anti_exp_nbd_3" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{anti_exp_nbd}]]></variableExpression>
+	</variable>
+	<group name="zone_grp">
+		<groupExpression><![CDATA[$F{zone_name}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="0" y="0" width="99" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Total:-  "+$F{zone_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="99" y="0" width="31" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sch_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="130" y="0" width="28" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{habi_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="158" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_mh_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="183" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_oh_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="208" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_mh_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="233" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_oh_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="258" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{slipped_mh_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="283" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{slipped_oh_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="308" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="353" y="0" width="31" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sch_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="384" y="0" width="28" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{habi_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="412" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_mh_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="437" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_oh_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="462" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_mh_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="487" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_oh_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="512" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="557" y="0" width="31" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sch_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="588" y="0" width="28" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{habi_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="616" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_mh_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="641" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_oh_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="666" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_mh_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="691" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_oh_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="716" y="0" width="45" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="761" y="0" width="31" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sch_nbd_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="792" y="0" width="28" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{habi_nbd_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="820" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_mh_nbd_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="845" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_oh_nbd_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="870" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_mh_nbd_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="895" y="0" width="25" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_oh_nbd_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="920" y="0" width="49" height="20" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_nbd_2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="circle_grp">
+		<groupExpression><![CDATA[$F{circle_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="969" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{zone_name}+" Circle:-  "+$F{circle_name}+" Div.-: "+$F{divisional_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="0" y="0" width="99" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Total Circle:-  "+$F{circle_name}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="99" y="0" width="31" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sch_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="130" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{habi_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="158" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_mh_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="183" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_oh_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="208" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_mh_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="233" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_oh_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="258" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{slipped_mh_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="283" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{slipped_oh_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="353" y="0" width="31" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sch_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="384" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{habi_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="412" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_mh_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="437" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_oh_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00;-###0.00" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="308" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="462" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_mh_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="487" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_oh_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00;-###0.00" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="512" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="557" y="0" width="31" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sch_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="588" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{habi_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="616" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_mh_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="666" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_mh_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="691" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_oh_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00;-###0.00" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="716" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="761" y="0" width="31" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sch_nbd_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="792" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{habi_nbd_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="820" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_mh_nbd_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="845" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_oh_nbd_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="870" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_mh_nbd_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="895" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{pc_oh_nbd_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00;-###0.00" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="920" y="0" width="49" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_nbd_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="false">
+					<reportElement style="table_TH" mode="Opaque" x="641" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+						<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{nc_oh_qa_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="70" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="45" width="665" height="25"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. of schemes where estimates are yet to be submitted for administrative approval to SE /CE/Govt]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="819" y="21" width="150" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[WP Report : W9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="969" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="233" y="21" width="499" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="130" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="26" y="0" width="73" height="115" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of  District]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="208" y="58" width="50" height="29" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="258" y="58" width="50" height="29" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Slipped Back]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="99" y="58" width="31" height="57" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ schemes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="99" y="19" width="254" height="20" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Non-IDA SWAp (GoI/GoP)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="308" y="39" width="45" height="76" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estimated amount of funds required]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="353" y="19" width="204" height="20" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SWAp IDA (World Bank)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="158" y="58" width="50" height="29" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="99" y="0" width="870" height="19" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. of schemes where estimates are yet to be submitted]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="158" y="39" width="150" height="19" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[    No. of villages covered]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="183" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="158" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="208" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="233" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="283" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="258" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="130" y="58" width="28" height="57" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Habitation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="99" y="39" width="59" height="19" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[No. of]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="512" y="39" width="45" height="76" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estimated amount of funds required]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="353" y="39" width="59" height="19" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[No. of]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="412" y="58" width="50" height="29" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="487" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="462" y="58" width="50" height="29" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="412" y="39" width="100" height="19" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[    No. of villages covered]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="462" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="353" y="58" width="31" height="57" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ schemes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="412" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="384" y="58" width="28" height="57" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Habitation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="437" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="26" y="115" width="73" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="99" y="115" width="31" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="130" y="115" width="28" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="158" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="183" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="208" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="233" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="258" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="283" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="308" y="115" width="45" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="353" y="115" width="31" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[12]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="384" y="115" width="28" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[13]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="412" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[14]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="437" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[15]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="462" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[16]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="487" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[17]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="512" y="115" width="45" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[18]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="557" y="19" width="204" height="20" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Non SWAp]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="641" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="691" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="666" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="666" y="58" width="50" height="29" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="666" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[23]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="616" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="716" y="115" width="45" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[25]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="641" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[22]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="716" y="39" width="45" height="76" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estimated amount of funds required]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="588" y="58" width="28" height="57" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Habitation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="691" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[24]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="557" y="58" width="31" height="57" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ schemes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="616" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[21]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="557" y="39" width="59" height="19" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[No. of]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="557" y="115" width="31" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[19]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="588" y="115" width="28" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[20]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="616" y="58" width="50" height="29" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="616" y="39" width="100" height="19" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[    No. of villages covered]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="761" y="115" width="31" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[26]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="845" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="792" y="115" width="28" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[27]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="845" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[29]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="870" y="58" width="50" height="29" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="920" y="115" width="49" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[32]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="895" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[31]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="761" y="39" width="59" height="19" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[No. of]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="820" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[28]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="920" y="39" width="49" height="76" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estimated amount of funds required]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="870" y="115" width="25" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[30]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="761" y="58" width="31" height="57" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ schemes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="820" y="39" width="100" height="19" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[    No. of villages covered]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="761" y="19" width="208" height="20" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="895" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[OH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="820" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="870" y="87" width="25" height="28" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[MH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="820" y="58" width="50" height="29" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="792" y="58" width="28" height="57" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Habitation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="26" height="115" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr. No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="115" width="26" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[1]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" isPrintRepeatedValues="false" mode="Opaque" x="26" y="0" width="73" height="20" forecolor="#000000" backcolor="#FAF6F6"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{divisional_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="99" y="0" width="31" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{sch_arwsp_n}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="130" y="0" width="28" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{habi_arwsp_n}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="158" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{nc_mh_arwsp_n}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="183" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{nc_oh_arwsp_n}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="208" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pc_mh_arwsp_n}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="233" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pc_oh_arwsp_n}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="258" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{slipped_mh_arwsp_n}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="283" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{slipped_oh_arwsp_n}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="308" y="0" width="45" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{anti_exp_arwsp_n}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="353" y="0" width="31" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{sch_wb}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="384" y="0" width="28" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{habi_wb}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="412" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{nc_mh_wb}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="437" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{nc_oh_wb}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="462" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pc_mh_wb}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="487" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pc_oh_wb}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="512" y="0" width="45" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{anti_exp_wb}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="557" y="0" width="31" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{sch_qa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="588" y="0" width="28" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{habi_qa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="616" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{nc_mh_qa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="641" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{nc_oh_qa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="666" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pc_mh_qa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="691" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pc_oh_qa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="716" y="0" width="45" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{anti_exp_qa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="761" y="0" width="31" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{sch_nbd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="792" y="0" width="28" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{habi_nbd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="820" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{nc_mh_nbd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="845" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{nc_oh_nbd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="870" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pc_mh_nbd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="895" y="0" width="25" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{pc_oh_nbd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="920" y="0" width="49" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{anti_exp_nbd}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="0" y="0" width="26" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="869" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="80" y="0" width="40" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="386" y="0" width="160" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[WP Report : W9]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="99" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Grand Total:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="99" y="0" width="31" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{sch_arwsp_n_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="130" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{habi_arwsp_n_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="158" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_mh_arwsp_n_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="183" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_oh_arwsp_n_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="208" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_mh_arwsp_n_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="233" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_oh_arwsp_n_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="258" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{slipped_mh_arwsp_n_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="283" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{slipped_oh_arwsp_n_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="308" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_arwsp_n_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="353" y="0" width="31" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{sch_wb_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="384" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{habi_wb_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="412" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_mh_wb_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="437" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_oh_wb_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="462" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_mh_wb_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="487" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_oh_wb_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="512" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_wb_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="557" y="0" width="31" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{sch_qa_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="588" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{habi_qa_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="616" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_mh_qa_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="641" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_oh_qa_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="666" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_mh_qa_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="691" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_oh_qa_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="716" y="0" width="45" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_qa_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="761" y="0" width="31" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{sch_nbd_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="792" y="0" width="28" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{habi_nbd_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="820" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_mh_nbd_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="845" y="0" width="24" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{nc_oh_nbd_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="869" y="0" width="26" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_mh_nbd_3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Opaque" x="895" y="0" width="25" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{pc_oh_nbd_3}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="920" y="0" width="49" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{anti_exp_nbd_3}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

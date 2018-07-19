@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE struts-config PUBLIC
+       "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+       "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+
+<struts-config>
+
+	<form-beans>
+		<form-bean name="createProcPlanForm"
+			type="com.prwss.mis.procurement.plan.struts.CreateProcPlanForm"></form-bean>
+		<form-bean name="procSubPlanForm"
+			type="com.prwss.mis.procurement.subplan.struts.ProcSubPlanForm"></form-bean>    
+		<form-bean name="procPackageWorksForm"
+			type="com.prwss.mis.procurement.workspackage.struts.PackageWorksForm"></form-bean>
+		<form-bean name="procPackageGoodsForm"
+			type="com.prwss.mis.procurement.goodspackage.struts.PackageGoodsForm"></form-bean>
+		<form-bean name="procPackageServicesForm"
+			type="com.prwss.mis.procurement.servicespackage.struts.PackageServiceForm"></form-bean>
+		<form-bean name="procPackageNonConsultancyForm"
+			type="com.prwss.mis.procurement.nonconsultancypackage.struts.PackageNonConsultancyForm"></form-bean>
+		<form-bean name="procPackagePhysicalProgressForm"
+			type="com.prwss.mis.procurement.physicalprogresspackage.struts.PhysicalProgressPackageForm"></form-bean>
+		<form-bean name="worldBankPriorReviewForm"
+			type="com.prwss.mis.procurement.wbpriorreview.struts.PriorReviewPackageForm"></form-bean>
+		<form-bean name="procurementReportsForm"
+			type="com.prwss.mis.procurement.reports.struts.ProcurementReportsForm"></form-bean>
+
+	</form-beans>
+	<action-mappings>
+		<action path="/createProcPlanAction" input="createProcPlan.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="createProcPlanForm"
+			parameter="method" scope="session">
+			<forward name="display" path="createProcPlan.view"></forward>
+			<forward name="login" path="/sessionOut.jsp"></forward>
+		</action>
+
+		<action path="/procSubPlanAction" input="procSubPlan.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="procSubPlanForm"
+			parameter="method" scope="session">
+			<forward name="display" path="procSubPlan.view"></forward>
+			<forward name="login" path="/sessionOut.jsp"></forward>
+		</action>
+
+		<action path="/procPackageWorksAction" input="procPackageWorks.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="procPackageWorksForm"
+			parameter="method" scope="session">
+			<forward name="display" path="procPackageWorks.view"></forward>
+			<forward name="login" path="/sessionOut.jsp"></forward>
+		</action>
+
+		<action path="/procPackageGoodsAction" input="procPackageGoods.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="procPackageGoodsForm"
+			parameter="method" scope="session">
+			<forward name="display" path="procPackageGoods.view"></forward>
+			<forward name="login" path="/sessionOut.jsp"></forward>
+		</action>
+
+		<action path="/procPackageServicesAction" input="procPackageServices.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="procPackageServicesForm"
+			parameter="method" scope="session">
+			<forward name="display" path="procPackageServices.view"></forward>
+			<forward name="login" path="/sessionOut.jsp"></forward>
+		</action>
+		<action path="/procPackageNonConsultancyAction" input="procPackageNonConsultancy.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="procPackageNonConsultancyForm"
+			parameter="method" scope="session">
+			<forward name="display" path="procPackageNonConsultancy.view"></forward>
+			<forward name="login" path="/sessionOut.jsp"></forward>
+		</action>
+
+		<action path="/procPackagePhysicalProgressAction" input="procPackagePhysicalProgress.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="procPackagePhysicalProgressForm"
+			parameter="method" scope="session">
+			<forward name="display" path="procPackagePhysicalProgress.view"></forward>
+			<forward name="login" path="/sessionOut.jsp"></forward>
+		</action>
+
+		<action path="/worldBankPriorReviewAction" input="worldBankPriorReview.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="worldBankPriorReviewForm"
+			parameter="method" scope="session">
+			<forward name="display" path="worldBankPriorReview.view"></forward>
+			<forward name="login" path="/sessionOut.jsp"></forward>
+		</action>
+
+		<action path="/procurementReportsAction" input="procurementReports.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="procurementReportsForm"
+			parameter="method" scope="session">
+			<forward name="cScreen" path="procurementReports.view"></forward>
+			<forward name="display" path="procurementHtmlReports.view"></forward>
+		</action>
+
+	</action-mappings>
+
+	<message-resources parameter="ProcurementMessageResources"
+		key="procurement" />
+
+</struts-config>

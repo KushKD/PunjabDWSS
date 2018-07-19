@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pvt_connection_comm_vill" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="where" class="java.lang.String"/>
+	<parameter name="month" class="java.lang.String"/>
+	<parameter name="fincode" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select z.zone_id,z.zone_name,c.circle_id,c.circle_name,d.district_id,d.district_name,
+
+prwss_main.get_fin_year_code($P{fincode}) as fin_year,prwss_main.get_month_year(cast(cast($P{month} as numeric)-1 as character varying) ,$P{fincode}) as mnth_yr_pre,
+
+prwss_main.get_month_year($P{month},$P{fincode}) as mnth_yr_curr,
+
+svd.program_id,svd.village_id,mv.village_name,total_population,total_households,sv_scheme_commisioned_date,
+
+prwss_main.datediff('month',sv_scheme_commisioned_date,prwss_main.get_month_fin_year_start_date($P{month},$P{fincode})) time_elapsed,
+
+no_of_water_connection_pre,no_of_water_connection_curr,
+
+(no_of_water_connection_pre+no_of_water_connection_curr) total_connection,
+
+case when ((no_of_water_connection_pre+no_of_water_connection_curr)<>0 and (total_households*100/(no_of_water_connection_pre+no_of_water_connection_curr))<70) then
+
+total_households*100/(no_of_water_connection_pre+no_of_water_connection_curr)
+
+end connection_per_lt_70,
+
+case when ((no_of_water_connection_pre+no_of_water_connection_curr)<>0 and (total_households*100/(no_of_water_connection_pre+no_of_water_connection_curr))>=70) then
+
+total_households*100/(no_of_water_connection_pre+no_of_water_connection_curr)
+
+end connection_per_gt_70
+
+
+
+from prwss_main.vw_scheme_village_details svd
+
+left outer join
+
+(
+
+select village_id,sum(total_population) total_population,sum(no_of_water_connection_pre) no_of_water_connection_pre,
+
+sum(no_of_water_connection_curr) no_of_water_connection_curr,sum(total_households) total_households
+
+from
+
+(---------------------------------population---------------------------------------------
+
+select village_id,total_population as total_population,0 as no_of_water_connection_pre,0 as no_of_water_connection_curr,0 as total_households from
+
+(select *,rank() over (partition by village_id order by as_on_date,population_id desc) as row_id
+
+from prwss_main.mst_village_population mp
+
+where as_on_date <= prwss_main.get_month_fin_year_start_date($P{month},$P{fincode})
+
+order by village_id) main
+
+where row_id=1
+
+
+
+union all
+
+---------------------------------connection current---------------------------------------------
+
+select village_id,0 as total_population,0 as no_of_water_connection_pre,no_of_water_connection as no_of_water_connection_curr,0 as total_households from
+
+(select *,rank() over (partition by village_id order by as_on_date,connection_id desc) as row_id
+
+from prwss_main.mst_village_connection mp
+
+where as_on_date <= prwss_main.get_month_fin_year_start_date($P{month},$P{fincode})
+
+order by village_id) main
+
+where row_id=1
+
+
+
+union all
+
+
+
+---------------------------------connection previous---------------------------------------------
+
+select village_id,0 as total_population,no_of_water_connection as no_of_water_connection_pre,0 as no_of_water_connection_curr,0 as total_households from
+
+(select *,rank() over (partition by village_id order by as_on_date,connection_id desc) as row_id
+
+from prwss_main.mst_village_connection mp
+
+where as_on_date <= prwss_main.get_month_fin_year_start_date(cast(cast ($P{month} as numeric)-1 as character varying),$P{fincode})
+
+order by village_id) main
+
+where row_id=1
+
+
+
+union all
+
+---------------------------------household---------------------------------------------
+
+select village_id,0 as total_population,0 as no_of_water_connection_pre,0 as no_of_water_connection_curr,(sc_households+gc_households)total_households from
+
+(select *,rank() over (partition by village_id order by as_on_date,household_id desc) as row_id
+
+from prwss_main.mst_village_households mp
+
+where as_on_date <= prwss_main.get_month_fin_year_start_date($P{month},$P{fincode})
+
+order by village_id) main
+
+where row_id=1
+
+
+
+) x
+
+group by village_id
+
+)y
+
+on y.village_id=svd.village_id,prwss_main.mst_district d,prwss_main.mst_zone z,prwss_main.mst_circle c,prwss_main.mst_village mv
+
+where svd.district_id=d.district_id
+
+and d.circle_id=c.circle_id
+
+and c.zone_id=z.zone_id
+
+and mv.village_id=svd.village_id
+
+and svd.sv_scheme_commisioned_date is not null
+
+and svd.program_id in ('PROG6','PROG11','PROG20')
+
+and svd.sv_scheme_commisioned_date <=prwss_main.get_month_fin_year_end_date($P{month},$P{fincode})
+order by district_name]]>
+	</queryString>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="fin_year" class="java.lang.String"/>
+	<field name="mnth_yr_pre" class="java.lang.String"/>
+	<field name="mnth_yr_curr" class="java.lang.String"/>
+	<field name="program_id" class="java.lang.String"/>
+	<field name="village_id" class="java.lang.String"/>
+	<field name="village_name" class="java.lang.String"/>
+	<field name="total_population" class="java.math.BigDecimal"/>
+	<field name="total_households" class="java.math.BigDecimal"/>
+	<field name="sv_scheme_commisioned_date" class="java.sql.Date"/>
+	<field name="time_elapsed" class="java.lang.Integer"/>
+	<field name="no_of_water_connection_pre" class="java.math.BigDecimal"/>
+	<field name="no_of_water_connection_curr" class="java.math.BigDecimal"/>
+	<field name="total_connection" class="java.math.BigDecimal"/>
+	<field name="connection_per_lt_70" class="java.math.BigDecimal"/>
+	<field name="connection_per_gt_70" class="java.math.BigDecimal"/>
+	<group name="district_grp">
+		<groupExpression><![CDATA[$F{district_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement style="table_TH" x="24" y="0" width="751" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["District:-  "+$F{district_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="132" splitType="Stretch">
+			<staticText>
+				<reportElement x="234" y="58" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="234" y="20" width="364" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Water Works Complex, Phase 2, Mohali-160055]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="234" y="39" width="364" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Tele/Fax: 0172-270101, 4330316, 4330317]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="234" y="1" width="364" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="24" y="96" width="751" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status of Private Water Connections for the Commissioned Villages Under SWAp mode]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="71" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="24" y="0" width="103" height="71" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[  Name of Comissioned Villages]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="127" y="0" width="67" height="71" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Population]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="194" y="0" width="80" height="71" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Total Households.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="274" y="0" width="67" height="71" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Month / Year of Commissiioning]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="341" y="0" width="107" height="71" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Time elapsed after Commissioning]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="448" y="31" width="67" height="23" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[up to]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="515" y="31" width="59" height="23" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[During]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="574" y="31" width="67" height="40" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="641" y="31" width="67" height="40" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[< 70%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="708" y="31" width="67" height="40" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[>70%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="448" y="0" width="193" height="31" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[No. of Pvt connections ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="641" y="0" width="134" height="31" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[%age of Conn.]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement style="table_TH" x="448" y="54" width="67" height="17" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{mnth_yr_pre}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement style="table_TH" mode="Opaque" x="515" y="54" width="59" height="17" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{mnth_yr_curr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="24" y="0" width="103" height="20" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{village_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="127" y="0" width="67" height="20" backcolor="#CCFF99"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{total_population}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="194" y="0" width="80" height="20" backcolor="#CCFF99"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{total_households}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="MMMMM-yy" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="274" y="0" width="67" height="20" backcolor="#CCFF99"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{sv_scheme_commisioned_date}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="448" y="0" width="67" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{no_of_water_connection_pre}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="515" y="0" width="59" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{no_of_water_connection_curr}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="574" y="0" width="67" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{total_connection}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="641" y="0" width="67" height="20" backcolor="#CCFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{connection_per_lt_70}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="708" y="0" width="67" height="20" backcolor="#CCFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{connection_per_gt_70}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" stretchType="RelativeToTallestObject" mode="Opaque" x="341" y="0" width="107" height="20" backcolor="#CCFF99"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{time_elapsed}+" Months"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

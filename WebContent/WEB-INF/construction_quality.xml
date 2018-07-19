@@ -1,0 +1,103 @@
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+
+	<form-beans>
+		<form-bean name="yearlyPlanInspectionForm"
+			type="com.prwss.min.construction.quality.form.YearlyPlanInspectionForm">
+		</form-bean>
+		<form-bean name="createTeam"
+			type="com.prwss.min.construction.quality.form.CreateTeam">
+		</form-bean>
+		<form-bean name="monthlyPlanInspectionForm"
+			type="com.prwss.min.construction.quality.form.MonthlyPlanInspectionForm">
+		</form-bean>
+		<form-bean name="monthlyProgressForm"
+			type="com.prwss.min.construction.quality.form.MonthlyProgressForm">
+		</form-bean>
+		
+		<form-bean name="saveMonthlyReportForm"
+			type="com.prwss.min.construction.quality.form.SaveMonthlyReportForm">
+		</form-bean>
+		<form-bean name="sendMonthlyReportForm"
+			type="com.prwss.min.construction.quality.form.SendMonthlyReportForm">
+		</form-bean>
+		<form-bean name="shareObservationForm"
+			type="com.prwss.min.construction.quality.form.ShareObservationForm">
+		</form-bean>
+	</form-beans>
+	<action-mappings>
+		<action path="/yearlyInspectionPlanAction" input="yearlyPlanInspection.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="yearlyPlanInspectionForm"
+			parameter="method" scope="session">
+			<forward name="display" path="yearlyPlanInspection.view"></forward>
+		</action>
+
+		<action path="/updateYearlyPlanAction" input="update.yearlyPlan.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="yearlyPlanInspectionForm"
+			parameter="method" scope="session">
+			<forward name="display" path="update.yearlyPlan.view"></forward>
+		</action>
+
+		<action path="/createTeamAction" input="create.team.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="createTeam"
+			parameter="method" scope="session">
+			<forward name="display" path="create.team.view"></forward>
+		</action>
+
+		<action path="/monthlyPlanInspectionAction" input="monthly.plan.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="monthlyPlanInspectionForm"
+			parameter="method" scope="session">
+			<forward name="display" path="monthly.plan.view"></forward>
+		</action>
+		<action path="/updateMonthlyPlanAction" input="monthly.update.plan.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="monthlyPlanInspectionForm"
+			parameter="method" scope="session">
+			<forward name="display" path="monthly.update.plan.view"></forward>
+		</action>
+		<action path="/monthlyPlanViewAction" input="monthly.plan.views"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="monthlyPlanInspectionForm"
+			parameter="method" scope="session">
+			<forward name="display" path="monthly.plan.views"></forward>
+		</action>
+		
+		<action path="/enterMonthlyProgressAction" input="monthly.progress.enter"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="monthlyProgressForm"
+			parameter="method" scope="session">
+			<forward name="display" path="monthly.progress.enter"></forward>
+		</action>
+		
+		<action path="/saveMonthlyReportAction" input="save.monthly.report"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="saveMonthlyReportForm"
+			parameter="method" scope="session">
+			<forward name="display" path="save.monthly.report"></forward>
+		</action>
+		
+		<action path="/sendMonthlyReportAction" input="send.monthly.report"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="sendMonthlyReportForm"
+			parameter="method" scope="session">
+			<forward name="display" path="send.monthly.report"></forward>
+		</action>
+		<action path="/monthlyReportViewAction" input="monthly.report.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="sendMonthlyReportForm"
+			parameter="method" scope="session">
+			<forward name="display" path="monthly.report.view"></forward>
+		</action>
+		
+		<action path="/approvedMonthlyReportAction" input="approve.monthly.report"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="sendMonthlyReportForm"
+			parameter="method" scope="session">
+			<forward name="display" path="approve.monthly.report"></forward>
+		</action>
+		
+		<action path="/shareObservationAction" input="share.observation"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="shareObservationForm"
+			parameter="method" scope="session">
+			<forward name="display" path="share.observation"></forward>
+		</action>
+		
+	</action-mappings>
+
+
+	<message-resources parameter="ConstructionQualityResources"
+		key="construction" />
+</struts-config>

@@ -1,0 +1,1844 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PMMRPT001_1" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="queryString" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="where" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="innerwhere" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select x.*,(balnce_scheme_arwsp_n+balnce_scheme_arwsp_qa+balnce_scheme_arwsp_wb+balnce_scheme_arwsp_nabard+balnce_scheme_arwsp_pidb) as total_balance from
+(select main.*,(tgt_scheme_arwsp_n+tgt_scheme_arwsp_qa+tgt_scheme_arwsp_wb+tgt_scheme_arwsp_nabard+tgt_scheme_arwsp_pidb) as total_tgt,
+	      (comm_scheme_arwsp_n+comm_scheme_arwsp_qa+comm_scheme_arwsp_wb+comm_scheme_arwsp_nabard+comm_scheme_arwsp_pidb) as total_comm,
+	      (altd_scheme_arwsp_n+altd_scheme_arwsp_qa+altd_scheme_arwsp_wb+altd_scheme_arwsp_nabard+altd_scheme_arwsp_pidb) as total_altd,
+	      (invtd_scheme_arwsp_n+invtd_scheme_arwsp_qa+invtd_scheme_arwsp_wb+invtd_scheme_arwsp_nabard+invtd_scheme_arwsp_pidb) as total_invtd,
+	      (tgt_scheme_arwsp_n-comm_scheme_arwsp_n-altd_scheme_arwsp_n-invtd_scheme_arwsp_n) as balnce_scheme_arwsp_n,
+	      (tgt_scheme_arwsp_qa-comm_scheme_arwsp_qa-altd_scheme_arwsp_qa-invtd_scheme_arwsp_qa) as balnce_scheme_arwsp_qa,
+	      (tgt_scheme_arwsp_wb-comm_scheme_arwsp_wb-altd_scheme_arwsp_wb-invtd_scheme_arwsp_wb) as balnce_scheme_arwsp_wb,
+	      (tgt_scheme_arwsp_nabard-comm_scheme_arwsp_nabard-altd_scheme_arwsp_nabard-invtd_scheme_arwsp_nabard) as balnce_scheme_arwsp_nabard,
+	      (tgt_scheme_arwsp_pidb-comm_scheme_arwsp_pidb-altd_scheme_arwsp_pidb-invtd_scheme_arwsp_pidb) as balnce_scheme_arwsp_pidb
+from
+
+(select z.zone_name,c.circle_name ,lm.location_name as division,plan_from,plan_to,
+
+	sum(case when program_id='PROG08' and scheme_id is not null and row_scheme=1 then 1 else 0 end) as tgt_scheme_arwsp_n,
+	sum(case when program_id in ('PROG11','PROG19') and scheme_id is not null and row_scheme=1 then 1 else 0 end) as tgt_scheme_arwsp_qa,
+	sum(case when program_id='PROG15' and scheme_id is not null and row_scheme=1 then 1 else 0 end) as tgt_scheme_arwsp_wb,
+	sum(case when program_id in ('PROG01','PROG02','PROG03','PROG04','PROG17','PROG18','PROG20','PROG25') and scheme_id is not null and row_scheme=1 then 1 else 0 end) as tgt_scheme_arwsp_nabard,
+	sum(case when program_id='PROG09' and scheme_id is not null and row_scheme=1 then 1 else 0 end) as tgt_scheme_arwsp_pidb,
+
+	sum(case when program_id='PROG08' and scheme_id is not null and scheme_commissioned_date is not null and row_scheme=1 then 1 else 0 end) as comm_scheme_arwsp_n,
+	sum(case when program_id in ('PROG11','PROG19') and scheme_id is not null and scheme_commissioned_date is not null and row_scheme=1 then 1 else 0 end) as comm_scheme_arwsp_qa,
+	sum(case when program_id='PROG15' and scheme_id is not null and scheme_commissioned_date is not null and row_scheme=1 then 1 else 0 end) as comm_scheme_arwsp_wb,
+	sum(case when program_id in ('PROG01','PROG02','PROG03','PROG04','PROG17','PROG18','PROG20','PROG25') and scheme_id is not null and scheme_commissioned_date is not null and row_scheme=1 then 1 else 0 end) as comm_scheme_arwsp_nabard,
+	sum(case when program_id='PROG09' and scheme_id is not null and scheme_commissioned_date is not null and row_scheme=1 then 1 else 0 end) as comm_scheme_arwsp_pidb,
+
+	sum(case when program_id='PROG08' and scheme_id is not null and tender_id is not null and contract_no is not null  and row_contract=1 then 1 else 0 end) as altd_scheme_arwsp_n,
+	sum(case when program_id in ('PROG11','PROG19') and scheme_id is not null and tender_id is not null and contract_no is not null  and row_contract=1 then 1 else 0 end) as altd_scheme_arwsp_qa,
+	sum(case when program_id='PROG15' and scheme_id is not null and tender_id is not null and contract_no is not null  and row_contract=1 then 1 else 0 end) as altd_scheme_arwsp_wb,
+	sum(case when program_id in ('PROG01','PROG02','PROG03','PROG04','PROG17','PROG18','PROG20','PROG25') and scheme_id is not null and tender_id is not null and contract_no is not null  and row_contract=1 then 1 else 0 end) as altd_scheme_arwsp_nabard,
+	sum(case when program_id='PROG09' and scheme_id is not null and tender_id is not null and contract_no is not null  and row_contract=1 then 1 else 0 end) as altd_scheme_arwsp_pidb,
+
+	sum(case when program_id='PROG08' and scheme_id is not null and tender_id is not null and contract_no is null  and row_contract=1 then 1 else 0 end) as invtd_scheme_arwsp_n,
+	sum(case when program_id in ('PROG11','PROG19') and scheme_id is not null and tender_id is not null and contract_no is null  and row_contract=1 then 1 else 0 end) as invtd_scheme_arwsp_qa,
+	sum(case when program_id='PROG15' and scheme_id is not null and tender_id is not null and contract_no is null  and row_contract=1 then 1 else 0 end) as invtd_scheme_arwsp_wb,
+	sum(case when program_id in ('PROG01','PROG02','PROG03','PROG04','PROG17','PROG18','PROG20','PROG25') and scheme_id is not null and tender_id is not null and contract_no is null  and row_contract=1 then 1 else 0 end) as invtd_scheme_arwsp_nabard,
+	sum(case when program_id='PROG09' and scheme_id is not null and tender_id is not null and contract_no is null  and row_contract=1 then 1 else 0 end) as invtd_scheme_arwsp_pidb
+
+
+
+from prwss_main.vw_agenda_xv a,prwss_main.mst_block b,prwss_main.mst_district d,prwss_main.mst_circle c,prwss_main.mst_location_master lm,prwss_main.mst_zone z
+where a.block_id=b.block_id
+and   a.divisional_office_id=lm.location_id
+and   b.district_id=d.district_id
+and   d.circle_id=c.circle_id
+and   c.zone_id=z.zone_id
+group by zone_name,c.circle_name ,lm.location_name ,plan_from,plan_to ) main ) x
+where $P!{where}
+order by zone_name,circle_name,division]]>
+	</queryString>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="division" class="java.lang.String"/>
+	<field name="plan_from" class="java.sql.Date"/>
+	<field name="plan_to" class="java.sql.Date"/>
+	<field name="tgt_scheme_arwsp_n" class="java.lang.Long"/>
+	<field name="tgt_scheme_arwsp_qa" class="java.lang.Long"/>
+	<field name="tgt_scheme_arwsp_wb" class="java.lang.Long"/>
+	<field name="tgt_scheme_arwsp_nabard" class="java.lang.Long"/>
+	<field name="tgt_scheme_arwsp_pidb" class="java.lang.Long"/>
+	<field name="comm_scheme_arwsp_n" class="java.lang.Long"/>
+	<field name="comm_scheme_arwsp_qa" class="java.lang.Long"/>
+	<field name="comm_scheme_arwsp_wb" class="java.lang.Long"/>
+	<field name="comm_scheme_arwsp_nabard" class="java.lang.Long"/>
+	<field name="comm_scheme_arwsp_pidb" class="java.lang.Long"/>
+	<field name="altd_scheme_arwsp_n" class="java.lang.Long"/>
+	<field name="altd_scheme_arwsp_qa" class="java.lang.Long"/>
+	<field name="altd_scheme_arwsp_wb" class="java.lang.Long"/>
+	<field name="altd_scheme_arwsp_nabard" class="java.lang.Long"/>
+	<field name="altd_scheme_arwsp_pidb" class="java.lang.Long"/>
+	<field name="invtd_scheme_arwsp_n" class="java.lang.Long"/>
+	<field name="invtd_scheme_arwsp_qa" class="java.lang.Long"/>
+	<field name="invtd_scheme_arwsp_wb" class="java.lang.Long"/>
+	<field name="invtd_scheme_arwsp_nabard" class="java.lang.Long"/>
+	<field name="invtd_scheme_arwsp_pidb" class="java.lang.Long"/>
+	<field name="total_tgt" class="java.lang.Long"/>
+	<field name="total_comm" class="java.lang.Long"/>
+	<field name="total_altd" class="java.lang.Long"/>
+	<field name="total_invtd" class="java.lang.Long"/>
+	<field name="balnce_scheme_arwsp_n" class="java.lang.Long"/>
+	<field name="balnce_scheme_arwsp_qa" class="java.lang.Long"/>
+	<field name="balnce_scheme_arwsp_wb" class="java.lang.Long"/>
+	<field name="balnce_scheme_arwsp_nabard" class="java.lang.Long"/>
+	<field name="balnce_scheme_arwsp_pidb" class="java.lang.Long"/>
+	<field name="total_balance" class="java.lang.Long"/>
+	<variable name="tgt_scheme_arwsp_n_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_qa_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_wb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_nabard_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_pidb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_tgt_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_tgt}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_n_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_qa_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_wb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_nabard_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_pidb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_comm_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_comm}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_n_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_qa_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_wb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_nabard_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_pidb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_altd_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_altd}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_n_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_qa_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_wb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_nabard_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_pidb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_invtd_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_invtd}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_n_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_qa_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_wb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_nabard_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_pidb_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_pidb_2" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_balance_1" class="java.lang.Long" resetType="Group" resetGroup="division_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_balance}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_qa_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_qa_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_wb_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_wb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_nabard_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_pidb_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_tgt_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_tgt}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_nabard_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_pidb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_tgt_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_tgt}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_n_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_qa_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_wb_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_nabard_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_pidb_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_comm_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_comm}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_n_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_qa_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_wb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_nabard_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_pidb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_comm_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_comm}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_n_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_n_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_qa_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_qa_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_wb_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_wb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_nabard_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_nabard_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_pidb_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_pidb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_altd_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_altd}]]></variableExpression>
+	</variable>
+	<variable name="total_altd_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_altd}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_n_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_n_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_qa_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_qa_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_wb_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_wb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_nabard_2" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_nabard_3" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_pidb_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_pidb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_invtd_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_invtd}]]></variableExpression>
+	</variable>
+	<variable name="total_invtd_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_invtd}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_n_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_n_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_qa_2" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_qa_3" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_wb_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_wb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_nabard_2" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_nabard_3" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_pidb_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_pidb_4" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_balance_2" class="java.lang.Long" resetType="Group" resetGroup="circle group" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_balance}]]></variableExpression>
+	</variable>
+	<variable name="total_balance_3" class="java.lang.Long" resetType="Group" resetGroup="zone_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_balance}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_4" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_5" class="java.lang.Long" resetType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_6" class="java.lang.Long" resetType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_7" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_8" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_qa_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_wb_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_nabard_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_pidb_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_tgt_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_tgt}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_n_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_qa_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_wb_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_nabard_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_pidb_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_comm_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_comm}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_n_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_qa_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_wb_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_nabard_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_pidb_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_altd_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_altd}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_n_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_qa_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_wb_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_nabard_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_pidb_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_invtd_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_invtd}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_n_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_qa_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_wb_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_nabard_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_pidb_5" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_balance_4" class="java.lang.Long" resetType="Group" resetGroup="z_grp" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_balance}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_9" class="java.lang.Long" resetType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_10" class="java.lang.Long" resetType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_n_11" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_qa_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_wb_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_nabard_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="tgt_scheme_arwsp_pidb_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tgt_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_tgt_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_tgt}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_n_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_qa_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_wb_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_nabard_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="comm_scheme_arwsp_pidb_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{comm_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_comm_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_comm}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_n_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_qa_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_wb_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_nabard_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="altd_scheme_arwsp_pidb_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{altd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_altd_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_altd}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_n_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_qa_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_wb_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_nabard_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="invtd_scheme_arwsp_pidb_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{invtd_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_invtd_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_invtd}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_n_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_n}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_qa_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_qa}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_wb_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_wb}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_nabard_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_nabard}]]></variableExpression>
+	</variable>
+	<variable name="balnce_scheme_arwsp_pidb_6" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{balnce_scheme_arwsp_pidb}]]></variableExpression>
+	</variable>
+	<variable name="total_balance_5" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_balance}]]></variableExpression>
+	</variable>
+	<group name="zone_name">
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="z_grp">
+		<groupExpression><![CDATA[$F{zone_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement style="table_TH" x="0" y="0" width="802" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Zone:-  "+ $F{zone_name}+"   Circle:-  "+ $F{circle_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="0" y="0" width="82" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{zone_name}+  "  Total:-"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="82" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_n_8}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="106" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_qa_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="130" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_wb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="154" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_nabard_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="178" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_pidb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="202" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_tgt_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="226" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_n_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="250" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_qa_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="274" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_wb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="298" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_nabard_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="322" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_pidb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="346" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_comm_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="370" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_n_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="394" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_qa_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="418" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_wb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="442" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_nabard_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="466" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_pidb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="490" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_altd_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="514" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_n_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="538" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_qa_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="562" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_wb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="586" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_nabard_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="610" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_pidb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="634" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_invtd_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="658" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_n_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="682" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_qa_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="706" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_wb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="730" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_nabard_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="754" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_pidb_5}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="778" y="0" width="24" height="20" backcolor="#FFFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_balance_4}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="circle group">
+		<groupExpression><![CDATA[$F{circle_name}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="82" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="106" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="130" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="154" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_nabard_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="178" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_pidb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="202" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_tgt_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="226" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="250" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="274" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="298" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_nabard_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="322" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_pidb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="346" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_comm_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="370" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="394" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="418" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="442" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_nabard_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="466" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_pidb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="490" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_altd_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="514" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="538" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_qa_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="562" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="586" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_nabard_3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="610" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_pidb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="634" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_invtd_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="658" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_n_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="682" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_qa_3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="706" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_wb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="730" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_nabard_3}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="754" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_pidb_4}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="778" y="0" width="24" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_balance_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="0" y="0" width="82" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{circle_name}+"  Circle  Total:-"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="division_group">
+		<groupExpression><![CDATA[$F{division}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="0" y="0" width="82" height="20" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{division}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="82" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="106" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="130" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="154" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_nabard_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="178" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_pidb_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="202" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_tgt_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="226" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="250" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="274" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="298" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_nabard_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="322" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_pidb_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="346" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_comm_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="370" y="0" width="24" height="20" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="394" y="0" width="24" height="20" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="418" y="0" width="24" height="20" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="442" y="0" width="24" height="20" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_nabard_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="466" y="0" width="24" height="20" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_pidb_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="490" y="0" width="24" height="20" backcolor="#CCCCCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_altd_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="514" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="538" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="562" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="586" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_nabard_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="610" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_pidb_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="634" y="0" width="24" height="20" backcolor="#CCFF99"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_invtd_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="658" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_n_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="682" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_qa_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="706" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_wb_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="730" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_nabard_1}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="754" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_pidb_2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="division_group" isBlankWhenNull="true">
+					<reportElement style="table_TH" stretchType="RelativeToTallestObject" x="778" y="0" width="24" height="20" backcolor="#CCFFCC"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_balance_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="122" splitType="Stretch">
+			<staticText>
+				<reportElement x="209" y="0" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="209" y="20" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Water Works Complex, Phase 2, Mohali-160055]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="209" y="40" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Tele/Fax: 0172-270101, 4330316, 4330317]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="209" y="60" width="364" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="95" width="803" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Divisionwise status of schemes]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="119" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="82" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(N)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="154" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nabard]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="202" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="82" height="119" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Name of Division]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="106" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(QA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="226" y="0" width="144" height="52" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  No. of schemes Commissioned up to 10/2010]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="514" y="0" width="144" height="52" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ No. of schemes whereTenders,  either invited / under proces 31.10.10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="658" y="0" width="144" height="52" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Balance  schemes ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="130" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[World Bank]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="82" y="0" width="144" height="52" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ No. of Schemes as per target   2010-11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="178" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PIDB/BRGF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="322" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PIDB/BRGF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="250" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(QA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="346" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="298" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nabard]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="274" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[World Bank]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="226" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(N)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="466" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PIDB/BRGF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="394" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(QA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="490" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="442" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nabard]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="418" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[World Bank]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="370" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(N)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="610" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PIDB/BRGF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="538" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(QA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="634" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="586" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nabard]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="562" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[World Bank]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="514" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(N)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="754" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PIDB/BRGF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="682" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(QA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="778" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="730" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nabard]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="706" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[World Bank]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="658" y="52" width="24" height="67" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARP(N)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="370" y="0" width="144" height="52" backcolor="#CACCFF"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No. of schemes where work stand alloted / in progress as on        31.10.10]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<lastPageFooter>
+		<band/>
+	</lastPageFooter>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="table_TH" x="82" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_n_11}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="106" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_qa_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="130" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_wb_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="154" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_nabard_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="178" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{tgt_scheme_arwsp_pidb_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="202" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_tgt_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="226" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_n_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="250" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_qa_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="274" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_wb_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="298" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_nabard_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="322" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{comm_scheme_arwsp_pidb_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="346" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_comm_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="370" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_n_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="394" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_qa_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="418" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_wb_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="442" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_nabard_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="466" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{altd_scheme_arwsp_pidb_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="490" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_altd_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="514" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_n_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="538" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_qa_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="562" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_wb_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="586" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_nabard_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="610" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{invtd_scheme_arwsp_pidb_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="634" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_invtd_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="658" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_n_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="682" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_qa_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="706" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_wb_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="730" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_nabard_5}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="754" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{balnce_scheme_arwsp_pidb_6}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="778" y="0" width="24" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{total_balance_5}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="82" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

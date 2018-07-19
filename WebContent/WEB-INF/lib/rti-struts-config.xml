@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+	<form-beans>
+		<form-bean name="submitRtiForm"
+			type="com.prwss.min.RTI.form.SubmitRtiForm"></form-bean>
+			
+			<form-bean name="assignsubmitRtiForm"
+			type="com.prwss.min.RTI.form.AssignRtiForm"></form-bean>
+		    
+	</form-beans>
+	
+	<action-mappings>
+		<action path="/rtiOnlineAction" input="rtiSubmit.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="submitRtiForm"
+			parameter="method" scope="session">
+			<forward name="display" path="rtiSubmit.view"></forward>
+		</action>
+		<action path="/updateRtiAction" input="rtiUpdate.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="submitRtiForm"
+			parameter="method" scope="session">
+			<forward name="display" path="rtiUpdate.view"></forward>
+		</action>
+		<action path="/updateRtiDetailsAction" input="rtiUpdateDetails.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="submitRtiForm"
+			parameter="method" scope="session">
+			<forward name="display" path="rtiUpdateDetails.view"></forward>
+		</action>
+		<action path="/assignrtiOnlineAction" input="assignrtiSubmit.view"
+			type="org.springframework.web.struts.DelegatingActionProxy" name="assignsubmitRtiForm"
+			parameter="method" scope="session">
+			<forward name="display" path="assignrtiSubmit.view"></forward>
+		</action>
+	</action-mappings>
+	
+	<message-resources parameter="RTIResources"
+		key="RTI" />
+</struts-config>

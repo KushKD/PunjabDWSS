@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/PRWSS/!svn/ver/1524/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/admin/dao
+END
+UserMasterBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/PRWSS/!svn/ver/1268/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/admin/dao/UserMasterBean.java
+END
+RoleDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/PRWSS/!svn/ver/1003/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/admin/dao/RoleDao.java
+END
+RoleBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/PRWSS/!svn/ver/1003/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/admin/dao/RoleBean.java
+END
+RoleDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/PRWSS/!svn/ver/1003/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/admin/dao/RoleDaoImpl.java
+END
+MenuDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/PRWSS/!svn/ver/1003/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/admin/dao/MenuDao.java
+END
+MenuBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/PRWSS/!svn/ver/1524/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/admin/dao/MenuBean.java
+END
+MenuDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/PRWSS/!svn/ver/1003/MIS/trunk/PRWSS-MIS/src/com/prwss/mis/admin/dao/MenuDaoImpl.java
+END

@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ACA" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="where" class="java.lang.String">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fincode" class="java.lang.String">
+		<defaultValueExpression><![CDATA["5"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="month" class="java.lang.String">
+		<defaultValueExpression><![CDATA["03"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from
+(select  z.zone_id,z.zone_name,c.circle_id,c.circle_name,d.district_id,d.district_name,prwss_main.get_fin_year_code($P{fincode}) as fin_year_curr,
+	prwss_main.get_fin_year_code(cast(cast($P{fincode} as numeric)-1 as character varying)) as fin_year_pre,prwss_main.get_month_year($P{month},$P{fincode}) as mnth_yr,sum(sch_cnt) sch_cnt,
+	sum(loc_pre_pre-exp_pre_pre) op_pre,sum(loc_pre)loc_pre,sum(exp_pre)exp_pre,sum((loc_pre_pre-exp_pre_pre)+loc_pre-exp_pre) op_curr,
+	sum(loc_curr)loc_curr,sum(exp_pre_mnth)exp_pre_mnth,sum(exp_curr_mnth)exp_curr_mnth,sum(exp_curr_mnth+exp_pre_mnth) curr_total
+from
+(select location_id,sum(sch_cnt)sch_cnt,sum(loc_curr)loc_curr,sum(loc_pre)loc_pre,sum(loc_pre_pre)loc_pre_pre,sum(exp_curr)exp_curr,sum(exp_pre)exp_pre,
+	sum(exp_pre_pre)exp_pre_pre,sum(exp_curr_mnth)exp_curr_mnth,sum(exp_pre_mnth)exp_pre_mnth
+
+from (
+
+-------------------------No. of works being handled------------------------------------
+
+select p.location_id as location_id,
+
+count(distinct scheme_id) sch_cnt,0 as loc_curr,0 as loc_pre,0 as loc_pre_pre,0 as exp_curr,0 as exp_pre,0 as exp_pre_pre,0  as exp_curr_mnth,0 as exp_pre_mnth
+
+from prwss_main.t_proc_package_header ph,prwss_main.t_proc_package_works pw,prwss_main.t_proc_plan p
+where ph.package_id=pw.package_id
+and p.plan_id=ph.plan_id
+and plan_from>=prwss_main.get_fin_year_start_date($P{fincode}) and plan_to<=prwss_main.get_fin_year_end_date($P{fincode})
+and ph.status<>'D' and pw.status<>'D' and p.status<>'D'
+group by p.location_id
+
+
+
+union all
+
+-----------------------------------current year loc-----------------------------------------------------------
+
+select ld.location_id  as location_id,0 as sch_cnt,sum(ld.release_amount)  loc_curr,0 as loc_pre,0 as loc_pre_pre,0 as exp_curr,0 as exp_pre,0 as exp_pre_pre,0  as exp_curr_mnth,0 as exp_pre_mnth
+
+from prwss_main.t_finance_loc_header lh,prwss_main.t_finance_loc_detail ld
+
+where lh.loc_id=ld.loc_id
+--and release_status='ACCEPT'
+and lh.loc_release_date>=prwss_main.get_fin_year_start_date($P{fincode}) and lh.loc_release_date<=prwss_main.get_fin_year_end_date($P{fincode})
+and  lh.status<>'D' and ld.status<>'D'
+group by ld.location_id
+
+
+
+union all
+
+-----------------------------------Previous year loc-----------------------------------------------------------
+
+select ld.location_id  as location_id,0 as sch_cnt,0 as loc_curr,sum(ld.release_amount) loc_pre ,0 as loc_pre_pre,0 as exp_curr,0 as exp_pre,0 as exp_pre_pre,0  as exp_curr_mnth,0 as exp_pre_mnth
+from prwss_main.t_finance_loc_header lh,prwss_main.t_finance_loc_detail ld
+where lh.loc_id=ld.loc_id
+--and release_status='ACCEPT'
+and lh.loc_release_date>=prwss_main.get_fin_year_start_date(cast(cast($P{fincode} as numeric)-1 as character varying))
+and lh.status<>'D' and ld.status<>'D'
+and lh.loc_release_date<=prwss_main.get_fin_year_end_date(cast(cast($P{fincode} as numeric)-1 as character varying))
+group by ld.location_id
+
+
+
+union all
+
+-----------------------------------Previous Previous year loc-----------------------------------------------------------
+
+select ld.location_id as location_id,0 as sch_cnt,0 as loc_curr,0 as loc_pre,sum(ld.release_amount) loc_pre_pre ,0 as exp_curr,0 as exp_pre,0 as exp_pre_pre,0  as exp_curr_mnth,0 as exp_pre_mnth
+from prwss_main.t_finance_loc_header lh,prwss_main.t_finance_loc_detail ld
+where lh.loc_id=ld.loc_id
+--and release_status='ACCEPT'
+and lh.loc_release_date>=prwss_main.get_fin_year_start_date(cast(cast($P{fincode} as numeric)-2 as character varying))
+and lh.status<>'D' and ld.status<>'D'
+and lh.loc_release_date<=prwss_main.get_fin_year_end_date(cast(cast($P{fincode} as numeric)-2 as character varying))
+group by ld.location_id
+
+
+
+union all
+
+-------------------------------------current year expenditure--------------------------------
+
+select vh.location_id as location_id, 0 as sch_cnt,0 as loc_curr,0 as loc_pre,0 as loc_pre_pre,sum(vd.amount) exp_curr,0 as exp_pre,0 as exp_pre_pre,0  as exp_curr_mnth,0 as exp_pre_mnth
+from  prwss_main.t_finance_voucher_hdr vh,prwss_main.t_finance_voucher_detail vd
+where vh.voc_id=vd.voc_id
+and vh.transaction_date between prwss_main.get_fin_year_start_date($P{fincode}) and prwss_main.get_fin_year_end_date($P{fincode})
+and vh.status<>'D' and vd.status<>'D'
+group by vh.location_id
+
+
+
+union all
+
+-------------------------------------previous year expenditure--------------------------------
+
+select vh.location_id as location_id,0 as sch_cnt,0 as loc_curr,0 as loc_pre,0 as loc_pre_pre,0 as exp_curr,sum(vd.amount) exp_pre,0 as exp_pre_pre,0  as exp_curr_mnth,0 as exp_pre_mnth
+from  prwss_main.t_finance_voucher_hdr vh,prwss_main.t_finance_voucher_detail vd
+where vh.voc_id=vd.voc_id
+and vh.transaction_date>=prwss_main.get_fin_year_start_date(cast(cast($P{fincode} as numeric)-1 as character varying))
+and vh.transaction_date<=prwss_main.get_fin_year_end_date(cast(cast($P{fincode} as numeric)-1 as character varying))
+and vh.status<>'D' and vd.status<>'D'
+group by vh.location_id
+
+
+
+union all
+
+-------------------------------------previous previous year expenditure--------------------------------
+
+select vh.location_id as location_id, 0 as sch_cnt,0 as loc_curr,0 as loc_pre,0 as loc_pre_pre,0 as exp_curr,0 as exp_pre,sum(vd.amount) exp_pre_pre,0  as exp_curr_mnth,0 as exp_pre_mnth
+from  prwss_main.t_finance_voucher_hdr vh,prwss_main.t_finance_voucher_detail vd
+where vh.voc_id=vd.voc_id
+and vh.transaction_date>=prwss_main.get_fin_year_start_date(cast(cast($P{fincode} as numeric)-2 as character varying))
+and vh.transaction_date<=prwss_main.get_fin_year_end_date(cast(cast($P{fincode} as numeric)-2 as character varying))
+and vh.status<>'D' and vd.status<>'D'
+group by vh.location_id
+
+
+
+union all
+
+-------------------------------------current month expenditure--------------------------------
+
+select vh.location_id as location_id, 0 as sch_cnt,0 as loc_curr,0 as loc_pre,0 as loc_pre_pre,0 exp_curr,0 as exp_pre,0 as exp_pre_pre,
+sum(vd.amount) as exp_curr_mnth,0 as exp_pre_mnth
+from  prwss_main.t_finance_voucher_hdr vh,prwss_main.t_finance_voucher_detail vd
+where vh.voc_id=vd.voc_id
+and vh.transaction_date between prwss_main.get_month_fin_year_start_date($P{month},$P{fincode}) and prwss_main.get_month_fin_year_end_date($P{month},$P{fincode})
+and vh.status<>'D' and vd.status<>'D'
+group by vh.location_id
+
+
+
+union all
+
+-------------------------------------previous month expenditure--------------------------------
+
+select vh.location_id as location_id,0 as sch_cnt,0 as loc_curr,0 as loc_pre,0 as loc_pre_pre,0 as exp_curr,0 exp_pre,0 as exp_pre_pre,
+0 as exp_curr_mnth,sum(vd.amount) as exp_pre_mnth
+from  prwss_main.t_finance_voucher_hdr vh,prwss_main.t_finance_voucher_detail vd
+where vh.voc_id=vd.voc_id
+and vh.transaction_date between prwss_main.get_month_fin_year_start_date($P{month},$P{fincode}) and prwss_main.get_month_fin_year_end_date($P{month},$P{fincode})
+and vh.status<>'D' and vd.status<>'D'
+group by vh.location_id ) x
+group by location_id)main,prwss_main.mst_divisional di,prwss_main.mst_district d,prwss_main.mst_circle c,prwss_main.mst_zone z
+where main.location_id=di.divisional_id
+and   di.district_id=d.district_id
+and   d.circle_id=c.circle_id
+and   c.zone_id=z.zone_id
+group by z.zone_id,z.zone_name,c.circle_id,c.circle_name,d.district_id,d.district_name,fin_year_pre,mnth_yr)final
+where sch_cnt<>0
+order by zone_name,circle_name,district_name desc ]]>
+	</queryString>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="fin_year_curr" class="java.lang.String"/>
+	<field name="fin_year_pre" class="java.lang.String"/>
+	<field name="mnth_yr" class="java.lang.String"/>
+	<field name="sch_cnt" class="java.math.BigDecimal"/>
+	<field name="op_pre" class="java.math.BigDecimal"/>
+	<field name="loc_pre" class="java.math.BigDecimal"/>
+	<field name="exp_pre" class="java.math.BigDecimal"/>
+	<field name="op_curr" class="java.math.BigDecimal"/>
+	<field name="loc_curr" class="java.math.BigDecimal"/>
+	<field name="exp_pre_mnth" class="java.math.BigDecimal"/>
+	<field name="exp_curr_mnth" class="java.math.BigDecimal"/>
+	<field name="curr_total" class="java.math.BigDecimal"/>
+	<group name="circle_grp">
+		<groupExpression><![CDATA[$F{circle_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement style="table_TH" x="0" y="0" width="802" height="20" backcolor="#CCFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA["Circle:-  "+$F{circle_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="63" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="43" width="802" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Utilization of Funds under All Programs]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="802" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="672" y="21" width="130" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Agenda Report: A.3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="228" y="21" width="320" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="85" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" x="27" y="0" width="89" height="70" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[District]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="116" y="0" width="84" height="70" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[  No. of works being handled]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="200" y="31" width="78" height="39" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Openning Bal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="278" y="31" width="78" height="39" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LOC issued]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="356" y="31" width="78" height="39" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Expdtr ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="434" y="31" width="78" height="39" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Openning. Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="512" y="31" width="66" height="39" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LOC issued]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="578" y="31" width="73" height="39" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Expdtr Previous]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="651" y="31" width="73" height="39" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Expenditure Current]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="200" y="0" width="234" height="18" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Year]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="434" y="0" width="368" height="18" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Year]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="724" y="31" width="78" height="39" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="434" y="18" width="368" height="13" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{fin_year_curr}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TH" x="200" y="18" width="234" height="13" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{fin_year_pre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TH" x="278" y="70" width="78" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="578" y="70" width="73" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="651" y="70" width="73" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="70" width="27" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="512" y="70" width="66" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="724" y="70" width="78" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="116" y="70" width="84" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="434" y="70" width="78" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="356" y="70" width="78" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="27" y="70" width="89" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="200" y="70" width="78" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="27" height="70" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr. No.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="27" y="0" width="89" height="20" forecolor="#000000" backcolor="#F0F0F0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{district_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TH" x="0" y="0" width="27" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="116" y="0" width="84" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{sch_cnt}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="200" y="0" width="78" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{op_pre}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="278" y="0" width="78" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{loc_pre}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="356" y="0" width="78" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{exp_pre}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="434" y="0" width="78" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{op_curr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="512" y="0" width="66" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{loc_curr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="578" y="0" width="73" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{exp_pre_mnth}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="651" y="0" width="73" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{exp_curr_mnth}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="724" y="0" width="78" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{curr_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="336" y="0" width="160" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Agenda Report : A3]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="702" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="80" y="0" width="40" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

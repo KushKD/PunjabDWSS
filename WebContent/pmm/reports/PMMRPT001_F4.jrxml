@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PMMRPT001_1" language="groovy" pageWidth="652" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="642" leftMargin="5" rightMargin="5" topMargin="20" bottomMargin="5">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+			<style backcolor="#EFF7FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="where" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[" 1=1 "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2013-02-06"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="from_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA["2008-04-01"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select main.*,user_id,user_name,count,stmp,employee_id emp,
+to_char(to_date($P{from_date},'yyyy-mm-dd'),'dd/mm/yyyy') frm,
+to_char(to_date($P{to_date},'yyyy-mm-dd'),'dd/mm/yyyy') as to
+from
+
+(select emp.*, z.zone_id,z.zone_name,c.circle_id,c.circle_name,d.district_id,d.district_name,di.divisional_id,di.divisional_name
+from
+
+(select log.ent_by, case when count >0 then count else 0 end as count, case when login.stmp >0 then login.stmp else 0 end as stmp,
+ usr.user_id, user_name, usr.employee_id, me.employee_id emp, me.location_id from
+
+( select distinct employee_id, case when employee_id = 0 then 'sa' else user_id end as user_id,
+case when employee_id = 0 then 'SA, SPMC' else user_name end as user_name
+from prwss_main.sd_user su where status<>'D' and user_id not like '201%' order by employee_id
+)usr
+
+
+left join
+(select ent_by, count(ent_by) from
+(select * from
+(
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_committee
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_committee_bank
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_committee_member
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_employee
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_employee_contact_extention
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_employee_qualification
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_employment_history
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_gpwsc
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_gpwsc_bank
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_item
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_scheme_details
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_scheme_header
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_scheme_village
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_store
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_vendor
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_village
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_village_connection
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_village_households
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_village_population
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_village_sewerage_tariff
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_mst_village_tariff
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_dsr_canal
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_dsr_canal_distribution
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_dsr_canal_inlet
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_dsr_ponds
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_dsr_sewerage
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_dsr_sewerage_sewer
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_dsr_tubwell
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_dsr_tubwell_distribution
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_dsr_works
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_installation_plants
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_pmm_sust_assessment
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_ccdu_cb_training_material_utilization
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_ccdu_cb_training_officers
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_ccdu_cb_training_progress
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_ccdu_iec_material_utilization
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_ccdu_iec_progress
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_complaint_book
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_complaint_history
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_contract_mgmt_detail
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_contract_mgmt_hdr
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_goods_issue
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_goods_issue_detail
+		union all
+		--select ent_by, date(ent_date) from prwss_audit.audit_t_inventory_det
+		--union all
+		--select ent_by, date(ent_date) from prwss_audit.audit_t_inventory_hdr
+		--union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_tender_award
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_tender_award_objection
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_tender_bidder_detail
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_tender_bidder_hdr
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_tender_detail
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_tender_hdr
+		union all
+		select ent_by, date(ent_date) from prwss_audit.audit_t_tender_security_deposit
+
+)x where date >= to_date($P{from_date},'yyyy-mm-dd') and date <= to_date($P{to_date},'yyyy-mm-dd')
+)y group by ent_by
+) log
+on log.ent_by = usr.employee_id
+
+
+
+left join
+(select user_id, count(stamp)stmp from
+(select case when employee_id = 0 then 'sa' else user_id end as user_id,
+stamp
+from prwss_audit.audit_sd_user au
+where au.status<>'D'
+and user_id not like '201%'
+and user_id not in ('1','123','78','')
+and to_date(to_char(last_login_on,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date($P{from_date},'yyyy-mm-dd')
+and to_date(to_char(last_login_on,'yyyy-mm-dd'),'yyyy-mm-dd') <= to_date($P{to_date},'yyyy-mm-dd')
+)zz
+group by user_id
+)login
+on login.user_id = usr.user_id
+
+left join prwss_main.mst_employee me on usr.employee_id = me.employee_id
+
+) emp , prwss_main.mst_zone z,prwss_main.mst_circle c,prwss_main.mst_district d, prwss_main.mst_divisional di
+
+	where z.zone_id=c.zone_id
+	and c.circle_id=d.circle_id
+	and d.district_id=di.district_id
+	and emp.location_id=di.divisional_id
+
+
+
+) main
+where $P!{where}
+order by count desc, stmp desc]]>
+	</queryString>
+	<field name="ent_by" class="java.lang.Integer"/>
+	<field name="count" class="java.lang.Long"/>
+	<field name="stmp" class="java.lang.Long"/>
+	<field name="user_id" class="java.lang.String"/>
+	<field name="user_name" class="java.lang.String"/>
+	<field name="employee_id" class="java.math.BigDecimal"/>
+	<field name="emp" class="java.lang.Integer"/>
+	<field name="location_id" class="java.lang.String"/>
+	<field name="zone_id" class="java.lang.String"/>
+	<field name="zone_name" class="java.lang.String"/>
+	<field name="circle_id" class="java.lang.String"/>
+	<field name="circle_name" class="java.lang.String"/>
+	<field name="district_id" class="java.lang.String"/>
+	<field name="district_name" class="java.lang.String"/>
+	<field name="divisional_id" class="java.lang.String"/>
+	<field name="divisional_name" class="java.lang.String"/>
+	<field name="frm" class="java.lang.String"/>
+	<field name="to" class="java.lang.String"/>
+	<variable name="user_id_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{user_id}]]></variableExpression>
+	</variable>
+	<variable name="user_name_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{user_name}]]></variableExpression>
+	</variable>
+	<variable name="count_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{count}]]></variableExpression>
+	</variable>
+	<variable name="stmp_1" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{stmp}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement x="198" y="21" width="295" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<text><![CDATA[Website: www.pbdwss.gov.in]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="43" width="408" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Monitoring of User logged into the system]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="421" y="43" width="42" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[From:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="642" height="21"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Department   of   Water   Supply   &   Sanitation, Punjab]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="542" y="43" width="25" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[To:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="518" y="21" width="124" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[M & E Report: F.4]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="463" y="43" width="81" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{frm}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="567" y="43" width="75" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{to}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="74" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="82" y="0" width="145" height="59" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[Designation / Division Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="59" width="82" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="0" y="0" width="82" height="59" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sr. No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="227" y="59" width="122" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="82" y="59" width="145" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="493" y="59" width="149" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="227" y="0" width="122" height="59" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[User Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="493" y="0" width="149" height="59" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[No. of entries/updations user
+made into the system during
+the particular period]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="349" y="0" width="144" height="59" forecolor="#000000" backcolor="#CACCFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[No. of time user logged
+into the system during
+the particular period]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TH" x="349" y="59" width="144" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[4]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="0" y="0" width="82" height="20" backcolor="#F0F8FF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="227" y="0" width="122" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{user_id}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="82" y="0" width="145" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{user_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="493" y="0" width="149" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{count}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement style="table_TD" mode="Opaque" x="349" y="0" width="144" height="20" forecolor="#000000" backcolor="#FFFFCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{stmp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="547" y="0" width="95" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="81" y="0" width="40" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="268" y="0" width="170" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[M & E Report F.4]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="20">
+			<staticText>
+				<reportElement style="table_TH" mode="Opaque" x="1" y="0" width="81" height="20" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TH" mode="Opaque" x="227" y="0" width="122" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{user_id_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="82" y="0" width="145" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{user_name_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="493" y="0" width="149" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{count_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement style="table_TD" mode="Opaque" x="349" y="0" width="144" height="20" forecolor="#000000" backcolor="#CCFFFF"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="SansSerif" size="9" isBold="true" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$V{stmp_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
